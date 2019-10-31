@@ -44,6 +44,17 @@ public class MainBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
+        if(messageTextReceived.equals("Información")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
+
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
