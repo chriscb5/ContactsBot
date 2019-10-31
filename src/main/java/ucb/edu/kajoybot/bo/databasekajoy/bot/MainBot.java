@@ -1,5 +1,7 @@
 package ucb.edu.kajoybot.bo.databasekajoy.bot;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -9,6 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.logging.BotLogger;
+import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +22,41 @@ public class MainBot extends TelegramLongPollingBot {
     private static final String REGISTRARSE = "Registrarse";
     private static final String SALIR = "SALIR";
 
+    EstudianteRespository estudianteRespository;
+
+    public MainBot(EstudianteRespository estudianteRespository) {
+        this.estudianteRespository = estudianteRespository;
+    }
+
     public MainBot() {
 
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        try {
-            if (update.hasMessage()) {
+  //      try {
+            System.out.println(update);
+            if (update.hasMessage() && update.getMessage().hasText()) {
                 Message message = update.getMessage();
-                if (message.hasText() || message.hasLocation()) {
+                EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
+                SendMessage message1=new SendMessage()
+                        .setChatId(update.getMessage().getChatId())
+                        .setText("Estudiante BBDD "+estudianteEntity);
+                try {
+                    this.execute(message1);
+                }
+                catch (TelegramApiException e){
+                    e.printStackTrace();
+                }
+
+/*                if (message.hasText() || message.hasLocation()) {
                     long chat_id = update.getMessage().getChatId();
                     this.handleIncomingMessage(message, update);
                 }
-            }
-        } catch (TelegramApiException var5) {
-            BotLogger.error("LOGTAG", var5);
-        }
+*/            }
+   //     } catch (TelegramApiException var5) {
+    //        BotLogger.error("LOGTAG", var5);
+     //   }
 
     }
 
@@ -55,7 +77,11 @@ public class MainBot extends TelegramLongPollingBot {
                 break;
             case 2255068:
                 if (var4.equals("Hola")) {
-                    var5 = 0;
+                    EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
+                    SendMessage message1=new SendMessage()
+                            .setChatId(update.getMessage().getChatId())
+                            .setText("Estudiante BBDD "+estudianteEntity);
+                    ;
                 }
                 break;
             case 78664039:
