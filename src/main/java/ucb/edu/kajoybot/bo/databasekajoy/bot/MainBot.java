@@ -18,18 +18,9 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update);
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Hola Soy KajoyBot"     );
+        final String messageTextReceived = update.getMessage().getText();
+        final long chatId = update.getMessage().getChatId();
 
-            try {
-                this.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -50,4 +41,3 @@ public class MainBot extends TelegramLongPollingBot {
     }
 
 }
-
