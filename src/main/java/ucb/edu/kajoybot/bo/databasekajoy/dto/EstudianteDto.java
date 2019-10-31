@@ -16,7 +16,11 @@ public class EstudianteDto {
     }
 
     public EstudianteDto(EstudianteEntity estudianteEntity){
-         this.nombre=estudianteEntity.getNombre();
+         EstudianteDto result= new EstudianteDto();
+         this.nombre=(estudianteEntity.getNombre());
+         this.txUser=(estudianteEntity.getTxUser());
+         this.status=(estudianteEntity.getStatus());
+
 
     }
     public int getIdEstudiante() {
