@@ -1,26 +1,73 @@
 package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
-import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+/**
+ *
+ * @author ASUS
+*/
 @Entity
-@Table(name = "pregunta", schema = "kajoydatabase", catalog = "")
-public class PreguntaEntity {
-    private int idPregunta;
-    private int numPreg;
-    private String cPregunta;
+@Table(name = "pregunta")
+/*@NamedQueries({
+        @NamedQuery(name = "Pregunta.findAll", query = "SELECT p FROM Pregunta p"),
+        @NamedQuery(name = "Pregunta.findByIdPregunta", query = "SELECT p FROM Pregunta p WHERE p.idPregunta = :idPregunta"),
+        @NamedQuery(name = "Pregunta.findByNumPreg", query = "SELECT p FROM Pregunta p WHERE p.numPreg = :numPreg"),
+        @NamedQuery(name = "Pregunta.findByCPregunta", query = "SELECT p FROM Pregunta p WHERE p.cPregunta = :cPregunta")})
+*/public class PreguntaEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id_pregunta")
-    public int getIdPregunta() {
-        return idPregunta;
+    private Integer idPregunta;
+    @Basic(optional = false)
+    @Column(name = "num_preg")
+    private int numPreg;
+    @Basic(optional = false)
+    @Column(name = "c_pregunta")
+    private String cPregunta;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "preguntaIdPregunta")
+    private Collection<RespuestaEntity> respuestaCollection;
+    @JoinColumn(name = "Test_id_test", referencedColumnName = "id_test")
+    @ManyToOne(optional = false)
+    private TestEntity testidtest;
+
+    public PreguntaEntity() {
     }
 
-    public void setIdPregunta(int idPregunta) {
+    public PreguntaEntity(Integer idPregunta) {
         this.idPregunta = idPregunta;
     }
 
-    @Basic
-    @Column(name = "num_preg")
+    public PreguntaEntity(Integer idPregunta, int numPreg, String cPregunta) {
+        this.idPregunta = idPregunta;
+        this.numPreg = numPreg;
+        this.cPregunta = cPregunta;
+    }
+
+    public Integer getIdPregunta() {
+        return idPregunta;
+    }
+
+    public void setIdPregunta(Integer idPregunta) {
+        this.idPregunta = idPregunta;
+    }
+
     public int getNumPreg() {
         return numPreg;
     }
@@ -29,35 +76,53 @@ public class PreguntaEntity {
         this.numPreg = numPreg;
     }
 
-    @Basic
-    @Column(name = "c_pregunta")
-    public String getcPregunta() {
+    public String getCPregunta() {
         return cPregunta;
     }
 
-    public void setcPregunta(String cPregunta) {
+    public void setCPregunta(String cPregunta) {
         this.cPregunta = cPregunta;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public Collection<RespuestaEntity> getRespuestaCollection() {
+        return respuestaCollection;
+    }
 
-        PreguntaEntity that = (PreguntaEntity) o;
+    public void setRespuestaCollection(Collection<RespuestaEntity> respuestaCollection) {
+        this.respuestaCollection = respuestaCollection;
+    }
 
-        if (idPregunta != that.idPregunta) return false;
-        if (numPreg != that.numPreg) return false;
-        if (cPregunta != null ? !cPregunta.equals(that.cPregunta) : that.cPregunta != null) return false;
+    public TestEntity getTestidtest() {
+        return testidtest;
+    }
 
-        return true;
+    public void setTestidtest(TestEntity testidtest) {
+        this.testidtest = testidtest;
     }
 
     @Override
     public int hashCode() {
-        int result = idPregunta;
-        result = 31 * result + numPreg;
-        result = 31 * result + (cPregunta != null ? cPregunta.hashCode() : 0);
-        return result;
+        int hash = 0;
+        hash += (idPregunta != null ? idPregunta.hashCode() : 0);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof PreguntaEntity)) {
+            return false;
+        }
+        PreguntaEntity other = (PreguntaEntity) object;
+        if ((this.idPregunta == null && other.idPregunta != null) || (this.idPregunta != null && !this.idPregunta.equals(other.idPregunta))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "proyectokajoy.ucb.edu.bo.Pregunta[ idPregunta=" + idPregunta + " ]";
+    }
+
 }

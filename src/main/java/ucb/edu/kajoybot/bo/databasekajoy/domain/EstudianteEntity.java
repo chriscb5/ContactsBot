@@ -1,42 +1,79 @@
 package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
-import javax.persistence.*;
-import java.sql.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+/**
+ *
+ * @author ASUS
+*/
 @Entity
-@Table(name = "estudiante", schema = "kajoydatabase", catalog = "")
+@Table(name = "estudiante")
 /*@NamedQueries({
-        @NamedQuery(name = "EstdianteEntity.findAll", query = "SELECT c FROM Estudiante c"),
-        @NamedQuery(name = "CpPerson.findByPersonId", query = "SELECT c FROM CpPerson c WHERE c.personId = :personId"),
-        @NamedQuery(name = "CpPerson.findByFirstName", query = "SELECT c FROM CpPerson c WHERE c.firstName = :firstName"),
-        @NamedQuery(name = "CpPerson.findBySecondName", query = "SELECT c FROM CpPerson c WHERE c.secondName = :secondName"),
-        @NamedQuery(name = "CpPerson.findByThirdName", query = "SELECT c FROM CpPerson c WHERE c.thirdName = :thirdName"),
-        @NamedQuery(name = "CpPerson.findByFirstSurname", query = "SELECT c FROM CpPerson c WHERE c.firstSurname = :firstSurname"),
-        @NamedQuery(name = "CpPerson.findBySecondSurname", query = "SELECT c FROM CpPerson c WHERE c.secondSurname = :secondSurname"),
-        @NamedQuery(name = "CpPerson.findByThirdSurname", query = "SELECT c FROM CpPerson c WHERE c.thirdSurname = :thirdSurname"),
-        @NamedQuery(name = "CpPerson.findByStatus", query = "SELECT c FROM CpPerson c WHERE c.status = :status"),
-        @NamedQuery(name = "CpPerson.findByTxUser", query = "SELECT c FROM CpPerson c WHERE c.txUser = :txUser"),
-        @NamedQuery(name = "CpPerson.findByTxHost", query = "SELECT c FROM CpPerson c WHERE c.txHost = :txHost"),
-        @NamedQuery(name = "CpPerson.findByTxDate", query = "SELECT c FROM CpPerson c WHERE c.txDate = :txDate")
-})*/
-public class EstudianteEntity {
+        @NamedQuery(name = "Estudiante.findAll", query = "SELECT e FROM Estudiante e"),
+        @NamedQuery(name = "Estudiante.findByIdEstudiante", query = "SELECT e FROM Estudiante e WHERE e.idEstudiante = :idEstudiante"),
+        @NamedQuery(name = "Estudiante.findByNombre", query = "SELECT e FROM Estudiante e WHERE e.nombre = :nombre"),
+        @NamedQuery(name = "Estudiante.findByStatus", query = "SELECT e FROM Estudiante e WHERE e.status = :status"),
+        @NamedQuery(name = "Estudiante.findByTxUser", query = "SELECT e FROM Estudiante e WHERE e.txUser = :txUser"),
+        @NamedQuery(name = "Estudiante.findByTxDate", query = "SELECT e FROM Estudiante e WHERE e.txDate = :txDate")})
+*/public class EstudianteEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id_estudiante")
-    private int idEstudiante;
+    private Integer idEstudiante;
+    @Basic(optional = false)
+    @Column(name = "nombre")
+    private String nombre;
+    @Basic(optional = false)
+    @Column(name = "status")
+    private int status;
+    @Column(name = "tx_user")
+    private String txUser;
+    @Column(name = "tx_date")
+    @Temporal(TemporalType.DATE)
+    private Date txDate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estudianteIdUser")
+    private Collection<EstudianteTestEntity> estudianteTestCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioiduser")
+    private Collection<EstudianteCursoEntity> estudianteCursoCollection;
 
-    public int getIdEstudiante() {
-        return idEstudiante;
+    public EstudianteEntity() {
     }
 
-    public void setIdEstudiante(int idEstudiante) {
+    public EstudianteEntity(Integer idEstudiante) {
         this.idEstudiante = idEstudiante;
     }
 
-    @Basic
-    @Column(name = "nombre")
-    private String nombre;
+    public EstudianteEntity(Integer idEstudiante, String nombre, int status) {
+        this.idEstudiante = idEstudiante;
+        this.nombre = nombre;
+        this.status = status;
+    }
+
+    public Integer getIdEstudiante() {
+        return idEstudiante;
+    }
+
+    public void setIdEstudiante(Integer idEstudiante) {
+        this.idEstudiante = idEstudiante;
+    }
 
     public String getNombre() {
         return nombre;
@@ -46,10 +83,6 @@ public class EstudianteEntity {
         this.nombre = nombre;
     }
 
-    @Basic
-    @Column(name = "status")
-    private int status;
-
     public int getStatus() {
         return status;
     }
@@ -57,10 +90,6 @@ public class EstudianteEntity {
     public void setStatus(int status) {
         this.status = status;
     }
-
-    @Basic
-    @Column(name = "tx_user")
-    private String txUser;
 
     public String getTxUser() {
         return txUser;
@@ -70,10 +99,6 @@ public class EstudianteEntity {
         this.txUser = txUser;
     }
 
-    @Basic
-    @Column(name = "tx_date")
-    private Date txDate;
-
     public Date getTxDate() {
         return txDate;
     }
@@ -81,33 +106,46 @@ public class EstudianteEntity {
     public void setTxDate(Date txDate) {
         this.txDate = txDate;
     }
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estudianteId", fetch = FetchType.LAZY)
-//    private List<EstudianteCursoEntity> estudianteCursoEntityList;
 
+    public Collection<EstudianteTestEntity> getEstudianteTestCollection() {
+        return estudianteTestCollection;
+    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public void setEstudianteTestCollection(Collection<EstudianteTestEntity> estudianteTestCollection) {
+        this.estudianteTestCollection = estudianteTestCollection;
+    }
 
-        EstudianteEntity that = (EstudianteEntity) o;
+    public Collection<EstudianteCursoEntity> getEstudianteCursoCollection() {
+        return estudianteCursoCollection;
+    }
 
-        if (idEstudiante != that.idEstudiante) return false;
-        if (status != that.status) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
-        if (txUser != null ? !txUser.equals(that.txUser) : that.txUser != null) return false;
-        if (txDate != null ? !txDate.equals(that.txDate) : that.txDate != null) return false;
-
-        return true;
+    public void setEstudianteCursoCollection(Collection<EstudianteCursoEntity> estudianteCursoCollection) {
+        this.estudianteCursoCollection = estudianteCursoCollection;
     }
 
     @Override
     public int hashCode() {
-        int result = idEstudiante;
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
-        result = 31 * result + status;
-        result = 31 * result + (txUser != null ? txUser.hashCode() : 0);
-        result = 31 * result + (txDate != null ? txDate.hashCode() : 0);
-        return result;
+        int hash = 0;
+        hash += (idEstudiante != null ? idEstudiante.hashCode() : 0);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof EstudianteEntity)) {
+            return false;
+        }
+        EstudianteEntity other = (EstudianteEntity) object;
+        if ((this.idEstudiante == null && other.idEstudiante != null) || (this.idEstudiante != null && !this.idEstudiante.equals(other.idEstudiante))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "proyectokajoy.ucb.edu.bo.Estudiante[ idEstudiante=" + idEstudiante + " ]";
+    }
+
 }
