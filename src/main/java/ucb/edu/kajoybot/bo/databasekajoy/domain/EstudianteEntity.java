@@ -145,7 +145,14 @@ import javax.persistence.TemporalType;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.Estudiante[ idEstudiante=" + idEstudiante + " ]";
+        return "EstudianteEntity{" +
+                "idEstudiante=" + idEstudiante +
+                ", nombre='" + nombre + '\'' +
+                ", status=" + status +
+                ", txUser='" + txUser + '\'' +
+                ", txDate=" + txDate +
+                ", estudianteTestCollection=" + estudianteTestCollection +
+                ", estudianteCursoCollection=" + estudianteCursoCollection +
+                '}';
     }
-
 }
