@@ -151,8 +151,6 @@ import javax.persistence.TemporalType;
                 ", status=" + status +
                 ", txUser='" + txUser + '\'' +
                 ", txDate=" + txDate +
-                ", estudianteTestCollection=" + estudianteTestCollection +
-                ", estudianteCursoCollection=" + estudianteCursoCollection +
                 '}';
     }
 
