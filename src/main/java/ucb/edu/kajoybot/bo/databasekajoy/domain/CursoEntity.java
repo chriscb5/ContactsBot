@@ -1,6 +1,7 @@
 package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "curso", schema = "kajoydatabase", catalog = "")
@@ -49,6 +50,10 @@ public class CursoEntity {
     public void setClave(String clave) {
         this.clave = clave;
     }
+
+
+  //  @OneToMany(cascade = CascadeType.ALL, mappedBy = "cursoId", fetch = FetchType.LAZY)
+   // private List<EstudianteCursoEntity> estudianteCursoEntityList;
 
     @Override
     public boolean equals(Object o) {

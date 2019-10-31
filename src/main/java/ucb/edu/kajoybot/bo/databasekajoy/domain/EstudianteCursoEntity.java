@@ -1,17 +1,25 @@
 package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "estudiante_curso", schema = "kajoydatabase", catalog = "")
 public class EstudianteCursoEntity {
-    private int idUserCurse;
 
     @Id
     @Column(name = "id_user_curse")
+    private int idUserCurse;
+
+//    @JoinColumn(name = "Usuario_id_user", referencedColumnName = "id_estudiante")
+//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+//    private EstudianteEntity estudianteEntity;
+
+ //   @JoinColumn(name = "Curso_id_curso", referencedColumnName = "id_curso")
+  //  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  //  private CursoEntity cursoEntity;
+
+
+
     public int getIdUserCurse() {
         return idUserCurse;
     }
@@ -19,7 +27,23 @@ public class EstudianteCursoEntity {
     public void setIdUserCurse(int idUserCurse) {
         this.idUserCurse = idUserCurse;
     }
+/*
+    public EstudianteEntity getEstudianteEntity() {
+        return estudianteEntity;
+    }
 
+    public void setEstudianteEntity(EstudianteEntity estudianteEntity) {
+        this.estudianteEntity = estudianteEntity;
+    }
+
+    public CursoEntity getCursoEntity() {
+        return cursoEntity;
+    }
+
+    public void setCursoEntity(CursoEntity cursoEntity) {
+        this.cursoEntity = cursoEntity;
+    }
+*/
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
