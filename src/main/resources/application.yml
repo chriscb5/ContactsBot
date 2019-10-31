@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: Kajoy
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://localhost:3306/kajoydatabase?serverTimezone=UTC
+    username: maurio
+    password: Maurioxd123
+  jpa:
+    hibernate:
+      ddl-auto: none
+      use-new-id-generator-mappings: true
+    properties:
+      hibernate:
+        legacy_limit_handler: true
+        ddl-auto: update
+        show_sql: true
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    # show-sql: true
