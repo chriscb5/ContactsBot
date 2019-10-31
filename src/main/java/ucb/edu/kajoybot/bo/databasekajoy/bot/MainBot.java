@@ -3,9 +3,14 @@ package ucb.edu.kajoybot.bo.databasekajoy.bot;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainBot extends TelegramLongPollingBot {
 
@@ -20,6 +25,25 @@ public class MainBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String messageTextReceived = update.getMessage().getText();
         final long chatId = update.getMessage().getChatId();
+
+        if (messageTextReceived.equals("/start")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            List<KeyboardRow> keyboard = new ArrayList<>();
+            KeyboardRow row = new KeyboardRow();
+            row.add("Comenzar");
+            row.add("Información");
+            keyboard.add(row);
+            keyboardMarkup.setKeyboard(keyboard);
+            message.setReplyMarkup(keyboardMarkup);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
