@@ -5,124 +5,127 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.logging.BotLogger;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainBot extends TelegramLongPollingBot {
-    private static final String INGRESAR_CURSO = "Ingresar a un curso";
-    private static final String REGISTRARSE = "Registrarse";
-    private static final String SALIR = "SALIR";
 
-    public MainBot() {
 
+    EstudianteRespository estudianteRespository;
+
+    public MainBot(EstudianteRespository estudianteRespository) {
+        this.estudianteRespository = estudianteRespository;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        try {
-            if (update.hasMessage()) {
-                Message message = update.getMessage();
-                if (message.hasText() || message.hasLocation()) {
-                    long chat_id = update.getMessage().getChatId();
-                    this.handleIncomingMessage(message, update);
-                }
+        final String messageTextReceived = update.getMessage().getText();
+        final long chatId = update.getMessage().getChatId();
+
+        if (messageTextReceived.equals("/testBDD")) {
+            Message message = update.getMessage();
+            EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
+            System.out.println(estudianteEntity);
+            SendMessage message1=new SendMessage()
+                    .setChatId(update.getMessage().getChatId())
+                    .setText("Estudiante BBDD "+estudianteEntity);
+            try {
+                this.execute(message1);
             }
-        } catch (TelegramApiException var5) {
-            BotLogger.error("LOGTAG", var5);
+            catch (TelegramApiException e){
+                e.printStackTrace();
+            }
         }
 
-    }
+        if (messageTextReceived.equals("/start")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            List<KeyboardRow> keyboard = new ArrayList<>();
+            KeyboardRow row = new KeyboardRow();
+            row.add("Comenzar");
+            row.add("Información");
+            keyboard.add(row);
+            keyboardMarkup.setKeyboard(keyboard);
+            message.setReplyMarkup(keyboardMarkup);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        if(messageTextReceived.equals("Información")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
 
-    private void handleIncomingMessage(Message message, Update update) throws TelegramApiException {
-        SendMessage sendMessageGreeting = (new SendMessage()).setChatId(update.getMessage().getChatId());
-        String var4 = message.getText();
-        byte var5 = -1;
-        switch(var4.hashCode()) {
-            case -453901345:
-                if (var4.equals("Registrarse")) {
-                    var5 = 2;
-                }
-                break;
-            case -338285543:
-                if (var4.equals("/pregunta")) {
-                    var5 = 1;
-                }
-                break;
-            case 2255068:
-                if (var4.equals("Hola")) {
-                    var5 = 0;
-                }
-                break;
-            case 78664039:
-                if (var4.equals("SALIR")) {
-                    var5 = 3;
-                }
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
 
-        switch(var5) {
-            case 0:
-                System.out.println(message.getChat().getFirstName());
-                sendMessageGreeting = (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Que tal " + message.getChat().getFirstName() + ", mi nombre es Kajoy, sere tu acompañante para navegar por las grandes aventuras de la apliaciòn Kajoy, elege una de las opciones que aparecen a continuación ");
-                this.setButtons(sendMessageGreeting);
-                break;
-            case 1:
-                sendMessageGreeting = (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Que tal " + message.getChat().getFirstName() + ", mi nombre es Kajoy, sere tu acompañante para navegar por las grandes aventuras de la apliaciòn Kajoy, elege una de las opciones que aparecen a continuación ");
-                sendMessageGreeting.setReplyMarkup(this.etMenu(sendMessageGreeting, update.getMessage().getChatId()));
-                SendMessage messageo = (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Menu");
-                sendMessageGreeting = (new SendMessage()).setChatId(update.getMessage().getChatId()).setReplyMarkup(this.etMenu(sendMessageGreeting, update.getMessage().getChatId()));
-                sendMessageGreeting.setText("¿Cuánto es dos mas dos?");
-            case 2:
-            case 3:
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + message.getText());
+        if(messageTextReceived.equals("Comenzar")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
+
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            List<KeyboardRow> keyboard = new ArrayList<>();
+            KeyboardRow row = new KeyboardRow();
+            row.add("Soy Profesor");
+            row.add("Soy Alumno");
+            keyboard.add(row);
+
+            keyboardMarkup.setKeyboard(keyboard);
+            message.setReplyMarkup(keyboardMarkup);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
 
-        this.execute(sendMessageGreeting);
-    }
+        if(messageTextReceived.equals("Soy Alumno")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Ingrese nombre del curso");
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
 
-    public ReplyKeyboardMarkup etMenu(SendMessage message, long chat_id) throws TelegramApiException {
-        message = (new SendMessage()).setChatId(chat_id).setChatId("Opciones");
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList();
-        KeyboardRow row = new KeyboardRow();
-        row.add("5");
-        row.add("3");
-        row.add("4");
-        keyboard.add(row);
-        row = new KeyboardRow();
-        row.add("8");
-        row.add("9");
-        row.add("10");
-        keyboard.add(row);
-        keyboardMarkup.setKeyboard(keyboard);
-        return keyboardMarkup;
-    }
+        if(messageTextReceived.equals("Biología")||messageTextReceived.equals("Matematica")||messageTextReceived.equals("Lenguaje")||messageTextReceived.equals("Musica")||messageTextReceived.equals("Quimica")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Ingrese clave del curso");
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
 
-    public synchronized void setButtons(SendMessage sendMessage) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-        List<KeyboardRow> keyboard = new ArrayList();
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(new KeyboardButton("Registrarse"));
-        KeyboardRow keyboardSecondRow = new KeyboardRow();
-        keyboardSecondRow.add(new KeyboardButton("Ingresar a un curso"));
-        KeyboardRow keyboardThirdRow = new KeyboardRow();
-        keyboardThirdRow.add(new KeyboardButton("SALIR"));
-        keyboard.add(keyboardFirstRow);
-        keyboard.add(keyboardSecondRow);
-        keyboard.add(keyboardThirdRow);
-        replyKeyboardMarkup.setKeyboard(keyboard);
-
-
+        if(messageTextReceived.equals("123456")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Bienvenido a Biologia");
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
 
 
     }
@@ -134,5 +137,14 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";    }
+        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
+    }
+
+
+
+    @Override
+    public void clearWebhook() throws TelegramApiRequestException {
+        System.out.println("Se invoco clearWebhook");
+    }
+
 }

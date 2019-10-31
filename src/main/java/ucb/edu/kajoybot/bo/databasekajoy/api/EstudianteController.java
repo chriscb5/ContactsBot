@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
+import ucb.edu.kajoybot.bo.databasekajoy.dto.EstudianteDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,8 +28,18 @@ public class EstudianteController {
 
     @RequestMapping(value = "/",method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-    List<EstudianteEntity> all(){
+  /*  List<EstudianteEntity> all(){
         return estudianteRespository.findAll();
-    }
+
+    }*/
+  List<EstudianteDto> all()
+  {
+      List<EstudianteDto> estudianteDtoList=new ArrayList<>();
+      for (EstudianteEntity estudianteEntity:estudianteRespository.findAll()){
+          estudianteDtoList.add(new EstudianteDto(estudianteEntity));
+      }
+      return estudianteDtoList;
+
+  }
 
 }
