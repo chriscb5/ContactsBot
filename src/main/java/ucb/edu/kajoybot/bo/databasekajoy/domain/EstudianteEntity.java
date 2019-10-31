@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "estudiante")
 /*@NamedQueries({
@@ -155,4 +155,5 @@ import javax.persistence.TemporalType;
                 ", estudianteCursoCollection=" + estudianteCursoCollection +
                 '}';
     }
+
 }

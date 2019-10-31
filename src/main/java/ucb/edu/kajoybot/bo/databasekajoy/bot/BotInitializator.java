@@ -9,23 +9,28 @@ import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 
 import javax.annotation.PostConstruct;
 
-public class BotInitializator{
+@Component
+public class BotInitializator {
 
     EstudianteRespository estudianteRespository;
 
+    @Autowired
     public BotInitializator(EstudianteRespository estudianteRespository) {
         this.estudianteRespository = estudianteRespository;
     }
 
+    public BotInitializator() {
+    }
+
     @PostConstruct
-    public void init(){
+    public void init() {
         ApiContextInitializer.init();
-        TelegramBotsApi telegramBotsApi=new TelegramBotsApi();
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new MainBot(estudianteRespository));
-        }
-        catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
+
 }
