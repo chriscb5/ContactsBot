@@ -116,6 +116,17 @@ public class MainBot extends TelegramLongPollingBot {
             }
         }
 
+        if(messageTextReceived.equals("123456")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Bienvenido a Biologia");
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
