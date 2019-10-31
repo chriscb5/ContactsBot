@@ -77,6 +77,17 @@ public class MainBot extends TelegramLongPollingBot {
             }
         }
 
+        if(messageTextReceived.equals("Soy Alumno")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Ingrese nombre del curso");
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
