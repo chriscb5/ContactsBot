@@ -1,28 +1,78 @@
 package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
-import javax.persistence.*;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+/**
+ *
+ * @author ASUS
+*/
 @Entity
-@Table(name = "curso", schema = "kajoydatabase", catalog = "")
-public class CursoEntity {
-    private int idCurso;
-    private String nombre;
-    private String tipoCurso;
-    private String clave;
+@Table(name = "curso")
+/*@NamedQueries({
+        @NamedQuery(name = "Curso.findAll", query = "SELECT c FROM Curso c"),
+        @NamedQuery(name = "Curso.findByIdCurso", query = "SELECT c FROM Curso c WHERE c.idCurso = :idCurso"),
+        @NamedQuery(name = "Curso.findByNombre", query = "SELECT c FROM Curso c WHERE c.nombre = :nombre"),
+        @NamedQuery(name = "Curso.findByTipoCurso", query = "SELECT c FROM Curso c WHERE c.tipoCurso = :tipoCurso"),
+        @NamedQuery(name = "Curso.findByClave", query = "SELECT c FROM Curso c WHERE c.clave = :clave")})
+*/public class CursoEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id_curso")
-    public int getIdCurso() {
-        return idCurso;
+    private Integer idCurso;
+    @Basic(optional = false)
+    @Column(name = "nombre")
+    private String nombre;
+    @Basic(optional = false)
+    @Column(name = "tipo_curso")
+    private String tipoCurso;
+    @Column(name = "clave")
+    private String clave;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cursoidcurso")
+    private Collection<TestEntity> testCollection;
+    @JoinColumn(name = "docente_id_docente", referencedColumnName = "id_docente")
+    @ManyToOne(optional = false)
+    private DocenteEntity docenteIdDocente;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cursoidcurso")
+    private Collection<EstudianteCursoEntity> estudianteCursoCollection;
+
+    public CursoEntity() {
     }
 
-    public void setIdCurso(int idCurso) {
+    public CursoEntity(Integer idCurso) {
         this.idCurso = idCurso;
     }
 
-    @Basic
-    @Column(name = "nombre")
+    public CursoEntity(Integer idCurso, String nombre, String tipoCurso) {
+        this.idCurso = idCurso;
+        this.nombre = nombre;
+        this.tipoCurso = tipoCurso;
+    }
+
+    public Integer getIdCurso() {
+        return idCurso;
+    }
+
+    public void setIdCurso(Integer idCurso) {
+        this.idCurso = idCurso;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -31,8 +81,6 @@ public class CursoEntity {
         this.nombre = nombre;
     }
 
-    @Basic
-    @Column(name = "tipo_curso")
     public String getTipoCurso() {
         return tipoCurso;
     }
@@ -41,8 +89,6 @@ public class CursoEntity {
         this.tipoCurso = tipoCurso;
     }
 
-    @Basic
-    @Column(name = "clave")
     public String getClave() {
         return clave;
     }
@@ -51,31 +97,53 @@ public class CursoEntity {
         this.clave = clave;
     }
 
+    public Collection<TestEntity> getTestCollection() {
+        return testCollection;
+    }
 
-  //  @OneToMany(cascade = CascadeType.ALL, mappedBy = "cursoId", fetch = FetchType.LAZY)
-   // private List<EstudianteCursoEntity> estudianteCursoEntityList;
+    public void setTestCollection(Collection<TestEntity> testCollection) {
+        this.testCollection = testCollection;
+    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public DocenteEntity getDocenteIdDocente() {
+        return docenteIdDocente;
+    }
 
-        CursoEntity that = (CursoEntity) o;
+    public void setDocenteIdDocente(DocenteEntity docenteIdDocente) {
+        this.docenteIdDocente = docenteIdDocente;
+    }
 
-        if (idCurso != that.idCurso) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
-        if (tipoCurso != null ? !tipoCurso.equals(that.tipoCurso) : that.tipoCurso != null) return false;
-        if (clave != null ? !clave.equals(that.clave) : that.clave != null) return false;
+    public Collection<EstudianteCursoEntity> getEstudianteCursoCollection() {
+        return estudianteCursoCollection;
+    }
 
-        return true;
+    public void setEstudianteCursoCollection(Collection<EstudianteCursoEntity> estudianteCursoCollection) {
+        this.estudianteCursoCollection = estudianteCursoCollection;
     }
 
     @Override
     public int hashCode() {
-        int result = idCurso;
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
-        result = 31 * result + (tipoCurso != null ? tipoCurso.hashCode() : 0);
-        result = 31 * result + (clave != null ? clave.hashCode() : 0);
-        return result;
+        int hash = 0;
+        hash += (idCurso != null ? idCurso.hashCode() : 0);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof CursoEntity)) {
+            return false;
+        }
+        CursoEntity other = (CursoEntity) object;
+        if ((this.idCurso == null && other.idCurso != null) || (this.idCurso != null && !this.idCurso.equals(other.idCurso))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "proyectokajoy.ucb.edu.bo.Curso[ idCurso=" + idCurso + " ]";
+    }
+
 }

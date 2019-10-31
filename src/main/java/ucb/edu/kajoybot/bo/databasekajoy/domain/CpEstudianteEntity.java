@@ -1,30 +1,78 @@
 package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
-import javax.persistence.*;
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+/**
+ *
+ * @author ASUS
+*/
 @Entity
-@Table(name = "cp_estudiante", schema = "kajoydatabase", catalog = "")
-public class CpEstudianteEntity {
-    private int hEstudId;
+@Table(name = "cp_estudiante")
+/*@NamedQueries({
+        @NamedQuery(name = "CpEstudiante.findAll", query = "SELECT c FROM CpEstudiante c"),
+        @NamedQuery(name = "CpEstudiante.findByHEstudId", query = "SELECT c FROM CpEstudiante c WHERE c.hEstudId = :hEstudId"),
+        @NamedQuery(name = "CpEstudiante.findByIdEstudiante", query = "SELECT c FROM CpEstudiante c WHERE c.idEstudiante = :idEstudiante"),
+        @NamedQuery(name = "CpEstudiante.findByNombre", query = "SELECT c FROM CpEstudiante c WHERE c.nombre = :nombre"),
+        @NamedQuery(name = "CpEstudiante.findByStatuss", query = "SELECT c FROM CpEstudiante c WHERE c.statuss = :statuss"),
+        @NamedQuery(name = "CpEstudiante.findByTxUser", query = "SELECT c FROM CpEstudiante c WHERE c.txUser = :txUser"),
+        @NamedQuery(name = "CpEstudiante.findByTxDate", query = "SELECT c FROM CpEstudiante c WHERE c.txDate = :txDate")})
+*/public class CpEstudianteEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "h_estud_id")
+    private Integer hEstudId;
+    @Basic(optional = false)
+    @Column(name = "id_estudiante")
     private int idEstudiante;
+    @Basic(optional = false)
+    @Column(name = "nombre")
     private String nombre;
-    private int status;
+    @Basic(optional = false)
+    @Column(name = "statuss")
+    private int statuss;
+    @Column(name = "tx_user")
     private String txUser;
+    @Column(name = "tx_date")
+    @Temporal(TemporalType.DATE)
     private Date txDate;
 
-    @Id
-    @Column(name = "h_estud_id")
-    public int gethEstudId() {
-        return hEstudId;
+    public CpEstudianteEntity() {
     }
 
-    public void sethEstudId(int hEstudId) {
+    public CpEstudianteEntity(Integer hEstudId) {
         this.hEstudId = hEstudId;
     }
 
-    @Basic
-    @Column(name = "id_estudiante")
+    public CpEstudianteEntity(Integer hEstudId, int idEstudiante, String nombre, int statuss) {
+        this.hEstudId = hEstudId;
+        this.idEstudiante = idEstudiante;
+        this.nombre = nombre;
+        this.statuss = statuss;
+    }
+
+    public Integer getHEstudId() {
+        return hEstudId;
+    }
+
+    public void setHEstudId(Integer hEstudId) {
+        this.hEstudId = hEstudId;
+    }
+
     public int getIdEstudiante() {
         return idEstudiante;
     }
@@ -33,8 +81,6 @@ public class CpEstudianteEntity {
         this.idEstudiante = idEstudiante;
     }
 
-    @Basic
-    @Column(name = "nombre")
     public String getNombre() {
         return nombre;
     }
@@ -43,18 +89,14 @@ public class CpEstudianteEntity {
         this.nombre = nombre;
     }
 
-    @Basic
-    @Column(name = "status")
-    public int getStatus() {
-        return status;
+    public int getStatuss() {
+        return statuss;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatuss(int statuss) {
+        this.statuss = statuss;
     }
 
-    @Basic
-    @Column(name = "tx_user")
     public String getTxUser() {
         return txUser;
     }
@@ -63,8 +105,6 @@ public class CpEstudianteEntity {
         this.txUser = txUser;
     }
 
-    @Basic
-    @Column(name = "tx_date")
     public Date getTxDate() {
         return txDate;
     }
@@ -74,30 +114,28 @@ public class CpEstudianteEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public int hashCode() {
+        int hash = 0;
+        hash += (hEstudId != null ? hEstudId.hashCode() : 0);
+        return hash;
+    }
 
-        CpEstudianteEntity that = (CpEstudianteEntity) o;
-
-        if (hEstudId != that.hEstudId) return false;
-        if (idEstudiante != that.idEstudiante) return false;
-        if (status != that.status) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
-        if (txUser != null ? !txUser.equals(that.txUser) : that.txUser != null) return false;
-        if (txDate != null ? !txDate.equals(that.txDate) : that.txDate != null) return false;
-
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof CpEstudianteEntity)) {
+            return false;
+        }
+        CpEstudianteEntity other = (CpEstudianteEntity) object;
+        if ((this.hEstudId == null && other.hEstudId != null) || (this.hEstudId != null && !this.hEstudId.equals(other.hEstudId))) {
+            return false;
+        }
         return true;
     }
 
     @Override
-    public int hashCode() {
-        int result = (int) (hEstudId ^ (hEstudId >>> 32));
-        result = 31 * result + idEstudiante;
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
-        result = 31 * result + status;
-        result = 31 * result + (txUser != null ? txUser.hashCode() : 0);
-        result = 31 * result + (txDate != null ? txDate.hashCode() : 0);
-        return result;
+    public String toString() {
+        return "proyectokajoy.ucb.edu.bo.CpEstudiante[ hEstudId=" + hEstudId + " ]";
     }
+
 }
