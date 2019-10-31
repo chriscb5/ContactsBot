@@ -53,7 +53,6 @@ public class MainBot extends TelegramLongPollingBot {
         if (messageTextReceived.equals("/testBDD")) {
             Message message = update.getMessage();
             EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
-            System.out.println(estudianteEntity);
             SendMessage message1=new SendMessage()
                     .setChatId(update.getMessage().getChatId())
                     .setText("Estudiante BBDD "+estudianteEntity);
