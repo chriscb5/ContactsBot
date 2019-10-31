@@ -88,6 +88,17 @@ public class MainBot extends TelegramLongPollingBot {
             }
         }
 
+        if(messageTextReceived.equals("Biología")||messageTextReceived.equals("Matematica")||messageTextReceived.equals("Lenguaje")||messageTextReceived.equals("Musica")||messageTextReceived.equals("Quimica")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Ingrese clave del curso");
+            try {
+                execute(message); // Sending our message object to user
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
