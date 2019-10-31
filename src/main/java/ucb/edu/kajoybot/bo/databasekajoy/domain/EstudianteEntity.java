@@ -33,7 +33,7 @@ public class EstudianteEntity {
     public void setIdEstudiante(int idEstudiante) {
         this.idEstudiante = idEstudiante;
     }
-
+    
     @Basic
     @Column(name = "nombre")
     private String nombre;
