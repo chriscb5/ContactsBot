@@ -38,6 +38,10 @@ public class MainBot extends TelegramLongPollingBot {
         return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";    
     }
 
+    @Override
+    public void clearWebhook() throws TelegramApiRequestException {
+        System.out.println("Se invoco clearWebhook");
+    }
 
 
 }
