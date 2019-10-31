@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/v1/estudiante")
+@RequestMapping("k1/estudiante")
 public class EstudianteController {
 
     private EstudianteRespository estudianteRespository;
