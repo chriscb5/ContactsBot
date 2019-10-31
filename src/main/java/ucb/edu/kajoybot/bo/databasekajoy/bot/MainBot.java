@@ -8,8 +8,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 
 public class MainBot extends TelegramLongPollingBot {
+    EstudianteRespository estudianteRespository;
 
-    public MainBot() {
+    public MainBot(EstudianteRespository estudianteRespository) {
+        this.estudianteRespository = estudianteRespository;
     }
 
     @Override
