@@ -17,15 +17,16 @@ import javax.persistence.TemporalType;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "cp_estudiante")
 /*@NamedQueries({
         @NamedQuery(name = "CpEstudiante.findAll", query = "SELECT c FROM CpEstudiante c"),
-        @NamedQuery(name = "CpEstudiante.findByHEstudId", query = "SELECT c FROM CpEstudiante c WHERE c.hEstudId = :hEstudId"),
+        @NamedQuery(name = "CpEstudiante.findByHEstudianteId", query = "SELECT c FROM CpEstudiante c WHERE c.hEstudianteId = :hEstudianteId"),
         @NamedQuery(name = "CpEstudiante.findByIdEstudiante", query = "SELECT c FROM CpEstudiante c WHERE c.idEstudiante = :idEstudiante"),
         @NamedQuery(name = "CpEstudiante.findByNombre", query = "SELECT c FROM CpEstudiante c WHERE c.nombre = :nombre"),
-        @NamedQuery(name = "CpEstudiante.findByStatuss", query = "SELECT c FROM CpEstudiante c WHERE c.statuss = :statuss"),
+        @NamedQuery(name = "CpEstudiante.findByApellidoPaterno", query = "SELECT c FROM CpEstudiante c WHERE c.apellidoPaterno = :apellidoPaterno"),
+        @NamedQuery(name = "CpEstudiante.findByApellidoMaterno", query = "SELECT c FROM CpEstudiante c WHERE c.apellidoMaterno = :apellidoMaterno"),
         @NamedQuery(name = "CpEstudiante.findByTxUser", query = "SELECT c FROM CpEstudiante c WHERE c.txUser = :txUser"),
         @NamedQuery(name = "CpEstudiante.findByTxDate", query = "SELECT c FROM CpEstudiante c WHERE c.txDate = :txDate")})
 */public class CpEstudianteEntity implements Serializable {
@@ -34,8 +35,8 @@ import javax.persistence.TemporalType;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "h_estud_id")
-    private Integer hEstudId;
+    @Column(name = "h_estudiante_id")
+    private Integer hEstudianteId;
     @Basic(optional = false)
     @Column(name = "id_estudiante")
     private int idEstudiante;
@@ -43,8 +44,11 @@ import javax.persistence.TemporalType;
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @Column(name = "statuss")
-    private int statuss;
+    @Column(name = "apellido_paterno")
+    private String apellidoPaterno;
+    @Basic(optional = false)
+    @Column(name = "apellido_materno")
+    private String apellidoMaterno;
     @Column(name = "tx_user")
     private String txUser;
     @Column(name = "tx_date")
@@ -54,23 +58,24 @@ import javax.persistence.TemporalType;
     public CpEstudianteEntity() {
     }
 
-    public CpEstudianteEntity(Integer hEstudId) {
-        this.hEstudId = hEstudId;
+    public CpEstudianteEntity(Integer hEstudianteId) {
+        this.hEstudianteId = hEstudianteId;
     }
 
-    public CpEstudianteEntity(Integer hEstudId, int idEstudiante, String nombre, int statuss) {
-        this.hEstudId = hEstudId;
+    public CpEstudianteEntity(Integer hEstudianteId, int idEstudiante, String nombre, String apellidoPaterno, String apellidoMaterno) {
+        this.hEstudianteId = hEstudianteId;
         this.idEstudiante = idEstudiante;
         this.nombre = nombre;
-        this.statuss = statuss;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
     }
 
-    public Integer getHEstudId() {
-        return hEstudId;
+    public Integer getHEstudianteId() {
+        return hEstudianteId;
     }
 
-    public void setHEstudId(Integer hEstudId) {
-        this.hEstudId = hEstudId;
+    public void setHEstudianteId(Integer hEstudianteId) {
+        this.hEstudianteId = hEstudianteId;
     }
 
     public int getIdEstudiante() {
@@ -89,12 +94,20 @@ import javax.persistence.TemporalType;
         this.nombre = nombre;
     }
 
-    public int getStatuss() {
-        return statuss;
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
     }
 
-    public void setStatuss(int statuss) {
-        this.statuss = statuss;
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
     }
 
     public String getTxUser() {
@@ -116,7 +129,7 @@ import javax.persistence.TemporalType;
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (hEstudId != null ? hEstudId.hashCode() : 0);
+        hash += (hEstudianteId != null ? hEstudianteId.hashCode() : 0);
         return hash;
     }
 
@@ -127,7 +140,7 @@ import javax.persistence.TemporalType;
             return false;
         }
         CpEstudianteEntity other = (CpEstudianteEntity) object;
-        if ((this.hEstudId == null && other.hEstudId != null) || (this.hEstudId != null && !this.hEstudId.equals(other.hEstudId))) {
+        if ((this.hEstudianteId == null && other.hEstudianteId != null) || (this.hEstudianteId != null && !this.hEstudianteId.equals(other.hEstudianteId))) {
             return false;
         }
         return true;
@@ -135,7 +148,7 @@ import javax.persistence.TemporalType;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.CpEstudiante[ hEstudId=" + hEstudId + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.CpEstudiante[ hEstudianteId=" + hEstudianteId + " ]";
     }
 
 }

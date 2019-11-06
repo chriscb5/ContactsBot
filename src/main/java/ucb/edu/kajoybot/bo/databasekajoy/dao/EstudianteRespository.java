@@ -8,5 +8,5 @@ import java.util.List;
 public interface EstudianteRespository extends JpaRepository<EstudianteEntity,Integer> {
 
 
-    List<EstudianteEntity> findAllByStatus(int status);
+    List<EstudianteEntity> findAllByStatuss(int status);
 }

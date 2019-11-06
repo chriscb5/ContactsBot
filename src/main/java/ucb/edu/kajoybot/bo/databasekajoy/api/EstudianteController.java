@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("k1/estudiante")
+@RequestMapping("/v1/estudiante")
 public class EstudianteController {
 
     private EstudianteRespository estudianteRespository;

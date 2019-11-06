@@ -19,14 +19,14 @@ import javax.persistence.Table;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "pregunta")
 /*@NamedQueries({
         @NamedQuery(name = "Pregunta.findAll", query = "SELECT p FROM Pregunta p"),
         @NamedQuery(name = "Pregunta.findByIdPregunta", query = "SELECT p FROM Pregunta p WHERE p.idPregunta = :idPregunta"),
-        @NamedQuery(name = "Pregunta.findByNumPreg", query = "SELECT p FROM Pregunta p WHERE p.numPreg = :numPreg"),
-        @NamedQuery(name = "Pregunta.findByCPregunta", query = "SELECT p FROM Pregunta p WHERE p.cPregunta = :cPregunta")})
+        @NamedQuery(name = "Pregunta.findByNumeroPregunta", query = "SELECT p FROM Pregunta p WHERE p.numeroPregunta = :numeroPregunta"),
+        @NamedQuery(name = "Pregunta.findByContenidoPregunta", query = "SELECT p FROM Pregunta p WHERE p.contenidoPregunta = :contenidoPregunta")})
 */public class PreguntaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,16 +36,16 @@ import javax.persistence.Table;
     @Column(name = "id_pregunta")
     private Integer idPregunta;
     @Basic(optional = false)
-    @Column(name = "num_preg")
-    private int numPreg;
+    @Column(name = "numero_pregunta")
+    private int numeroPregunta;
     @Basic(optional = false)
-    @Column(name = "c_pregunta")
-    private String cPregunta;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "preguntaIdPregunta")
+    @Column(name = "contenido_pregunta")
+    private String contenidoPregunta;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPregunta")
     private Collection<RespuestaEntity> respuestaCollection;
-    @JoinColumn(name = "Test_id_test", referencedColumnName = "id_test")
+    @JoinColumn(name = "id_test", referencedColumnName = "id_test")
     @ManyToOne(optional = false)
-    private TestEntity testidtest;
+    private TestEntity idTest;
 
     public PreguntaEntity() {
     }
@@ -54,10 +54,10 @@ import javax.persistence.Table;
         this.idPregunta = idPregunta;
     }
 
-    public PreguntaEntity(Integer idPregunta, int numPreg, String cPregunta) {
+    public PreguntaEntity(Integer idPregunta, int numeroPregunta, String contenidoPregunta) {
         this.idPregunta = idPregunta;
-        this.numPreg = numPreg;
-        this.cPregunta = cPregunta;
+        this.numeroPregunta = numeroPregunta;
+        this.contenidoPregunta = contenidoPregunta;
     }
 
     public Integer getIdPregunta() {
@@ -68,20 +68,20 @@ import javax.persistence.Table;
         this.idPregunta = idPregunta;
     }
 
-    public int getNumPreg() {
-        return numPreg;
+    public int getNumeroPregunta() {
+        return numeroPregunta;
     }
 
-    public void setNumPreg(int numPreg) {
-        this.numPreg = numPreg;
+    public void setNumeroPregunta(int numeroPregunta) {
+        this.numeroPregunta = numeroPregunta;
     }
 
-    public String getCPregunta() {
-        return cPregunta;
+    public String getContenidoPregunta() {
+        return contenidoPregunta;
     }
 
-    public void setCPregunta(String cPregunta) {
-        this.cPregunta = cPregunta;
+    public void setContenidoPregunta(String contenidoPregunta) {
+        this.contenidoPregunta = contenidoPregunta;
     }
 
     public Collection<RespuestaEntity> getRespuestaCollection() {
@@ -92,12 +92,12 @@ import javax.persistence.Table;
         this.respuestaCollection = respuestaCollection;
     }
 
-    public TestEntity getTestidtest() {
-        return testidtest;
+    public TestEntity getIdTest() {
+        return idTest;
     }
 
-    public void setTestidtest(TestEntity testidtest) {
-        this.testidtest = testidtest;
+    public void setIdTest(TestEntity idTest) {
+        this.idTest = idTest;
     }
 
     @Override
@@ -122,7 +122,7 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.Pregunta[ idPregunta=" + idPregunta + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.Pregunta[ idPregunta=" + idPregunta + " ]";
     }
 
 }
