@@ -19,7 +19,7 @@ import javax.persistence.Table;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "curso")
 /*@NamedQueries({
@@ -44,12 +44,12 @@ import javax.persistence.Table;
     private String tipoCurso;
     @Column(name = "clave")
     private String clave;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cursoidcurso")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurso")
     private Collection<TestEntity> testCollection;
-    @JoinColumn(name = "docente_id_docente", referencedColumnName = "id_docente")
+    @JoinColumn(name = "id_docente", referencedColumnName = "id_docente")
     @ManyToOne(optional = false)
-    private DocenteEntity docenteIdDocente;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cursoidcurso")
+    private DocenteEntity idDocente;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurso")
     private Collection<EstudianteCursoEntity> estudianteCursoCollection;
 
     public CursoEntity() {
@@ -105,12 +105,12 @@ import javax.persistence.Table;
         this.testCollection = testCollection;
     }
 
-    public DocenteEntity getDocenteIdDocente() {
-        return docenteIdDocente;
+    public DocenteEntity getIdDocente() {
+        return idDocente;
     }
 
-    public void setDocenteIdDocente(DocenteEntity docenteIdDocente) {
-        this.docenteIdDocente = docenteIdDocente;
+    public void setIdDocente(DocenteEntity idDocente) {
+        this.idDocente = idDocente;
     }
 
     public Collection<EstudianteCursoEntity> getEstudianteCursoCollection() {
@@ -143,7 +143,7 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.Curso[ idCurso=" + idCurso + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.Curso[ idCurso=" + idCurso + " ]";
     }
 
 }

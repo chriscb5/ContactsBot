@@ -5,6 +5,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import java.util.Date;
 
 public class DocenteDto {
+<<<<<<< HEAD
     private int idDocente;
     private String nombre;
     private int status;
@@ -27,6 +28,33 @@ public class DocenteDto {
     }
 
     public void setIdDocente(int idDocente) {
+=======
+    private Integer idDocente;
+    private String nombre;
+    private String apellidoPaterno;
+    private String apellidoMaterno;
+    private int statuss;
+    private String txUser;
+    private Date txDate;
+
+    public  DocenteDto(DocenteEntity docenteEntity){
+
+        this.idDocente=(docenteEntity.getIdDocente());
+        this.nombre=(docenteEntity.getNombre());
+        this.apellidoPaterno=(docenteEntity.getApellidoPaterno());
+        this.apellidoMaterno=(docenteEntity.getApellidoMaterno());
+        this.statuss=(docenteEntity.getStatuss());
+        this.txUser=(docenteEntity.getTxUser());
+        this.txDate=(docenteEntity.getTxDate());
+
+
+    }
+    public Integer getIdDocente() {
+        return idDocente;
+    }
+
+    public void setIdDocente(Integer idDocente) {
+>>>>>>> bfeaef4699f2c56b7fc48cba3b2db6c99748e804
         this.idDocente = idDocente;
     }
 
@@ -38,12 +66,37 @@ public class DocenteDto {
         this.nombre = nombre;
     }
 
+<<<<<<< HEAD
     public int getStatus() {
         return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
+=======
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
+    }
+
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
+    }
+
+    public int getStatuss() {
+        return statuss;
+    }
+
+    public void setStatuss(int statuss) {
+        this.statuss = statuss;
+>>>>>>> bfeaef4699f2c56b7fc48cba3b2db6c99748e804
     }
 
     public String getTxUser() {

@@ -25,7 +25,8 @@ import javax.persistence.TemporalType;
         @NamedQuery(name = "CpDocente.findByHDocenteId", query = "SELECT c FROM CpDocente c WHERE c.hDocenteId = :hDocenteId"),
         @NamedQuery(name = "CpDocente.findByIdDocente", query = "SELECT c FROM CpDocente c WHERE c.idDocente = :idDocente"),
         @NamedQuery(name = "CpDocente.findByNombre", query = "SELECT c FROM CpDocente c WHERE c.nombre = :nombre"),
-        @NamedQuery(name = "CpDocente.findById", query = "SELECT c FROM CpDocente c WHERE c.id = :id"),
+        @NamedQuery(name = "CpDocente.findByApellidoPaterno", query = "SELECT c FROM CpDocente c WHERE c.apellidoPaterno = :apellidoPaterno"),
+        @NamedQuery(name = "CpDocente.findByApellidoMaterno", query = "SELECT c FROM CpDocente c WHERE c.apellidoMaterno = :apellidoMaterno"),
         @NamedQuery(name = "CpDocente.findByTxUser", query = "SELECT c FROM CpDocente c WHERE c.txUser = :txUser"),
         @NamedQuery(name = "CpDocente.findByTxDate", query = "SELECT c FROM CpDocente c WHERE c.txDate = :txDate")})
 */public class CpDocenteEntity implements Serializable {
@@ -43,8 +44,11 @@ import javax.persistence.TemporalType;
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "apellido_paterno")
+    private String apellidoPaterno;
+    @Basic(optional = false)
+    @Column(name = "apellido_materno")
+    private String apellidoMaterno;
     @Column(name = "tx_user")
     private String txUser;
     @Column(name = "tx_date")
@@ -58,11 +62,12 @@ import javax.persistence.TemporalType;
         this.hDocenteId = hDocenteId;
     }
 
-    public CpDocenteEntity(Integer hDocenteId, int idDocente, String nombre, int id) {
+    public CpDocenteEntity(Integer hDocenteId, int idDocente, String nombre, String apellidoPaterno, String apellidoMaterno) {
         this.hDocenteId = hDocenteId;
         this.idDocente = idDocente;
         this.nombre = nombre;
-        this.id = id;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
     }
 
     public Integer getHDocenteId() {
@@ -89,12 +94,20 @@ import javax.persistence.TemporalType;
         this.nombre = nombre;
     }
 
-    public int getId() {
-        return id;
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
     }
 
     public String getTxUser() {
@@ -135,6 +148,7 @@ import javax.persistence.TemporalType;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.CpDocente[ hDocenteId=" + hDocenteId + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.CpDocente[ hDocenteId=" + hDocenteId + " ]";
     }
+
 }

@@ -20,17 +20,20 @@ import javax.persistence.TemporalType;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "docente")
 /*@NamedQueries({
         @NamedQuery(name = "Docente.findAll", query = "SELECT d FROM Docente d"),
         @NamedQuery(name = "Docente.findByIdDocente", query = "SELECT d FROM Docente d WHERE d.idDocente = :idDocente"),
         @NamedQuery(name = "Docente.findByNombre", query = "SELECT d FROM Docente d WHERE d.nombre = :nombre"),
-        @NamedQuery(name = "Docente.findByStatus", query = "SELECT d FROM Docente d WHERE d.status = :status"),
+        @NamedQuery(name = "Docente.findByApellidoPaterno", query = "SELECT d FROM Docente d WHERE d.apellidoPaterno = :apellidoPaterno"),
+        @NamedQuery(name = "Docente.findByApellidoMaterno", query = "SELECT d FROM Docente d WHERE d.apellidoMaterno = :apellidoMaterno"),
+        @NamedQuery(name = "Docente.findByStatuss", query = "SELECT d FROM Docente d WHERE d.statuss = :statuss"),
         @NamedQuery(name = "Docente.findByTxUser", query = "SELECT d FROM Docente d WHERE d.txUser = :txUser"),
         @NamedQuery(name = "Docente.findByTxDate", query = "SELECT d FROM Docente d WHERE d.txDate = :txDate")})
-*/public class DocenteEntity implements Serializable {
+*/
+public class DocenteEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,16 +45,22 @@ import javax.persistence.TemporalType;
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @Column(name = "status")
-    private int status;
+    @Column(name = "apellido_paterno")
+    private String apellidoPaterno;
+    @Basic(optional = false)
+    @Column(name = "apellido_materno")
+    private String apellidoMaterno;
+    @Basic(optional = false)
+    @Column(name = "statuss")
+    private int statuss;
     @Column(name = "tx_user")
     private String txUser;
     @Column(name = "tx_date")
     @Temporal(TemporalType.DATE)
     private Date txDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "docenteIdDocente")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocente")
     private Collection<TestEntity> testCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "docenteIdDocente")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocente")
     private Collection<CursoEntity> cursoCollection;
 
     public DocenteEntity() {
@@ -61,10 +70,12 @@ import javax.persistence.TemporalType;
         this.idDocente = idDocente;
     }
 
-    public DocenteEntity(Integer idDocente, String nombre, int status) {
+    public DocenteEntity(Integer idDocente, String nombre, String apellidoPaterno, String apellidoMaterno, int statuss) {
         this.idDocente = idDocente;
         this.nombre = nombre;
-        this.status = status;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.statuss = statuss;
     }
 
     public Integer getIdDocente() {
@@ -83,12 +94,28 @@ import javax.persistence.TemporalType;
         this.nombre = nombre;
     }
 
-    public int getStatus() {
-        return status;
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
+    }
+
+    public int getStatuss() {
+        return statuss;
+    }
+
+    public void setStatuss(int statuss) {
+        this.statuss = statuss;
     }
 
     public String getTxUser() {
@@ -145,7 +172,21 @@ import javax.persistence.TemporalType;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.Docente[ idDocente=" + idDocente + " ]";
+        return "DocenteEntity{" +
+                "idDocente=" + idDocente +
+                ", nombre='" + nombre + '\'' +
+                ", apellidoPaterno='" + apellidoPaterno + '\'' +
+                ", apellidoMaterno='" + apellidoMaterno + '\'' +
+                ", statuss=" + statuss +
+                ", txUser='" + txUser + '\'' +
+                ", txDate=" + txDate +
+                '}';
     }
+
+    /*
+    @Override
+    public String toString() {
+        return "proyectokajoy.ucb.edu.bo.clases.Docente[ idDocente=" + idDocente + " ]";
+    }*/
 
 }

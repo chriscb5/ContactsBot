@@ -6,5 +6,5 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import java.util.List;
 
 public interface DocenteRespository extends JpaRepository<DocenteEntity, Integer> {
-    List<DocenteEntity> findAllByStatus(int status);
+    List<DocenteEntity> findAllByStatuss(int status);
 }

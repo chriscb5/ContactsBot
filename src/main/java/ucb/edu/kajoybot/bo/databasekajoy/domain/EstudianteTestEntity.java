@@ -16,12 +16,12 @@ import javax.persistence.Table;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "estudiante_test")
 /*@NamedQueries({
         @NamedQuery(name = "EstudianteTest.findAll", query = "SELECT e FROM EstudianteTest e"),
-        @NamedQuery(name = "EstudianteTest.findByIdEstTest", query = "SELECT e FROM EstudianteTest e WHERE e.idEstTest = :idEstTest"),
+        @NamedQuery(name = "EstudianteTest.findByIdEstudianteTest", query = "SELECT e FROM EstudianteTest e WHERE e.idEstudianteTest = :idEstudianteTest"),
         @NamedQuery(name = "EstudianteTest.findByPuntaje", query = "SELECT e FROM EstudianteTest e WHERE e.puntaje = :puntaje")})
 */public class EstudianteTestEntity implements Serializable {
 
@@ -29,36 +29,36 @@ import javax.persistence.Table;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id_est_test")
-    private Integer idEstTest;
+    @Column(name = "id_estudiante_test")
+    private Integer idEstudianteTest;
     @Basic(optional = false)
     @Column(name = "puntaje")
     private int puntaje;
-    @JoinColumn(name = "estudiante_id_user", referencedColumnName = "id_estudiante")
+    @JoinColumn(name = "id_test", referencedColumnName = "id_test")
     @ManyToOne(optional = false)
-    private EstudianteEntity estudianteIdUser;
-    @JoinColumn(name = "test_id_test", referencedColumnName = "id_test")
+    private TestEntity idTest;
+    @JoinColumn(name = "id_estudiante", referencedColumnName = "id_estudiante")
     @ManyToOne(optional = false)
-    private TestEntity testIdTest;
+    private EstudianteEntity idEstudiante;
 
     public EstudianteTestEntity() {
     }
 
-    public EstudianteTestEntity(Integer idEstTest) {
-        this.idEstTest = idEstTest;
+    public EstudianteTestEntity(Integer idEstudianteTest) {
+        this.idEstudianteTest = idEstudianteTest;
     }
 
-    public EstudianteTestEntity(Integer idEstTest, int puntaje) {
-        this.idEstTest = idEstTest;
+    public EstudianteTestEntity(Integer idEstudianteTest, int puntaje) {
+        this.idEstudianteTest = idEstudianteTest;
         this.puntaje = puntaje;
     }
 
-    public Integer getIdEstTest() {
-        return idEstTest;
+    public Integer getIdEstudianteTest() {
+        return idEstudianteTest;
     }
 
-    public void setIdEstTest(Integer idEstTest) {
-        this.idEstTest = idEstTest;
+    public void setIdEstudianteTest(Integer idEstudianteTest) {
+        this.idEstudianteTest = idEstudianteTest;
     }
 
     public int getPuntaje() {
@@ -69,26 +69,26 @@ import javax.persistence.Table;
         this.puntaje = puntaje;
     }
 
-    public EstudianteEntity getEstudianteIdUser() {
-        return estudianteIdUser;
+    public TestEntity getIdTest() {
+        return idTest;
     }
 
-    public void setEstudianteIdUser(EstudianteEntity estudianteIdUser) {
-        this.estudianteIdUser = estudianteIdUser;
+    public void setIdTest(TestEntity idTest) {
+        this.idTest = idTest;
     }
 
-    public TestEntity getTestIdTest() {
-        return testIdTest;
+    public EstudianteEntity getIdEstudiante() {
+        return idEstudiante;
     }
 
-    public void setTestIdTest(TestEntity testIdTest) {
-        this.testIdTest = testIdTest;
+    public void setIdEstudiante(EstudianteEntity idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idEstTest != null ? idEstTest.hashCode() : 0);
+        hash += (idEstudianteTest != null ? idEstudianteTest.hashCode() : 0);
         return hash;
     }
 
@@ -99,7 +99,7 @@ import javax.persistence.Table;
             return false;
         }
         EstudianteTestEntity other = (EstudianteTestEntity) object;
-        if ((this.idEstTest == null && other.idEstTest != null) || (this.idEstTest != null && !this.idEstTest.equals(other.idEstTest))) {
+        if ((this.idEstudianteTest == null && other.idEstudianteTest != null) || (this.idEstudianteTest != null && !this.idEstudianteTest.equals(other.idEstudianteTest))) {
             return false;
         }
         return true;
@@ -107,7 +107,7 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.EstudianteTest[ idEstTest=" + idEstTest + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.EstudianteTest[ idEstudianteTest=" + idEstudianteTest + " ]";
     }
 
 }
