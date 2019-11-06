@@ -194,4 +194,5 @@ import javax.persistence.TemporalType;
                 ", txDate=" + txDate +
                 '}';
     }
+
 }
