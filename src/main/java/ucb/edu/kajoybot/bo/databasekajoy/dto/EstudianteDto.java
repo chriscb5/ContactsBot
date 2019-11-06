@@ -19,7 +19,7 @@ public class EstudianteDto {
          EstudianteDto result= new EstudianteDto();
          this.nombre=(estudianteEntity.getNombre());
          this.txUser=(estudianteEntity.getTxUser());
-         this.status=(estudianteEntity.getStatus());
+         this.status=(estudianteEntity.getStatuss());
 
 
     }
