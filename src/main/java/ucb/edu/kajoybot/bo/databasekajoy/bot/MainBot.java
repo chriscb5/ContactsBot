@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,29 +27,6 @@ public class MainBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String messageTextReceived = update.getMessage().getText();
         final long chatId = update.getMessage().getChatId();
-
-
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Hola Soy KajoyBot");
-            EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
-            SendMessage message1=new SendMessage()
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Estudiante BBDD "+estudianteEntity);
-            try {
-                this.execute(message1);
-            }
-            catch (TelegramApiException e){
-                e.printStackTrace();
-            }
-
-            try {
-                this.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
 
         if (messageTextReceived.equals("/testBDD")) {
             Message message = update.getMessage();
