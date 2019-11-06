@@ -9,7 +9,10 @@ import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
+import ucb.edu.kajoybot.bo.databasekajoy.dto.DocenteDto;
+import ucb.edu.kajoybot.bo.databasekajoy.dto.EstudianteDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,7 +31,12 @@ public class DocenteController {
 
     @RequestMapping(value = "/",method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    List<DocenteEntity> all(){
+    List<DocenteEntity> all()
+    {
+        List<DocenteDto> docenteDtoList=new ArrayList<>();
+        for (DocenteEntity docenteEntity:docenteRespository.findAll()){
+            docenteDtoList.add(new DocenteDto(docenteEntity));
+        }
         return docenteRespository.findAll();
     }
 
