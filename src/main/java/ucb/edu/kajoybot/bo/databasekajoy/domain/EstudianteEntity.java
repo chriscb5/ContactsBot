@@ -27,7 +27,10 @@ import javax.persistence.TemporalType;
         @NamedQuery(name = "Estudiante.findAll", query = "SELECT e FROM Estudiante e"),
         @NamedQuery(name = "Estudiante.findByIdEstudiante", query = "SELECT e FROM Estudiante e WHERE e.idEstudiante = :idEstudiante"),
         @NamedQuery(name = "Estudiante.findByNombre", query = "SELECT e FROM Estudiante e WHERE e.nombre = :nombre"),
-        @NamedQuery(name = "Estudiante.findByStatus", query = "SELECT e FROM Estudiante e WHERE e.status = :status"),
+        @NamedQuery(name = "Estudiante.findByApellidoPaterno", query = "SELECT e FROM Estudiante e WHERE e.apellidoPaterno = :apellidoPaterno"),
+        @NamedQuery(name = "Estudiante.findByApellidoMaterno", query = "SELECT e FROM Estudiante e WHERE e.apellidoMaterno = :apellidoMaterno"),
+        @NamedQuery(name = "Estudiante.findByInstitucion", query = "SELECT e FROM Estudiante e WHERE e.institucion = :institucion"),
+        @NamedQuery(name = "Estudiante.findByStatuss", query = "SELECT e FROM Estudiante e WHERE e.statuss = :statuss"),
         @NamedQuery(name = "Estudiante.findByTxUser", query = "SELECT e FROM Estudiante e WHERE e.txUser = :txUser"),
         @NamedQuery(name = "Estudiante.findByTxDate", query = "SELECT e FROM Estudiante e WHERE e.txDate = :txDate")})
 */public class EstudianteEntity implements Serializable {
@@ -42,16 +45,24 @@ import javax.persistence.TemporalType;
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @Column(name = "status")
-    private int status;
+    @Column(name = "apellido_paterno")
+    private String apellidoPaterno;
+    @Basic(optional = false)
+    @Column(name = "apellido_materno")
+    private String apellidoMaterno;
+    @Column(name = "institucion")
+    private String institucion;
+    @Basic(optional = false)
+    @Column(name = "statuss")
+    private int statuss;
     @Column(name = "tx_user")
     private String txUser;
     @Column(name = "tx_date")
     @Temporal(TemporalType.DATE)
     private Date txDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estudianteIdUser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstudiante")
     private Collection<EstudianteTestEntity> estudianteTestCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioiduser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstudiante")
     private Collection<EstudianteCursoEntity> estudianteCursoCollection;
 
     public EstudianteEntity() {
@@ -61,10 +72,12 @@ import javax.persistence.TemporalType;
         this.idEstudiante = idEstudiante;
     }
 
-    public EstudianteEntity(Integer idEstudiante, String nombre, int status) {
+    public EstudianteEntity(Integer idEstudiante, String nombre, String apellidoPaterno, String apellidoMaterno, int statuss) {
         this.idEstudiante = idEstudiante;
         this.nombre = nombre;
-        this.status = status;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.statuss = statuss;
     }
 
     public Integer getIdEstudiante() {
@@ -83,12 +96,36 @@ import javax.persistence.TemporalType;
         this.nombre = nombre;
     }
 
-    public int getStatus() {
-        return status;
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
+    }
+
+    public String getInstitucion() {
+        return institucion;
+    }
+
+    public void setInstitucion(String institucion) {
+        this.institucion = institucion;
+    }
+
+    public int getStatuss() {
+        return statuss;
+    }
+
+    public void setStatuss(int statuss) {
+        this.statuss = statuss;
     }
 
     public String getTxUser() {
@@ -130,6 +167,7 @@ import javax.persistence.TemporalType;
         return hash;
     }
 
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -148,10 +186,12 @@ import javax.persistence.TemporalType;
         return "EstudianteEntity{" +
                 "idEstudiante=" + idEstudiante +
                 ", nombre='" + nombre + '\'' +
-                ", status=" + status +
+                ", apellidoPaterno='" + apellidoPaterno + '\'' +
+                ", apellidoMaterno='" + apellidoMaterno + '\'' +
+                ", institucion='" + institucion + '\'' +
+                ", statuss=" + statuss +
                 ", txUser='" + txUser + '\'' +
                 ", txDate=" + txDate +
                 '}';
     }
-
 }

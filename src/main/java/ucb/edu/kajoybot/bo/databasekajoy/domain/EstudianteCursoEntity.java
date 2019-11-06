@@ -16,62 +16,62 @@ import javax.persistence.Table;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "estudiante_curso")
 /*@NamedQueries({
         @NamedQuery(name = "EstudianteCurso.findAll", query = "SELECT e FROM EstudianteCurso e"),
-        @NamedQuery(name = "EstudianteCurso.findByIdUserCurse", query = "SELECT e FROM EstudianteCurso e WHERE e.idUserCurse = :idUserCurse")})
+        @NamedQuery(name = "EstudianteCurso.findByIdEstudianteCurso", query = "SELECT e FROM EstudianteCurso e WHERE e.idEstudianteCurso = :idEstudianteCurso")})
 */public class EstudianteCursoEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id_user_curse")
-    private Integer idUserCurse;
-    @JoinColumn(name = "Curso_id_curso", referencedColumnName = "id_curso")
+    @Column(name = "id_estudiante_curso")
+    private Integer idEstudianteCurso;
+    @JoinColumn(name = "id_curso", referencedColumnName = "id_curso")
     @ManyToOne(optional = false)
-    private CursoEntity cursoidcurso;
-    @JoinColumn(name = "Usuario_id_user", referencedColumnName = "id_estudiante")
+    private CursoEntity idCurso;
+    @JoinColumn(name = "id_estudiante", referencedColumnName = "id_estudiante")
     @ManyToOne(optional = false)
-    private EstudianteEntity usuarioiduser;
+    private EstudianteEntity idEstudiante;
 
     public EstudianteCursoEntity() {
     }
 
-    public EstudianteCursoEntity(Integer idUserCurse) {
-        this.idUserCurse = idUserCurse;
+    public EstudianteCursoEntity(Integer idEstudianteCurso) {
+        this.idEstudianteCurso = idEstudianteCurso;
     }
 
-    public Integer getIdUserCurse() {
-        return idUserCurse;
+    public Integer getIdEstudianteCurso() {
+        return idEstudianteCurso;
     }
 
-    public void setIdUserCurse(Integer idUserCurse) {
-        this.idUserCurse = idUserCurse;
+    public void setIdEstudianteCurso(Integer idEstudianteCurso) {
+        this.idEstudianteCurso = idEstudianteCurso;
     }
 
-    public CursoEntity getCursoidcurso() {
-        return cursoidcurso;
+    public CursoEntity getIdCurso() {
+        return idCurso;
     }
 
-    public void setCursoidcurso(CursoEntity cursoidcurso) {
-        this.cursoidcurso = cursoidcurso;
+    public void setIdCurso(CursoEntity idCurso) {
+        this.idCurso = idCurso;
     }
 
-    public EstudianteEntity getUsuarioiduser() {
-        return usuarioiduser;
+    public EstudianteEntity getIdEstudiante() {
+        return idEstudiante;
     }
 
-    public void setUsuarioiduser(EstudianteEntity usuarioiduser) {
-        this.usuarioiduser = usuarioiduser;
+    public void setIdEstudiante(EstudianteEntity idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idUserCurse != null ? idUserCurse.hashCode() : 0);
+        hash += (idEstudianteCurso != null ? idEstudianteCurso.hashCode() : 0);
         return hash;
     }
 
@@ -82,7 +82,7 @@ import javax.persistence.Table;
             return false;
         }
         EstudianteCursoEntity other = (EstudianteCursoEntity) object;
-        if ((this.idUserCurse == null && other.idUserCurse != null) || (this.idUserCurse != null && !this.idUserCurse.equals(other.idUserCurse))) {
+        if ((this.idEstudianteCurso == null && other.idEstudianteCurso != null) || (this.idEstudianteCurso != null && !this.idEstudianteCurso.equals(other.idEstudianteCurso))) {
             return false;
         }
         return true;
@@ -90,7 +90,7 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.EstudianteCurso[ idUserCurse=" + idUserCurse + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.EstudianteCurso[ idEstudianteCurso=" + idEstudianteCurso + " ]";
     }
 
 }

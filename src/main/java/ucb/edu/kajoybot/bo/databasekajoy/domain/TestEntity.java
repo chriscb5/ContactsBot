@@ -19,10 +19,10 @@ import javax.persistence.Table;
 /**
  *
  * @author ASUS
-*/
+ */
 @Entity
 @Table(name = "test")
- /*   @NamedQueries({
+/*@NamedQueries({
         @NamedQuery(name = "Test.findAll", query = "SELECT t FROM Test t"),
         @NamedQuery(name = "Test.findByIdTest", query = "SELECT t FROM Test t WHERE t.idTest = :idTest"),
         @NamedQuery(name = "Test.findByNombreTest", query = "SELECT t FROM Test t WHERE t.nombreTest = :nombreTest")})
@@ -37,15 +37,15 @@ import javax.persistence.Table;
     @Basic(optional = false)
     @Column(name = "nombre_test")
     private String nombreTest;
-    @JoinColumn(name = "Curso_id_curso", referencedColumnName = "id_curso")
+    @JoinColumn(name = "id_curso", referencedColumnName = "id_curso")
     @ManyToOne(optional = false)
-    private CursoEntity cursoidcurso;
-    @JoinColumn(name = "docente_id_docente", referencedColumnName = "id_docente")
+    private CursoEntity idCurso;
+    @JoinColumn(name = "id_docente", referencedColumnName = "id_docente")
     @ManyToOne(optional = false)
-    private DocenteEntity docenteIdDocente;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "testIdTest")
+    private DocenteEntity idDocente;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTest")
     private Collection<EstudianteTestEntity> estudianteTestCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "testidtest")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTest")
     private Collection<PreguntaEntity> preguntaCollection;
 
     public TestEntity() {
@@ -76,20 +76,20 @@ import javax.persistence.Table;
         this.nombreTest = nombreTest;
     }
 
-    public CursoEntity getCursoidcurso() {
-        return cursoidcurso;
+    public CursoEntity getIdCurso() {
+        return idCurso;
     }
 
-    public void setCursoidcurso(CursoEntity cursoidcurso) {
-        this.cursoidcurso = cursoidcurso;
+    public void setIdCurso(CursoEntity idCurso) {
+        this.idCurso = idCurso;
     }
 
-    public DocenteEntity getDocenteIdDocente() {
-        return docenteIdDocente;
+    public DocenteEntity getIdDocente() {
+        return idDocente;
     }
 
-    public void setDocenteIdDocente(DocenteEntity docenteIdDocente) {
-        this.docenteIdDocente = docenteIdDocente;
+    public void setIdDocente(DocenteEntity idDocente) {
+        this.idDocente = idDocente;
     }
 
     public Collection<EstudianteTestEntity> getEstudianteTestCollection() {
@@ -130,7 +130,7 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.Test[ idTest=" + idTest + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.Test[ idTest=" + idTest + " ]";
     }
 
 }
