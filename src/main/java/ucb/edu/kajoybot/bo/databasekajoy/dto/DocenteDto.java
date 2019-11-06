@@ -5,30 +5,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import java.util.Date;
 
 public class DocenteDto {
-<<<<<<< HEAD
-    private int idDocente;
-    private String nombre;
-    private int status;
-    private String txUser;
-    private Date txDate;
 
-    public DocenteDto() {
-    }
-
-    public DocenteDto(DocenteEntity docenteEntity){
-        DocenteDto result= new DocenteDto();
-        this.nombre=(docenteEntity.getNombre());
-        this.txUser=(docenteEntity.getTxUser());
-        this.status=(docenteEntity.getStatus());
-
-    }
-
-    public int getIdDocente() {
-        return idDocente;
-    }
-
-    public void setIdDocente(int idDocente) {
-=======
     private Integer idDocente;
     private String nombre;
     private String apellidoPaterno;
@@ -54,7 +31,6 @@ public class DocenteDto {
     }
 
     public void setIdDocente(Integer idDocente) {
->>>>>>> bfeaef4699f2c56b7fc48cba3b2db6c99748e804
         this.idDocente = idDocente;
     }
 
@@ -66,14 +42,6 @@ public class DocenteDto {
         this.nombre = nombre;
     }
 
-<<<<<<< HEAD
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-=======
     public String getApellidoPaterno() {
         return apellidoPaterno;
     }
@@ -96,7 +64,6 @@ public class DocenteDto {
 
     public void setStatuss(int statuss) {
         this.statuss = statuss;
->>>>>>> bfeaef4699f2c56b7fc48cba3b2db6c99748e804
     }
 
     public String getTxUser() {
