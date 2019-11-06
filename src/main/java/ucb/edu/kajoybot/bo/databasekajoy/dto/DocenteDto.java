@@ -14,7 +14,7 @@ public class DocenteDto {
     private String txUser;
     private Date txDate;
 
-    public  DocenteDto(DocenteEntity docenteEntity){
+    public DocenteDto(DocenteEntity docenteEntity){
 
         this.idDocente=(docenteEntity.getIdDocente());
         this.nombre=(docenteEntity.getNombre());
