@@ -8,18 +8,20 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
+import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainBot extends TelegramLongPollingBot {
 
 
-    EstudianteRespository estudianteRespository;
+    PersonBL personBL;
 
-    public MainBot(EstudianteRespository estudianteRespository) {
-        this.estudianteRespository = estudianteRespository;
+    public MainBot(PersonBL personBL) {
+        this.personBL = personBL;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class MainBot extends TelegramLongPollingBot {
             SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                     .setChatId(update.getMessage().getChatId())
                     .setText("Hola Soy KajoyBot");
-            EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
+            EstudianteEntity estudianteEntity= personBL.findEstudianteByPk(Status.ACTIVE.getStatus());
             SendMessage message1=new SendMessage()
                     .setChatId(update.getMessage().getChatId())
                     .setText("Estudiante BBDD "+estudianteEntity);
@@ -52,7 +54,7 @@ public class MainBot extends TelegramLongPollingBot {
 
         if (messageTextReceived.equals("/testBDD")) {
             Message message = update.getMessage();
-            EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
+            EstudianteEntity estudianteEntity= personBL.findEstudianteByPk(Status.ACTIVE.getStatus());
             SendMessage message1=new SendMessage()
                     .setChatId(update.getMessage().getChatId())
                     .setText("Estudiante BBDD "+estudianteEntity);
