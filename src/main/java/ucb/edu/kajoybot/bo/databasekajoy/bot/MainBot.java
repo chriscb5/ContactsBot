@@ -2,6 +2,8 @@ package ucb.edu.kajoybot.bo.databasekajoy.bot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -41,8 +43,13 @@ public class MainBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
-
         if (messageTextReceived.equals("/start")) {
+            String imageFile= "https://beeimg.com/images/r29284261002.png";
+
+            SendPhoto sendPhoto = new SendPhoto()
+                    .setChatId(chatId)
+                    .setPhoto(imageFile);
+
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
                     .setText("Seleccione una opción por favor");
@@ -54,12 +61,15 @@ public class MainBot extends TelegramLongPollingBot {
             keyboard.add(row);
             keyboardMarkup.setKeyboard(keyboard);
             message.setReplyMarkup(keyboardMarkup);
+
             try {
+                execute(sendPhoto);
                 execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+
         if(messageTextReceived.equals("Información")) {
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
@@ -131,12 +141,12 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "Kajoybot";
+        return "chemobot";
     }
 
     @Override
     public String getBotToken() {
-        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
+        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
     }
 
 
