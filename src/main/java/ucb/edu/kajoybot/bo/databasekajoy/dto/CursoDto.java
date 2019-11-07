@@ -19,6 +19,9 @@ public class CursoDto {
         this.clave = (cursoEntity.getClave());
     }*/
 
+    public CursoDto() {
+    }
+
     public CursoDto(CursoEntity cursoEntity){
         this.nombre = (cursoEntity.getNombre());
         this.tipoCurso = (cursoEntity.getTipoCurso());
@@ -63,4 +66,5 @@ public class CursoDto {
     public void setClave(String clave) {
         this.clave = clave;
     }
+
 }

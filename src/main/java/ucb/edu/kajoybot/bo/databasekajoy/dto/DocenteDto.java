@@ -14,6 +14,9 @@ public class DocenteDto {
     private String txUser;
     private Date txDate;
 
+    public DocenteDto() {
+    }
+
     public DocenteDto(DocenteEntity docenteEntity){
 
         this.idDocente=(docenteEntity.getIdDocente());
