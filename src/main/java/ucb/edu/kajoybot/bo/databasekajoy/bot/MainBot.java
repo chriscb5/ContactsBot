@@ -58,6 +58,7 @@ public class MainBot extends TelegramLongPollingBot {
             KeyboardRow row = new KeyboardRow();
             row.add("Comenzar");
             row.add("Información");
+            row.add("https://i0.pngocean.com/files/953/498/553/%E3%83%81%E3%83%A3%E3%83%BC%E3%83%88%E5%BC%8F-%E6%95%B0%E5%AD%A6-middle-school-juku-educational-entrance-examination-teacher-man.jpg");
             keyboard.add(row);
             keyboardMarkup.setKeyboard(keyboard);
             message.setReplyMarkup(keyboardMarkup);
