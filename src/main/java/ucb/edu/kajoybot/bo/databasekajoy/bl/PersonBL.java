@@ -9,6 +9,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteCursoEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.CursoDto;
+import ucb.edu.kajoybot.bo.databasekajoy.dto.DocenteDto;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.EstudianteDto;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -53,6 +54,13 @@ public class PersonBL {
         return estudianteDtoList;
     }
 
+    public List<DocenteDto> findAllDocentes(){
+        List<DocenteDto> estudianteDtoList=new ArrayList<>();
+        for (DocenteEntity estudianteEntity:docenteRespository.findAll()){
+            estudianteDtoList.add(new DocenteDto(estudianteEntity));
+        }
+        return estudianteDtoList;
+    }
     public List<EstudianteDto> findAllEstudiantesWithCursos(){
         List<EstudianteDto> estudianteDtoList=new ArrayList<>();
         for (EstudianteEntity estudianteEntity:estudianteRespository.findAll()){
@@ -80,4 +88,5 @@ public class PersonBL {
             throw new RuntimeException("Registro inexistente de docento con ID "+pk);
         }
     }
+
 }
