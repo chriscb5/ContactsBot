@@ -5,6 +5,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import java.util.Date;
 
 public class DocenteDto {
+
     private Integer idDocente;
     private String nombre;
     private String apellidoPaterno;
@@ -13,7 +14,7 @@ public class DocenteDto {
     private String txUser;
     private Date txDate;
 
-    public  DocenteDto(DocenteEntity docenteEntity){
+    public DocenteDto(DocenteEntity docenteEntity){
 
         this.idDocente=(docenteEntity.getIdDocente());
         this.nombre=(docenteEntity.getNombre());
