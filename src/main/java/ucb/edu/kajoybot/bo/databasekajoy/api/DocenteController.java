@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
@@ -19,21 +20,21 @@ import java.util.List;
 @RequestMapping("/k1/docente")
 public class DocenteController {
 
-    private DocenteRespository docenteRespository;
 
+    private PersonBL personBL;
 
     @Autowired
-    public DocenteController(DocenteRespository docenteRespository){
-        this.docenteRespository = docenteRespository;
+    public DocenteController(PersonBL personBL){
+        this.personBL =personBL;
     }
 
     @RequestMapping(value = "/",method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     List<DocenteDto> all(){
         List<DocenteDto> docenteDtoList=new ArrayList<>();
-        for (DocenteEntity docenteEntity:docenteRespository.findAll()){
-            docenteDtoList.add(new DocenteDto(docenteEntity));
-        }
+//        for (DocenteEntity docenteEntity:personBL.findAllDocentes()){
+            docenteDtoList.add(new DocenteDto(personBL.findDocenteByPk(1)));
+  //      }
         return docenteDtoList;
 
 //        return docenteRespository.findAll();
