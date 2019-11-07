@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ucb.edu.kajoybot.bo.databasekajoy.bl.CursoBL;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 public class BotInitializator {
 
     EstudianteRespository estudianteRespository;
+    CursoBL cursoBL;
 
     @Autowired
     public BotInitializator(EstudianteRespository estudianteRespository) {
@@ -27,7 +29,7 @@ public class BotInitializator {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(new MainBot(estudianteRespository));
+            telegramBotsApi.registerBot(new MainBot(estudianteRespository, cursoBL));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

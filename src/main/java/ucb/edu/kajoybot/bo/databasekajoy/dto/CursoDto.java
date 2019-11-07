@@ -19,6 +19,9 @@ public class CursoDto {
         this.clave = (cursoEntity.getClave());
     }*/
 
+    public CursoDto() {
+    }
+
     public CursoDto(CursoEntity cursoEntity){
         this.nombre = (cursoEntity.getNombre());
         this.tipoCurso = (cursoEntity.getTipoCurso());

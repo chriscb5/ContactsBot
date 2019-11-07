@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import ucb.edu.kajoybot.bo.databasekajoy.bl.CursoBL;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +19,11 @@ public class MainBot extends TelegramLongPollingBot {
 
 
     EstudianteRespository estudianteRespository;
+    CursoBL cursoBL;
 
-    public MainBot(EstudianteRespository estudianteRespository) {
+    public MainBot(EstudianteRespository estudianteRespository, CursoBL cursoBL) {
         this.estudianteRespository = estudianteRespository;
+        this.cursoBL = cursoBL;
     }
 
     @Override
@@ -33,6 +37,10 @@ public class MainBot extends TelegramLongPollingBot {
                     .setChatId(update.getMessage().getChatId())
                     .setText("Hola Soy KajoyBot");
             EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
+            CursoEntity cursoEntity = cursoBL.findByCursoId(1);
+            SendMessage message2 = new SendMessage()
+                    .setChatId(update.getMessage().getChatId())
+                    .setText("Curso desde BBDD" + cursoBL);
             SendMessage message1=new SendMessage()
                     .setChatId(update.getMessage().getChatId())
                     .setText("Estudiante BBDD "+estudianteEntity);
