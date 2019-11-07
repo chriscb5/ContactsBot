@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -73,6 +75,9 @@ public class MainBot extends TelegramLongPollingBot {
         }
 */
 /*        if (messageTextReceived.equals("/testBDD")) {
+=======
+        if (messageTextReceived.equals("/testBDD")) {
+>>>>>>> 72d848194d3747fe8e175f86849e7c69083b1557
             Message message = update.getMessage();
             EstudianteEntity estudianteEntity= personBL.findEstudianteByPk(Status.ACTIVE.getStatus());
             SendMessage message1=new SendMessage()
@@ -84,6 +89,7 @@ public class MainBot extends TelegramLongPollingBot {
             catch (TelegramApiException e){
                 e.printStackTrace();
             }
+<<<<<<< HEAD
         }*/
 
             if (messageTextReceived.equals("/start")) {
@@ -108,6 +114,39 @@ public class MainBot extends TelegramLongPollingBot {
                 SendMessage message = new SendMessage()
                         .setChatId(chatId)
                         .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
+        }
+        if (messageTextReceived.equals("/start")) {
+            String imageFile= "https://beeimg.com/images/r29284261002.png";
+
+            SendPhoto sendPhoto = new SendPhoto()
+                    .setChatId(chatId)
+                    .setPhoto(imageFile);
+
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            List<KeyboardRow> keyboard = new ArrayList<>();
+            KeyboardRow row = new KeyboardRow();
+            row.add("Comenzar");
+            row.add("Información");
+            row.add("https://i0.pngocean.com/files/953/498/553/%E3%83%81%E3%83%A3%E3%83%BC%E3%83%88%E5%BC%8F-%E6%95%B0%E5%AD%A6-middle-school-juku-educational-entrance-examination-teacher-man.jpg");
+            keyboard.add(row);
+            keyboardMarkup.setKeyboard(keyboard);
+            message.setReplyMarkup(keyboardMarkup);
+
+            try {
+                execute(sendPhoto);
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(messageTextReceived.equals("Información")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
 
                 try {
                     execute(message);
@@ -296,12 +335,12 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "Kajoybot";
+        return "chemobot";
     }
 
     @Override
     public String getBotToken() {
-        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
+        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
     }
 
 

@@ -143,7 +143,10 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.clases.Curso[ idCurso=" + idCurso + " ]";
+        return "CursoEntity{" +
+                "nombre="+nombre+
+                ", tipoCurso='"+tipoCurso+
+                '}';
     }
 
 }
