@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.KjEstudianteUserRepository;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.KjEstudianteUserEntity;
@@ -172,6 +173,43 @@ public class BotBl {
         return result;
     }
 
+    public  String MensajesDeRegistroCurso(Update update)
+    {
+        String cadena=new String();
+        switch (numero_de_preguna){
+            case 0:
+                LOGGER.info("Ingresando nombre del curso");
+                cadena="Ingrese el nombre del curso ";
+            case 1:
+                LOGGER.info("Ingresando tipo de curso");
+                cadena="Ingrese el tipo del curso ";
+                break;
+            case 2:
+                LOGGER.info("Ingresando clave del curso");
+                cadena="Ingrese la clave del curso (si no desea el ingreso por clave, escriba '-' sin las comillas)";
+                break;
+        }
+        return cadena;
+    }
+
+
+    public  String guardarListaRegistrosCurso(List<String> listaderegistros){
+        LOGGER.info("Llega al metodo con : ");
+
+        for (String lag:listaderegistros){
+            LOGGER.info("Elemento : "+lag);
+        }
+
+        DocenteEntity docenteEntity = new DocenteEntity(1);
+        CursoEntity cursoEntity=new CursoEntity();
+        cursoEntity.setIdDocente(docenteEntity);
+        cursoEntity.setNombre(listaderegistros.get(0));
+        cursoEntity.setTipoCurso(listaderegistros.get(1));
+        cursoEntity.setClave(listaderegistros.get(2));
+        LOGGER.info("Entidad curso "+cursoEntity.toString());
+        cursoRepository.save(cursoEntity);
+        return "¡Registro completado exitosamente¡";
+    }
 
 
     /*
