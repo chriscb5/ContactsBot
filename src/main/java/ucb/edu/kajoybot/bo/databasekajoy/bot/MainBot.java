@@ -2,6 +2,8 @@ package ucb.edu.kajoybot.bo.databasekajoy.bot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -12,6 +14,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.bl.CursoBL;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,32 +35,6 @@ public class MainBot extends TelegramLongPollingBot {
         final long chatId = update.getMessage().getChatId();
 
 
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Hola Soy KajoyBot");
-            EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
-            CursoEntity cursoEntity = cursoBL.findByCursoId(1);
-            SendMessage message2 = new SendMessage()
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Curso desde BBDD" + cursoBL);
-            SendMessage message1=new SendMessage()
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Estudiante BBDD "+estudianteEntity);
-            try {
-                this.execute(message1);
-            }
-            catch (TelegramApiException e){
-                e.printStackTrace();
-            }
-
-            try {
-                this.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-
         if (messageTextReceived.equals("/testBDD")) {
             Message message = update.getMessage();
             EstudianteEntity estudianteEntity=estudianteRespository.findById(1).get();
@@ -71,8 +48,13 @@ public class MainBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
-
         if (messageTextReceived.equals("/start")) {
+            String imageFile= "https://beeimg.com/images/r29284261002.png";
+
+            SendPhoto sendPhoto = new SendPhoto()
+                    .setChatId(chatId)
+                    .setPhoto(imageFile);
+
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
                     .setText("Seleccione una opción por favor");
@@ -84,12 +66,15 @@ public class MainBot extends TelegramLongPollingBot {
             keyboard.add(row);
             keyboardMarkup.setKeyboard(keyboard);
             message.setReplyMarkup(keyboardMarkup);
+
             try {
+                execute(sendPhoto);
                 execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+
         if(messageTextReceived.equals("Información")) {
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
@@ -161,12 +146,12 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "Kajoybot";
+        return "chemobot";
     }
 
     @Override
     public String getBotToken() {
-        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
+        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
     }
 
 
