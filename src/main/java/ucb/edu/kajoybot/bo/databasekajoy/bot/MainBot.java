@@ -46,6 +46,7 @@ public class MainBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String messageTextReceived = update.getMessage().getText();
         final long chatId = update.getMessage().getChatId();
+        ///Test conexión a base de Datos
 
         /*if (messageTextReceived.equals("/testCurso")) {
             //Message message3 = update.getMessage();
@@ -104,6 +105,7 @@ public class MainBot extends TelegramLongPollingBot {
 <<<<<<< HEAD
         }*/
 
+
             if (messageTextReceived.equals("/start")) {
                 SendMessage message = new SendMessage()
                         .setChatId(chatId)
@@ -127,6 +129,8 @@ public class MainBot extends TelegramLongPollingBot {
                         .setChatId(chatId)
                         .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
         }
+
+        //Inicio del bot
         if (messageTextReceived.equals("/start")) {
             String imageFile= "https://beeimg.com/images/r29284261002.png";
 
@@ -142,7 +146,6 @@ public class MainBot extends TelegramLongPollingBot {
             KeyboardRow row = new KeyboardRow();
             row.add("Comenzar");
             row.add("Información");
-            row.add("https://i0.pngocean.com/files/953/498/553/%E3%83%81%E3%83%A3%E3%83%BC%E3%83%88%E5%BC%8F-%E6%95%B0%E5%AD%A6-middle-school-juku-educational-entrance-examination-teacher-man.jpg");
             keyboard.add(row);
             keyboardMarkup.setKeyboard(keyboard);
             message.setReplyMarkup(keyboardMarkup);
@@ -155,22 +158,30 @@ public class MainBot extends TelegramLongPollingBot {
             }
         }
 
+        //Información
         if(messageTextReceived.equals("Información")) {
+            String imageFile = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Info_icon_002.svg/480px-Info_icon_002.svg.png";
+
+            SendPhoto sendPhoto = new SendPhoto()
+                    .setChatId(chatId)
+                    .setPhoto(imageFile);
+
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
-                    .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
+                    .setText("Somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+            try {
+                execute(sendPhoto);
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
 
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
             }
-
-            if (messageTextReceived.equals("Comenzar")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Seleccione una opción por favor");
+        }
+        //comenzar
+        if(messageTextReceived.equals("Comenzar")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
 
                 ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
                 List<KeyboardRow> keyboard = new ArrayList<>();
@@ -187,6 +198,7 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+
 
             if (messageTextReceived.equals("Registro")) {
                 SendMessage message = new SendMessage()
