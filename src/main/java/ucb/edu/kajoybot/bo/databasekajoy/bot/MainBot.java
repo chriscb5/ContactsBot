@@ -335,12 +335,12 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "chemobot";
+        return "Kajoybot";
     }
 
     @Override
     public String getBotToken() {
-        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
+        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
     }
 
 
