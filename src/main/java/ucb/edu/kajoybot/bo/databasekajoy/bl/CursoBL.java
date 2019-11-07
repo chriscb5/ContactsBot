@@ -19,19 +19,19 @@ public class CursoBL {
         this.cursoRepository = cursoRepository;
     }
 
-    public CursoEntity findByCursoId(Integer pk) {
+    public  CursoEntity findCursoById(Integer pk){
         Optional<CursoEntity> optional = this.cursoRepository.findById(pk);
         if (optional.isPresent()){
-            return  optional.get();
+            return optional.get();
         }else {
             throw new RuntimeException("Record cannot be found for CursoEntity with ID: " + pk);
         }
     }
 
-    public List<CursoDto> findAllCourses(){
+    public List<CursoDto> findAllPeople(){
         List<CursoDto> cursoDtoList = new ArrayList<>();
         CursoDto cursoDto = new CursoDto();
-        for (CursoEntity cursoEntity:cursoRepository.findByIdCurso(cursoDto.getIdCurso())){
+        for (CursoEntity cursoEntity:cursoRepository.findAllByIdCurso(cursoDto.getIdCurso())){
             cursoDtoList.add(new CursoDto(cursoEntity));
         }
         return cursoDtoList;

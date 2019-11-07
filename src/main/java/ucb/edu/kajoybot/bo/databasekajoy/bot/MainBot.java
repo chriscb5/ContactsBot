@@ -34,6 +34,19 @@ public class MainBot extends TelegramLongPollingBot {
         final String messageTextReceived = update.getMessage().getText();
         final long chatId = update.getMessage().getChatId();
 
+        if (messageTextReceived.equals("/testCurso")) {
+            //Message message3 = update.getMessage();
+            CursoEntity cursoEntity=cursoBL.findByIdCurso(1);
+            SendMessage message4=new SendMessage()
+                    .setChatId(update.getMessage().getChatId())
+                    .setText("Curso in BBDD: "+cursoEntity);
+            try {
+                this.execute(message4);
+            }
+            catch (TelegramApiException e){
+                e.printStackTrace();
+            }
+        }
 
         if (messageTextReceived.equals("/testBDD")) {
             Message message = update.getMessage();
