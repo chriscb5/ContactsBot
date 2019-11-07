@@ -3,9 +3,9 @@ spring:
     name: Kajoy
   datasource:
     platform: mysql
-    url: jdbc:mysql://localhost:3306/kajoydatabase?serverTimezone=UTC
-    username: root
-    password:
+    url: jdbc:mysql://localhost:3306/database_kajoyf?serverTimezone=UTC
+    username: maurio
+    password: Maurioxd123
   jpa:
     hibernate:
       ddl-auto: none
