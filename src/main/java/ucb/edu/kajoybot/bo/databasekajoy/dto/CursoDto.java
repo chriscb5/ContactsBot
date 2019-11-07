@@ -1,7 +1,6 @@
 package ucb.edu.kajoybot.bo.databasekajoy.dto;
 
 import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
-
 import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 
 public class CursoDto {
@@ -67,4 +66,6 @@ public class CursoDto {
     public void setClave(String clave) {
         this.clave = clave;
     }
+
 }
+
