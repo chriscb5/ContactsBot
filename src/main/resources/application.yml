@@ -6,6 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3307/kajoydatabase?serverTimezone=UTC
     username: root
     password:
+
   jpa:
     hibernate:
       ddl-auto: none
