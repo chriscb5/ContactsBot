@@ -16,13 +16,8 @@ import java.util.List;
 
 
 @RestController
-<<<<<<< HEAD
 @RequestMapping("/v1/estudiante")
-public class   EstudianteController {
-=======
-@RequestMapping("/k1/estudiante")
 public class EstudianteController {
->>>>>>> 72d848194d3747fe8e175f86849e7c69083b1557
 
     //    private EstudianteRespository estudianteRespository;
     private PersonBL personBL;
@@ -60,3 +55,4 @@ public class EstudianteController {
 
     }
 }
+
