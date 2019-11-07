@@ -3,6 +3,7 @@ package ucb.edu.kajoybot.bo.databasekajoy.domain;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -61,9 +62,9 @@ import javax.persistence.TemporalType;
     @Temporal(TemporalType.DATE)
     private Date txDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstudiante")
-    private Collection<EstudianteTestEntity> estudianteTestCollection;
+    private List<EstudianteTestEntity> estudianteTestCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstudiante")
-    private Collection<EstudianteCursoEntity> estudianteCursoCollection;
+    private List<EstudianteCursoEntity> estudianteCursoCollection;
 
     public EstudianteEntity() {
     }
@@ -148,15 +149,15 @@ import javax.persistence.TemporalType;
         return estudianteTestCollection;
     }
 
-    public void setEstudianteTestCollection(Collection<EstudianteTestEntity> estudianteTestCollection) {
+    public void setEstudianteTestCollection(List<EstudianteTestEntity> estudianteTestEntityList) {
         this.estudianteTestCollection = estudianteTestCollection;
     }
 
-    public Collection<EstudianteCursoEntity> getEstudianteCursoCollection() {
+    public List<EstudianteCursoEntity> getEstudianteCursoList() {
         return estudianteCursoCollection;
     }
 
-    public void setEstudianteCursoCollection(Collection<EstudianteCursoEntity> estudianteCursoCollection) {
+    public void setEstudianteCursoList(List<EstudianteCursoEntity> estudianteCursoCollection) {
         this.estudianteCursoCollection = estudianteCursoCollection;
     }
 
