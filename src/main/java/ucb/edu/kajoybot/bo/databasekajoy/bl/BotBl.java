@@ -4,16 +4,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.CursoRepository;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
+import ucb.edu.kajoybot.bo.databasekajoy.dao.KjEstudianteUserRepository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.KjEstudianteUserEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
 @Service
@@ -26,14 +30,21 @@ public class BotBl {
     private EstudianteRespository estudianteRespository;
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
-
+    private KjEstudianteUserRepository kjEstudianteUserRepository;
+/*
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
+    }*/
+    @Autowired
+    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
+        this.estudianteRespository = estudianteRespository;
+        this.docenteRespository = docenteRespository;
+        this.cursoRepository = cursoRepository;
+        this.kjEstudianteUserRepository = kjEstudianteUserRepository;
     }
-
 
     public  String MensajesDeRegistro(Update update)
     {
@@ -117,6 +128,49 @@ public class BotBl {
         LOGGER.info("Entidad docente "+docenteEntity.toString());
         docenteRespository.save(docenteEntity);
         return "¡Registro completado exitosamente¡";
+    }
+
+    public void processUsuario(Update update) {
+        LOGGER.info("Recibiendo update {} ", update);
+        List<String> result = new ArrayList<>();
+        // Si es la primera vez pedir una imagen para su perfil
+        if (initUser(update.getMessage().getFrom())) {
+            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
+            result.add("Por favor ingrese una imagen para su foto de perfil");
+        } else { // Mostrar el menu de opciones
+            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
+            result.add("Bienvenido al Bot");
+        }
+
+        //continueChatWihtUser(CpUser, CpChat)
+
+
+//        return result;
+    }
+
+    private boolean initUser(User user) {
+        boolean result = false;
+        KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findAllByBotUserId(user.getId().toString());
+        if (kjEstudianteUserEntity == null) {
+            EstudianteEntity estudianteEntity= new EstudianteEntity();
+            estudianteEntity.setNombre(user.getFirstName());
+            estudianteEntity.setApellidoPaterno(user.getLastName());
+            estudianteEntity.setApellidoMaterno("Garza");
+            estudianteEntity.setStatuss(Status.ACTIVE.getStatus());
+            estudianteEntity.setInstitucion("Ave Experanzadora");
+            estudianteEntity.setTxUser("admin");
+            estudianteEntity.setTxDate(new Date());
+            estudianteRespository.save(estudianteEntity);
+            KjEstudianteUserEntity kjEstudianteUserEntity1 = new KjEstudianteUserEntity();
+            kjEstudianteUserEntity1.setBotUserId(user.getId().toString());//(user.getId().toString());
+            kjEstudianteUserEntity1.setIdEstudiante(estudianteEntity);
+            kjEstudianteUserEntity1.setTxHost("localhost");
+            kjEstudianteUserEntity1.setTxUser("admin");
+            kjEstudianteUserEntity1.setTxDate(new Date());
+            kjEstudianteUserRepository.save(kjEstudianteUserEntity1);
+            result = true;
+        }
+        return result;
     }
 
     public  String MensajesDeRegistroCurso(Update update)

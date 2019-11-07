@@ -5,11 +5,11 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 
 public class CursoDto {
 
-    private Integer idCurso;
-    private DocenteEntity idDocente;
-    private String nombre;
-    private String tipoCurso;
-    private String clave;
+        private Integer idCurso;
+        private DocenteEntity idDocente;
+        private String nombre;
+        private String tipoCurso;
+        private String clave;
 
     /*public CursoDto(CursoEntity cursoEntity) {
         this.idCurso = (cursoEntity.getIdCurso());
@@ -68,4 +68,3 @@ public class CursoDto {
     }
 
 }
-

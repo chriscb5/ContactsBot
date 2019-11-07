@@ -16,10 +16,8 @@ import java.util.List;
 
 
 @RestController
-
-@RequestMapping("/k1/estudiante")
-public class   EstudianteController {
-
+@RequestMapping("/v1/estudiante")
+public class EstudianteController {
     //    private EstudianteRespository estudianteRespository;
     private PersonBL personBL;
 
@@ -56,3 +54,4 @@ public class   EstudianteController {
 
     }
 }
+

@@ -63,6 +63,8 @@ public class MainBot extends TelegramLongPollingBot {
         update.getMessage().getFrom().getId();
 
         if (update.hasMessage() && update.getMessage().hasText()) {
+            botBl.processUsuario(update);
+            LOGGER.info("Registro de usuario exitoso");
 
       /*      EstudianteEntity estudianteEntity= personBL.findEstudianteByPk(Status.ACTIVE.getStatus());
             SendMessage message1=new SendMessage()
