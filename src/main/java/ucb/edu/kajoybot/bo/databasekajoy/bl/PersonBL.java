@@ -1,5 +1,7 @@
 package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
@@ -19,6 +21,8 @@ import java.util.Optional;
 
 @Service
 public class PersonBL {
+    private static final Logger LOGGER= LoggerFactory.getLogger(BotBl.class);
+
     EstudianteRespository estudianteRespository;
     DocenteRespository docenteRespository;
 
@@ -79,7 +83,45 @@ public class PersonBL {
     }
 
 
-    public DocenteEntity findDocenteByPk(Integer pk){
+    public String ExistPasswordDocenteInCurse(String nombre,String clave){
+        boolean isExiste=false;
+        DocenteDto docenteDto=ExistDocenteInCursosByNombre(nombre);
+        List<CursoDto> cursoDtoList=docenteDto.getCursosList();
+        for (CursoDto cursoDto:cursoDtoList){
+            LOGGER.info("Curso clave "+cursoDto.getClave());
+            if(clave.equals(cursoDto.getClave())){
+                isExiste=true;
+            }
+        }
+        if (isExiste){
+            return "Bienvenido al curso";
+        }
+        else
+            return "Clave incorrecta";
+    }
+
+    public DocenteDto ExistDocenteInCursosByNombre(String nombre){
+        DocenteEntity docenteEntity=findIdDocenteByNombre(nombre);
+        LOGGER.info("El docente es "+docenteEntity.getIdDocente()+","+docenteEntity.getApellidoPaterno()+","+docenteEntity.getApellidoMaterno());
+        DocenteDto docenteDto=new DocenteDto(docenteEntity);
+        List<CursoDto> cursoDtoList=new ArrayList<>();
+        List<CursoEntity> cursoEntityList=docenteEntity.getCursoList();
+        for (CursoEntity cursoEntity:cursoEntityList){
+            cursoDtoList.add(new CursoDto(cursoEntity));
+        }
+        docenteDto.setCursosList(cursoDtoList);
+        return docenteDto;
+    }
+
+    /*    public List<DocenteDto> findAllDocenteWithCursos(){
+        List<DocenteDto> docenteDtoList=new ArrayList<>();
+        for(DocenteEntity docenteEntity:docenteRespository.findAll()){
+            DocenteDto docenteDto= new DocenteDto(docenteEntity);
+            List<CursoDto> cursoDtoList=new ArrayList<>();
+            List<DocenteCur>
+        }
+    }
+ */   public DocenteEntity findDocenteByPk(Integer pk){
         Optional<DocenteEntity> optional=this.docenteRespository.findById(pk);
         if (optional.isPresent()){
             return optional.get();
@@ -88,6 +130,46 @@ public class PersonBL {
             throw new RuntimeException("Registro inexistente de docento con ID "+pk);
         }
     }
+
+    public DocenteEntity findDocenteByNombre(String pk){
+        DocenteEntity docenteEntity=this.docenteRespository.findAllByNombre(pk);
+        if (docenteEntity!=null){
+            return docenteEntity;
+        }
+        else {
+            throw new RuntimeException("Registro inexistente de docento con el nombre "+pk);
+        }
+    }
+
+    public String ExistDocenteByNombre(String pk){
+        DocenteEntity docenteEntity=this.docenteRespository.findAllByNombre(pk);
+        if (docenteEntity!=null){
+            return "¡Bienvenido al curso!";
+        }
+        else {
+            return "Ups, registro el registro es inexistente";
+        }
+    }
+
+    public DocenteEntity findIdDocenteByNombre(String pk){
+        List<DocenteEntity> docenteEntityList=docenteRespository.findAll();
+        DocenteEntity variable=null;
+        for(DocenteEntity docenteEntity:docenteEntityList){
+            if(docenteEntity.getNombre().equals(pk)){
+                variable=docenteEntity;
+            }
+        }
+ /*       DocenteEntity docenteEntity=this.docenteRespository.findAllByNombre(pk);
+        if (docenteEntity!=null){
+            return docenteEntity;
+        }
+        else {
+            throw new RuntimeException("Registro inexistente de docento con el nombre "+pk);
+        }*/
+    return variable;
+
+    }
+
 
 
 }
