@@ -16,15 +16,16 @@ import javax.annotation.PostConstruct;
 public class BotInitializator {
 
     BotBl botBl;
-//    PersonBL personBL;
+    PersonBL personBL;
 
 //    @Autowired
  //   public BotInitializator(PersonBL personBL) {
    //     this.personBL = personBL;
     //}
     @Autowired
-    public BotInitializator(BotBl botBl){
+    public BotInitializator(BotBl botBl,PersonBL personBL){
         this.botBl=botBl;
+        this.personBL=personBL;
     }
 
     public BotInitializator() {
@@ -35,7 +36,7 @@ public class BotInitializator {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(new MainBot(botBl));
+            telegramBotsApi.registerBot(new MainBot(botBl,personBL));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

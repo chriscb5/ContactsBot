@@ -3,6 +3,7 @@ package ucb.edu.kajoybot.bo.databasekajoy.dto;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 
 import java.util.Date;
+import java.util.List;
 
 public class DocenteDto {
 
@@ -14,6 +15,8 @@ public class DocenteDto {
     private String txUser;
     private Date txDate;
 
+    private List<CursoDto> cursosList;
+
     public DocenteDto() {
     }
 
@@ -23,10 +26,6 @@ public class DocenteDto {
         this.nombre=(docenteEntity.getNombre());
         this.apellidoPaterno=(docenteEntity.getApellidoPaterno());
         this.apellidoMaterno=(docenteEntity.getApellidoMaterno());
-        this.statuss=(docenteEntity.getStatuss());
-        this.txUser=(docenteEntity.getTxUser());
-        this.txDate=(docenteEntity.getTxDate());
-
 
     }
     public Integer getIdDocente() {
@@ -83,5 +82,13 @@ public class DocenteDto {
 
     public void setTxDate(Date txDate) {
         this.txDate = txDate;
+    }
+
+    public List<CursoDto> getCursosList() {
+        return cursosList;
+    }
+
+    public void setCursosList(List<CursoDto> cursosList) {
+        this.cursosList = cursosList;
     }
 }
