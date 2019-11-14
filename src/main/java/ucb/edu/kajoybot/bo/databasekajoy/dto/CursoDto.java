@@ -23,6 +23,7 @@ public class CursoDto {
     }
 
     public CursoDto(CursoEntity cursoEntity){
+        this.idCurso = (cursoEntity.getIdCurso());
         this.nombre = (cursoEntity.getNombre());
         this.tipoCurso = (cursoEntity.getTipoCurso());
     }

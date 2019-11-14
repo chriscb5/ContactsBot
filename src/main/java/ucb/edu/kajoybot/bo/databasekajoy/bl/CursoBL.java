@@ -36,4 +36,13 @@ public class CursoBL {
         }
         return cursoDtoList;
     }
+
+    public List<CursoDto> findAllCursos(){
+        List<CursoDto> cursoDtoList = new ArrayList<>();
+        for(CursoEntity cursoEntity:cursoRepository.findAll()){
+            cursoDtoList.add(new CursoDto(cursoEntity));
+        }
+        return cursoDtoList;
+    }
+
 }
