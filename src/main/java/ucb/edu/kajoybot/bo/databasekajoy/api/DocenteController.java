@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
@@ -37,6 +38,19 @@ public class DocenteController {
         }
         return docenteDtoList;
     }
+
+/*    @RequestMapping(value = "/", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    List<DocenteDto> all(@RequestParam(name = "includeCursos") boolean includeCursos) {
+        if (includeCursos) {
+            return personBL.findAllEstudiantesWithCursos();
+        } else {
+            return personBL.findAllEstudiantesWithCursos();
+        }
+
+
+    }
+*/
 
 
 }
