@@ -25,6 +25,7 @@ public class CursoDto {
     public CursoDto(CursoEntity cursoEntity){
         this.nombre = (cursoEntity.getNombre());
         this.tipoCurso = (cursoEntity.getTipoCurso());
+        this.clave=cursoEntity.getClave();
     }
 
     public Integer getIdCurso() {
