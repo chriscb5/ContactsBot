@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface DocenteRespository extends JpaRepository<DocenteEntity, Integer> {
     List<DocenteEntity> findAllByStatuss(int status);
+    DocenteEntity findAllByNombre(String nombre);
 }
