@@ -144,7 +144,8 @@ import javax.persistence.Table;
     @Override
     public String toString() {
         return "CursoEntity{" +
-                "nombre="+nombre+
+                "idCurso="+idCurso+
+                ", nombre='"+nombre+
                 ", tipoCurso='"+tipoCurso+
                 '}';
     }

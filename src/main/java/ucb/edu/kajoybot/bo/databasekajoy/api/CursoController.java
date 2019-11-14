@@ -28,9 +28,9 @@ public class CursoController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     List<CursoDto> all(){
         List<CursoDto> cursoDtoList = new ArrayList<>();
-        //for (CursoEntity cursoEntity:cursoBL.findAll()){
-            cursoDtoList.add(new CursoDto(cursoBL.findCursoById(1)));
-        //}
+        for (CursoDto cursoDto:cursoBL.findAllCursos()){
+            cursoDtoList.add(cursoDto);
+        }
         return cursoDtoList;
     }
 
