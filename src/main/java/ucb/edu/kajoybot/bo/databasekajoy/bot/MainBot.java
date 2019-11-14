@@ -47,6 +47,8 @@ public class MainBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String messageTextReceived = update.getMessage().getText();
         final long chatId = update.getMessage().getChatId();
+
+
         ///Test conexión a base de Datos
 
         /*if (messageTextReceived.equals("/testCurso")) {
@@ -57,299 +59,54 @@ public class MainBot extends TelegramLongPollingBot {
                     .setText("Curso in BBDD: "+cursoEntity);
             try {
                 this.execute(message4);*/
-        LOGGER.info("Comenzando conversacion");
+        LOGGER.info("Entro a registro es "+entra_a_registro_estudiante);
 
-        LOGGER.info("Tamaño de array"+registrollenadosList.size());
         update.getMessage().getFrom().getId();
 
+        LOGGER.info("Se recibio "+messageTextReceived);
         if (update.hasMessage() && update.getMessage().hasText()) {
-            botBl.processUsuario(update);
-            LOGGER.info("Registro de usuario exitoso");
-
-      /*      EstudianteEntity estudianteEntity= personBL.findEstudianteByPk(Status.ACTIVE.getStatus());
-            SendMessage message1=new SendMessage()
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Estudiante BBDD "+estudianteEntity);
-            try {
-                this.execute(message1);
->>>>>>> 9ee32370ef9143fce5eb1ba3f7eaeb614410659a
-            }
-            catch (TelegramApiException e){
-                e.printStackTrace();
-            }
-<<<<<<< HEAD
-        }
-
-=======
-
-            try {
-                this.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-*/
-/*        if (messageTextReceived.equals("/testBDD")) {
-=======
->>>>>>> 9ee32370ef9143fce5eb1ba3f7eaeb614410659a
-        if (messageTextReceived.equals("/testBDD")) {
->>>>>>> 72d848194d3747fe8e175f86849e7c69083b1557
-            Message message = update.getMessage();
-            EstudianteEntity estudianteEntity= personBL.findEstudianteByPk(Status.ACTIVE.getStatus());
-            SendMessage message1=new SendMessage()
-                    .setChatId(update.getMessage().getChatId())
-                    .setText("Estudiante BBDD "+estudianteEntity);
-            try {
-                this.execute(message1);
-            }
-            catch (TelegramApiException e){
-                e.printStackTrace();
-            }
-<<<<<<< HEAD
-        }*/
-
-
-            if (messageTextReceived.equals("/start")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Seleccione una opción por favor");
-                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                List<KeyboardRow> keyboard = new ArrayList<>();
-                KeyboardRow row = new KeyboardRow();
-                row.add("Comenzar");
-                row.add("Información");
-                keyboard.add(row);
-                keyboardMarkup.setKeyboard(keyboard);
-                message.setReplyMarkup(keyboardMarkup);
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (messageTextReceived.equals("Información")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Hola, somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumnos \n ");
-        }
-
-        //Inicio del bot
-        if (messageTextReceived.equals("/start")) {
-            String imageFile= "https://beeimg.com/images/r29284261002.png";
-
-            SendPhoto sendPhoto = new SendPhoto()
-                    .setChatId(chatId)
-                    .setPhoto(imageFile);
-
-            SendMessage message = new SendMessage()
-                    .setChatId(chatId)
-                    .setText("Seleccione una opción por favor");
-            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-            List<KeyboardRow> keyboard = new ArrayList<>();
-            KeyboardRow row = new KeyboardRow();
-            row.add("Comenzar");
-            row.add("Información");
-            keyboard.add(row);
-            keyboardMarkup.setKeyboard(keyboard);
-            message.setReplyMarkup(keyboardMarkup);
-
-            try {
-                execute(sendPhoto);
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //Información
-        if(messageTextReceived.equals("Información")) {
-            String imageFile = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Info_icon_002.svg/480px-Info_icon_002.svg.png";
-
-            SendPhoto sendPhoto = new SendPhoto()
-                    .setChatId(chatId)
-                    .setPhoto(imageFile);
-
-            SendMessage message = new SendMessage()
-                    .setChatId(chatId)
-                    .setText("Somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-            try {
-                execute(sendPhoto);
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-
-            }
-        }
-        //comenzar
-        if(messageTextReceived.equals("Comenzar")) {
-            SendMessage message = new SendMessage()
-                    .setChatId(chatId)
-                    .setText("Seleccione una opción por favor");
-
-                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                List<KeyboardRow> keyboard = new ArrayList<>();
-                KeyboardRow row = new KeyboardRow();
-                row.add("Inicio de sesión");
-                row.add("Registro");
-                keyboard.add(row);
-
-                keyboardMarkup.setKeyboard(keyboard);
-                message.setReplyMarkup(keyboardMarkup);
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            if (messageTextReceived.equals("Registro")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Seleccione una opción por favor");
-
-                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                List<KeyboardRow> keyboard = new ArrayList<>();
-                KeyboardRow row = new KeyboardRow();
-                row.add("Soy Profesor");
-                row.add("Soy Alumno");
-                keyboard.add(row);
-
-                keyboardMarkup.setKeyboard(keyboard);
-                message.setReplyMarkup(keyboardMarkup);
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-
-
-
-            if (messageTextReceived.equals("Soy Alumno")) {
-                entra_a_registro_estudiante = true;
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-
-                try {
-                    execute(message); // Sending our message object to user
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (messageTextReceived.equals("Soy Profesor")) {
-                entra_a_registro_docente = true;
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                try {
-                    execute(message); // Sending our message object to user
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (messageTextReceived.equals("Crear Nuevo Curso")) {
-                entra_a_registro_curso = true;
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
-                try {
-                    execute(message); // Sending our message object to user
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            if (messageTextReceived.equals("Biología") || messageTextReceived.equals("Matematica") || messageTextReceived.equals("Lenguaje") || messageTextReceived.equals("Musica") || messageTextReceived.equals("Quimica")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Ingrese clave del curso");
-                try {
-                    execute(message); // Sending our message object to user
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (messageTextReceived.equals("123456")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Bienvenido a Biologia");
-                try {
-                    execute(message); // Sending our message object to user
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
             if (entra_a_registro_estudiante) {
-                if (BotBl.numero_de_preguna == 5) {
-                    BotBl.numero_de_preguna = 0;
-                    registrosllenos = true;
-                }
-                if (registrosllenos) {
-                    String mensajecomp = botBl.guardarListaRegistros(registrollenadosList);
-                    SendMessage message2 = new SendMessage() // Create a SendMessage object with mandatory fields
+                LOGGER.info("Entra a el registro estudiante oficial");
+                    if(registrollenadosList.size()<5)
+                    {
+                        LOGGER.info("Entra al registros no llenos");
+                        if(BotBl.getNumero_de_preguna()<4){
+                            String mensaje = botBl.MensajesDeRegistro(update);
+                            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                                    .setChatId(update.getMessage().getChatId())
+                                    .setText(mensaje);
+                            try {
+                                this.execute(message);
+                            } catch (TelegramApiException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        BotBl.setNumero_de_preguna(BotBl.getNumero_de_preguna()+1) ;//
+                        registrollenadosList.add(messageTextReceived);
+                        LOGGER.info("Tamaño de array "+registrollenadosList.size());
+                    }
+                     if (registrollenadosList.size()==5) {
+                        LOGGER.info("Ingresa a registros llenos");
+                        String mensajecomp = botBl.guardarListaRegistros(registrollenadosList);
+                        SendMessage message2 = new SendMessage()
                             .setChatId(update.getMessage().getChatId())
                             .setText(mensajecomp);
-                    try {
-                        this.execute(message2);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                    registrosllenos = false;
-                    registrollenadosList.clear();
-                    entra_a_registro_estudiante = false;
-                    indicador=0;
-                } else
-                    {
-                        if(indicador>0){
-
-                                String mensaje = botBl.MensajesDeRegistro(update);
-                                SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                                .setChatId(update.getMessage().getChatId())
-                                .setText(mensaje);
-                                try {
-                                    this.execute(message);
-                                } catch (TelegramApiException e) {
-                                    e.printStackTrace();
-                                }
-                                registrollenadosList.add(messageTextReceived);
-                                BotBl.numero_de_preguna += 1;
+                        try {
+                            this.execute(message2);
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
                         }
-                    indicador++;
-
-
-                }
+                        registrosllenos = false;
+                        registrollenadosList.clear();
+                        entra_a_registro_estudiante = false;
+                    }
             }
             if (entra_a_registro_docente) {
-                if (BotBl.numero_de_preguna == 4) {
-                    BotBl.numero_de_preguna = 0;
-                    registrosllenos = true;
-                }
-                if (registrosllenos) {
-                    String mensajecomp = botBl.guardarListaRegistrosDocente(registrollenadosList);
-                    SendMessage message3 = new SendMessage() // Create a SendMessage object with mandatory fields
-                            .setChatId(update.getMessage().getChatId())
-                            .setText(mensajecomp);
-                    try {
-                        this.execute(message3);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                    registrosllenos = false;
-                    registrollenadosList.clear();
-                    entra_a_registro_docente = false;
-                    indicador=0;
-                } else
+                LOGGER.info("Entra a el registro estudiante oficial");
+                if(registrollenadosList.size()<4)
                 {
-                    if(indicador>0){
-
+                    LOGGER.info("Entra al registros no llenos");
+                    if(BotBl.getNumero_de_preguna()<3){
                         String mensaje = botBl.MensajesDeRegistroDocente(update);
                         SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                                 .setChatId(update.getMessage().getChatId())
@@ -359,19 +116,65 @@ public class MainBot extends TelegramLongPollingBot {
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }
-                        registrollenadosList.add(messageTextReceived);
-                        BotBl.numero_de_preguna += 1;
                     }
-                    indicador++;
-
-/*                    for (String lag:registrollenadosList){
-                        LOGGER.info("Elemento : "+lag);
-                    }
-*/
+                    BotBl.setNumero_de_preguna(BotBl.getNumero_de_preguna()+1) ;//
+                    registrollenadosList.add(messageTextReceived);
+                    LOGGER.info("Tamaño de array "+registrollenadosList.size());
                 }
-
+                if (registrollenadosList.size()==4) {
+                    LOGGER.info("Ingresa a registros llenos");
+                    String mensajecomp = botBl.guardarListaRegistrosDocente(registrollenadosList);
+                    SendMessage message2 = new SendMessage()
+                            .setChatId(update.getMessage().getChatId())
+                            .setText(mensajecomp);
+                    try {
+                        this.execute(message2);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    registrosllenos = false;
+                    registrollenadosList.clear();
+                    entra_a_registro_docente = false;
+                }
             }
-            if (entra_a_registro_curso){
+            if (entra_a_registro_curso) {
+                LOGGER.info("Entra a el registro curso oficial");
+                if(registrollenadosList.size()<3)
+                {
+                    LOGGER.info("Entra al registros no llenos");
+                    if(BotBl.getNumero_de_preguna()<2){
+                        String mensaje = botBl.MensajesDeRegistroCurso(update);
+                        SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(mensaje);
+                        try {
+                            this.execute(message);
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    BotBl.setNumero_de_preguna(BotBl.getNumero_de_preguna()+1) ;//
+                    registrollenadosList.add(messageTextReceived);
+                    LOGGER.info("Tamaño de array "+registrollenadosList.size());
+                }
+                if (registrollenadosList.size()==3) {
+                    LOGGER.info("Ingresa a registros llenos");
+                    String mensajecomp = botBl.guardarListaRegistrosCurso(registrollenadosList);
+                    SendMessage message2 = new SendMessage()
+                            .setChatId(update.getMessage().getChatId())
+                            .setText(mensajecomp);
+                    try {
+                        this.execute(message2);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    registrosllenos = false;
+                    registrollenadosList.clear();
+                    entra_a_registro_curso = false;
+                }
+            }
+
+            /*            if (entra_a_registro_curso){
                 if (BotBl.numero_de_preguna == 3) {
                     BotBl.numero_de_preguna = 0;
                     registrosllenos = true;
@@ -407,6 +210,160 @@ public class MainBot extends TelegramLongPollingBot {
                         BotBl.numero_de_preguna += 1;
                     }
                     indicador++;
+                }
+            }*/
+
+            botBl.processUsuario(update);
+//            LOGGER.info("Registro de usuario exitoso");
+
+        if (messageTextReceived.equals("/start")) {
+            String imageFile= "https://beeimg.com/images/r29284261002.png";
+
+            SendPhoto sendPhoto = new SendPhoto()
+                    .setChatId(chatId)
+                    .setPhoto(imageFile);
+
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            List<KeyboardRow> keyboard = new ArrayList<>();
+            KeyboardRow row = new KeyboardRow();
+            row.add("Comenzar");
+            row.add("Información");
+            keyboard.add(row);
+            keyboardMarkup.setKeyboard(keyboard);
+            message.setReplyMarkup(keyboardMarkup);
+
+            try {
+                execute(sendPhoto);
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Información
+        if(messageTextReceived.equals("Información")) {
+            String imageFile = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Info_icon_002.svg/480px-Info_icon_002.svg.png";
+            SendPhoto sendPhoto = new SendPhoto()
+                    .setChatId(chatId)
+                    .setPhoto(imageFile);
+
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+            try {
+                execute(sendPhoto);
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        //comenzar
+        if(messageTextReceived.equals("Comenzar")) {
+            SendMessage message = new SendMessage()
+                    .setChatId(chatId)
+                    .setText("Seleccione una opción por favor");
+
+                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                List<KeyboardRow> keyboard = new ArrayList<>();
+                KeyboardRow row = new KeyboardRow();
+                row.add("Inicio de sesión");
+                row.add("Registro");
+                keyboard.add(row);
+
+                keyboardMarkup.setKeyboard(keyboard);
+                message.setReplyMarkup(keyboardMarkup);
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+        }
+
+
+        if (messageTextReceived.equals("Registro")) {
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("Seleccione una opción por favor");
+
+                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                List<KeyboardRow> keyboard = new ArrayList<>();
+                KeyboardRow row = new KeyboardRow();
+                row.add("Soy Profesor");
+                row.add("Soy Alumno");
+                keyboard.add(row);
+
+                keyboardMarkup.setKeyboard(keyboard);
+                message.setReplyMarkup(keyboardMarkup);
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            if (messageTextReceived.equals("Soy Alumno")) {
+                entra_a_registro_estudiante = true;
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+
+                try {
+                    execute(message); // Sending our message object to user
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+            LOGGER.info("Entro a registro es "+entra_a_registro_estudiante);
+
+
+            if (messageTextReceived.equals("Soy Profesor")) {
+                entra_a_registro_docente = true;
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                try {
+                    execute(message); // Sending our message object to user
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (messageTextReceived.equals("Crear Nuevo Curso")) {
+                entra_a_registro_curso = true;
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            if (messageTextReceived.equals("Biología") || messageTextReceived.equals("Matematica") || messageTextReceived.equals("Lenguaje") || messageTextReceived.equals("Musica") || messageTextReceived.equals("Quimica")) {
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("Ingrese clave del curso");
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (messageTextReceived.equals("123456")) {
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("Bienvenido a Biologia");
+                try {
+                    execute(message); // Sending our message object to user
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
                 }
             }
         }
