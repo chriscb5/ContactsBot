@@ -3,6 +3,7 @@ package ucb.edu.kajoybot.bo.databasekajoy.domain;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -59,9 +60,9 @@ public class DocenteEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date txDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocente")
-    private Collection<TestEntity> testCollection;
+    private List<TestEntity> testEntityList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocente")
-    private Collection<CursoEntity> cursoCollection;
+    private List<CursoEntity> cursoEntityList;
 
     public DocenteEntity() {
     }
@@ -134,20 +135,20 @@ public class DocenteEntity implements Serializable {
         this.txDate = txDate;
     }
 
-    public Collection<TestEntity> getTestCollection() {
-        return testCollection;
+    public List<TestEntity> getTestList() {
+        return testEntityList;
     }
 
-    public void setTestCollection(Collection<TestEntity> testCollection) {
-        this.testCollection = testCollection;
+    public void setTestCollection(List<TestEntity> testCollection) {
+        this.testEntityList = testCollection;
     }
 
-    public Collection<CursoEntity> getCursoCollection() {
-        return cursoCollection;
+    public List<CursoEntity> getCursoList() {
+        return cursoEntityList;
     }
 
-    public void setCursoCollection(Collection<CursoEntity> cursoCollection) {
-        this.cursoCollection = cursoCollection;
+    public void setCursoList(List<CursoEntity> cursoCollection) {
+        this.cursoEntityList = cursoCollection;
     }
 
     @Override
