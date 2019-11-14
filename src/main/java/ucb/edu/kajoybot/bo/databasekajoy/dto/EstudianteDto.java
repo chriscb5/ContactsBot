@@ -8,6 +8,9 @@ import java.util.List;
 public class EstudianteDto {
     private int idEstudiante;
     private String nombre;
+    private String apellidoPaterno;
+    private String apellidoMaterno;
+    private String institucion;
     private int status;
     private String txUser;
     private Date txDate;
@@ -18,7 +21,7 @@ public class EstudianteDto {
 
     }
 
-    public EstudianteDto(EstudianteEntity estudianteEntity){
+    /*public EstudianteDto(EstudianteEntity estudianteEntity){
          EstudianteDto result= new EstudianteDto();
          this.nombre=(estudianteEntity.getNombre());
          this.txUser=(estudianteEntity.getTxUser());
@@ -26,6 +29,20 @@ public class EstudianteDto {
 
 
     }
+     */
+
+    public EstudianteDto(EstudianteEntity estudianteEntity){
+        this.idEstudiante=(estudianteEntity.getIdEstudiante());
+        this.nombre=(estudianteEntity.getNombre());
+        this.apellidoPaterno=(estudianteEntity.getApellidoPaterno());
+        this.apellidoMaterno=(estudianteEntity.getApellidoMaterno());
+        this.institucion=(estudianteEntity.getInstitucion());
+        this.txUser=(estudianteEntity.getTxUser());
+        this.status=(estudianteEntity.getStatuss());
+
+
+    }
+
     public int getIdEstudiante() {
         return idEstudiante;
     }
@@ -40,6 +57,30 @@ public class EstudianteDto {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
+    }
+
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
+    }
+
+    public String getInstitucion() {
+        return institucion;
+    }
+
+    public void setInstitucion(String institucion) {
+        this.institucion = institucion;
     }
 
     public int getStatus() {
