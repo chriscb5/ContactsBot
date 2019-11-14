@@ -33,12 +33,10 @@ public class DocenteController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     List<DocenteDto> all(){
         List<DocenteDto> docenteDtoList=new ArrayList<>();
-//        for (DocenteEntity docenteEntity:personBL.findAllDocentes()){
-            docenteDtoList.add(new DocenteDto(personBL.findDocenteByPk(1)));
-  //      }
+        for (DocenteDto docenteDto:personBL.findAllDocentes()){
+            docenteDtoList.add(docenteDto);
+        }
         return docenteDtoList;
-
-//        return docenteRespository.findAll();
     }
 
 /*    @RequestMapping(value = "/", method = RequestMethod.GET,
@@ -53,7 +51,6 @@ public class DocenteController {
 
     }
 */
-
 
 
 }
