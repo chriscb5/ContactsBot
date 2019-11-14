@@ -31,13 +31,22 @@ public class BotBl {
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
-/*
-    @Autowired
-    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository) {
-        this.estudianteRespository = estudianteRespository;
-        this.docenteRespository = docenteRespository;
-        this.cursoRepository = cursoRepository;
-    }*/
+
+    public static int getNumero_de_preguna() {
+        return numero_de_preguna;
+    }
+
+    public static void setNumero_de_preguna(int numero_de_preguna) {
+        BotBl.numero_de_preguna = numero_de_preguna;
+    }
+
+    /*
+        @Autowired
+        public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository) {
+            this.estudianteRespository = estudianteRespository;
+            this.docenteRespository = docenteRespository;
+            this.cursoRepository = cursoRepository;
+        }*/
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
         this.estudianteRespository = estudianteRespository;
@@ -50,22 +59,23 @@ public class BotBl {
     {
         String cadena=new String();
         switch (numero_de_preguna){
-            case 0:
+/*            case 0:
                 LOGGER.info("Ingresando nombre");
                 cadena="Ingrese su nombre ";
-            case 1:
+                break;
+*/            case 0:
                 LOGGER.info("Ingresando apellido paterno");
                 cadena="Ingrese su apellido paterno ";
                 break;
-            case 2:
+            case 1:
                 LOGGER.info("Ingresando apellido materno");
                 cadena="Ingrese su apellido materno ";
                 break;
-            case 3:
+            case 2:
                 LOGGER.info("Ingresando institucion");
                 cadena="Ingrese su institución ";
                 break;
-            case 4:
+            case 3:
                 LOGGER.info("Ingresando nombre de usuario");
                 cadena="Ingrese su nombre de usuario";
 
@@ -92,18 +102,19 @@ public class BotBl {
     {
         String cadena=new String();
         switch (numero_de_preguna){
-            case 0:
+/*            case 0:
                 LOGGER.info("Ingresando nombre");
                 cadena="Ingrese su nombre ";
-            case 1:
+                break;
+*/            case 0:
                 LOGGER.info("Ingresando apellido paterno");
                 cadena="Ingrese apellido paterno ";
                 break;
-            case 2:
+            case 1:
                 LOGGER.info("Ingresando apellido materno");
                 cadena="Ingrese su apellido materno ";
                 break;
-            case 3:
+            case 2:
                 LOGGER.info("Ingresando nombre de usuario");
                 cadena="Ingrese su nombre de usuario";
                 break;
@@ -177,14 +188,15 @@ public class BotBl {
     {
         String cadena=new String();
         switch (numero_de_preguna){
-            case 0:
+/*            case 0:
                 LOGGER.info("Ingresando nombre del curso");
                 cadena="Ingrese el nombre del curso ";
-            case 1:
+                break;
+ */           case 0:
                 LOGGER.info("Ingresando tipo de curso");
                 cadena="Ingrese el tipo del curso ";
                 break;
-            case 2:
+            case 1:
                 LOGGER.info("Ingresando clave del curso");
                 cadena="Ingrese la clave del curso (si no desea el ingreso por clave, escriba '-' sin las comillas)";
                 break;
