@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/v1/estudiante")
+@RequestMapping("/k1/estudiante")
 public class EstudianteController {
     //    private EstudianteRespository estudianteRespository;
     private PersonBL personBL;
@@ -35,17 +35,10 @@ public class EstudianteController {
         return estudianteRespository.findAll();
 
     }*/
-    //List<EstudianteDto> all()
-    //{
-/*      List<EstudianteDto> estudianteDtoList=new ArrayList<>();
-      for (EstudianteEntity estudianteEntity:estudianteRespository.findAll()){
-          estudianteDtoList.add(new EstudianteDto(estudianteEntity));
-      }
-*/  //    return personBL.findAllEstudiantes();
-    //}
+
     @RequestMapping(value = "/", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    List<EstudianteDto>  all(@RequestParam(name = "includeCursos") boolean includeCursos) {
+    List<EstudianteDto> all(@RequestParam(name = "includeCursos") boolean includeCursos) {
         if (includeCursos) {
             //return personBL.findDocenteByNombre("Lalo");
             return personBL.findAllEstudiantesWithCursos();
@@ -56,5 +49,16 @@ public class EstudianteController {
 
 
     }
+
+/*
+    List<EstudianteDto> all()
+    {
+      List<EstudianteDto> estudianteDtoList=new ArrayList<>();
+      for (EstudianteDto estudianteDto:personBL.findAllEstudiantes()){
+          estudianteDtoList.add(estudianteDto);
+      }
+      return personBL.findAllEstudiantes();
+    }
+*/
 }
 

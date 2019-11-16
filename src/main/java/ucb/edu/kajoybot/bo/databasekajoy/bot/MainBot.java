@@ -424,14 +424,16 @@ public class MainBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return "Kajoybot";
-        //return "kajoy_bot";
+//        return "kajoy_bot";
+//        return "devKajoy";
     }
 
     @Override
     public String getBotToken()
     {
         return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
-        //return "969248445:AAGzAETF0P9AXJk6W3EUDkGLWzJkrPgC_5A";
+//        return "969248445:AAGzAETF0P9AXJk6W3EUDkGLWzJkrPgC_5A";
+//        return "1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k";
     }
 
 
