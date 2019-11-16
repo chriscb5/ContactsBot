@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
@@ -14,12 +15,12 @@ import ucb.edu.kajoybot.bo.databasekajoy.dto.CursoDto;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.DocenteDto;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.EstudianteDto;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PersonBL {
     private static final Logger LOGGER= LoggerFactory.getLogger(BotBl.class);
 
@@ -45,9 +46,7 @@ public class PersonBL {
         }
         else {
             throw new RuntimeException("Registro inexistente de estudiante con ID: "+pk);
-
         }
-
     }
 
     public List<EstudianteDto> findAllEstudiantes(){
@@ -83,9 +82,42 @@ public class PersonBL {
     }
 
 
+    public  String existPasswordEstudianteByCurso(String nombre, String clave)
+    {
+        EstudianteEntity estudianteEntity=getEstudianteByNombre(nombre);
+        EstudianteDto estudianteDto=new EstudianteDto(estudianteEntity);
+        List<CursoDto> cursoDtoList=new ArrayList<>();
+        List<EstudianteCursoEntity> estudianteCursoEntityList= estudianteEntity.getEstudianteCursoList();
+        for (EstudianteCursoEntity estudianteCursoEntity:estudianteCursoEntityList){
+            CursoEntity cursoEntity=estudianteCursoEntity.getIdCurso();
+            cursoDtoList.add(new CursoDto(cursoEntity));
+        }
+        estudianteDto.setCursosList(cursoDtoList);
+        boolean existEstudiante=checkifExistEstudianteinCurse(estudianteDto,clave);
+        if(existEstudiante){
+            return "BIENVENIDO al CURSO ";
+        }
+        else {
+            return  "Ups, lo sentimos, no es la clave en el curso";
+        }
+    }
+
+    public boolean checkifExistEstudianteinCurse(EstudianteDto estudianteDto,String clave){
+        List<CursoDto> cursoDtoList=estudianteDto.getCursosList();
+        boolean isExist=false;
+        for(CursoDto cursoDto:cursoDtoList){
+            if(cursoDto.getClave().equals(clave)){
+                isExist=true;
+            }
+        }
+        return isExist;
+
+    }
+
+
     public String ExistPasswordDocenteInCurse(String nombre,String clave){
         boolean isExiste=false;
-        DocenteDto docenteDto=ExistDocenteInCursosByNombre(nombre);
+        DocenteDto docenteDto= existDocenteInCursosByNombre(nombre);
         List<CursoDto> cursoDtoList=docenteDto.getCursosList();
         for (CursoDto cursoDto:cursoDtoList){
             LOGGER.info("Curso clave "+cursoDto.getClave());
@@ -100,7 +132,8 @@ public class PersonBL {
             return "Clave incorrecta";
     }
 
-    public DocenteDto ExistDocenteInCursosByNombre(String nombre){
+
+    public DocenteDto existDocenteInCursosByNombre(String nombre){
         DocenteEntity docenteEntity=findIdDocenteByNombre(nombre);
         LOGGER.info("El docente es "+docenteEntity.getIdDocente()+","+docenteEntity.getApellidoPaterno()+","+docenteEntity.getApellidoMaterno());
         DocenteDto docenteDto=new DocenteDto(docenteEntity);
@@ -141,6 +174,19 @@ public class PersonBL {
         }
     }
 
+
+    public EstudianteEntity getEstudianteByNombre(String nombre){
+        EstudianteEntity estudianteEntity=this.estudianteRespository.findAllByNombre(nombre);
+        if(estudianteEntity!=null){
+            return estudianteEntity;
+        }
+        else
+        {
+            throw new RuntimeException("Registro inexistente "+nombre);
+        }
+
+    }
+
     public String ExistDocenteByNombre(String pk){
         DocenteEntity docenteEntity=this.docenteRespository.findAllByNombre(pk);
         if (docenteEntity!=null){
@@ -150,6 +196,7 @@ public class PersonBL {
             return "Ups, registro el registro es inexistente";
         }
     }
+
 
     public DocenteEntity findIdDocenteByNombre(String pk){
         List<DocenteEntity> docenteEntityList=docenteRespository.findAll();
@@ -166,10 +213,7 @@ public class PersonBL {
         else {
             throw new RuntimeException("Registro inexistente de docento con el nombre "+pk);
         }*/
-    return variable;
-
+        return variable;
     }
-
-
 
 }
