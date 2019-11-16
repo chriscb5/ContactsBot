@@ -6,20 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import ucb.edu.kajoybot.bo.databasekajoy.bl.CursoBL;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
-import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.BotBl;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
-import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
-import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +30,6 @@ public class MainBot extends TelegramLongPollingBot {
     private static boolean entra_a_iniciar_docentenombre=false;
     private static final Logger LOGGER = LoggerFactory.getLogger(BotBl.class);
     private static  List<String> registrollenadosList= new ArrayList<>();
-    public static int indicador=0;
 
 
 
@@ -72,7 +64,7 @@ public class MainBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             if(entra_a_iniciar_estudiante){
-                String response=personBL.ExistDocenteByNombre(messageTextReceived);
+                String response=personBL.existPasswordEstudianteByCurso("Lalo",messageTextReceived);
                 SendMessage message=new SendMessage().setChatId(chatId).setText(response);
                 try {
                     execute(message); // Sending our message object to user
@@ -427,8 +419,6 @@ public class MainBot extends TelegramLongPollingBot {
                 }
             }
         }
-
-
     }
 
     @Override
@@ -441,7 +431,7 @@ public class MainBot extends TelegramLongPollingBot {
     public String getBotToken()
     {
         return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
-//        return "969248445:AAGzAETF0P9AXJk6W3EUDkGLWzJkrPgC_5A";
+        //return "969248445:AAGzAETF0P9AXJk6W3EUDkGLWzJkrPgC_5A";
     }
 
 
