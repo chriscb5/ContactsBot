@@ -10,6 +10,7 @@ public class MensajesBL {
 
     private static final Logger LOGGER= LoggerFactory.getLogger(MensajesBL.class);
     private static int numero_de_pregunta=0;
+    private static int numero_de_respuesta=0;
 
 
     public  String mensajesRegistroEstudiante(Update update)
@@ -75,6 +76,42 @@ public class MensajesBL {
         return cadena;
     }
 
+    public  String mensajeRegistroTest(Update update){
+        String caden=new String();
+        switch (numero_de_pregunta){
+            case 0:
+                caden="¿Cuál sera la pregunta?";
+                break;
+/*            case 1:
+                caden="¿Cúal sera la tercera pregunta";
+                break;
+            case 2:
+                caden="¿Cúal sera la cuarta pregunta";
+                break;
+  */      }
+        return caden;
+    }
+
+    public String mensajeRegistroRespuesta(Update update){
+        String cadena=new String();
+        switch (numero_de_respuesta)
+        {
+            case 0:
+                cadena="Ingrese la primera respuesta";
+                break;
+            case 1:
+                cadena="Ingrese la segunda respuesta";
+                break;
+            case 2:
+                cadena="Ingrese la tercera respuesta";
+                break;
+            case 3:
+                cadena="Ingrese la cuarta respuesta";
+                break;
+        }
+        return cadena;
+    }
+
     public static int getNumero_de_pregunta() {
         return numero_de_pregunta;
     }
@@ -83,5 +120,11 @@ public class MensajesBL {
         MensajesBL.numero_de_pregunta = numero_de_pregunta;
     }
 
+    public static int getNumero_de_respuesta() {
+        return numero_de_respuesta;
+    }
 
+    public static void setNumero_de_respuesta(int numero_de_respuesta) {
+        MensajesBL.numero_de_respuesta = numero_de_respuesta;
+    }
 }
