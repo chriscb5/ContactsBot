@@ -25,28 +25,11 @@ public class BotBl {
 
     private static final Logger LOGGER= LoggerFactory.getLogger(BotBl.class);
 
-    public static int numero_de_preguna=0;
-
     private EstudianteRespository estudianteRespository;
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
 
-    public static int getNumero_de_preguna() {
-        return numero_de_preguna;
-    }
-
-    public static void setNumero_de_preguna(int numero_de_preguna) {
-        BotBl.numero_de_preguna = numero_de_preguna;
-    }
-
-    /*
-        @Autowired
-        public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository) {
-            this.estudianteRespository = estudianteRespository;
-            this.docenteRespository = docenteRespository;
-            this.cursoRepository = cursoRepository;
-        }*/
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
         this.estudianteRespository = estudianteRespository;
@@ -55,34 +38,6 @@ public class BotBl {
         this.kjEstudianteUserRepository = kjEstudianteUserRepository;
     }
 
-    public  String MensajesDeRegistro(Update update)
-    {
-        String cadena=new String();
-        switch (numero_de_preguna){
-/*            case 0:
-                LOGGER.info("Ingresando nombre");
-                cadena="Ingrese su nombre ";
-                break;
-*/            case 0:
-                LOGGER.info("Ingresando apellido paterno");
-                cadena="Ingrese su apellido paterno ";
-                break;
-            case 1:
-                LOGGER.info("Ingresando apellido materno");
-                cadena="Ingrese su apellido materno ";
-                break;
-            case 2:
-                LOGGER.info("Ingresando institucion");
-                cadena="Ingrese su institución ";
-                break;
-            case 3:
-                LOGGER.info("Ingresando nombre de usuario");
-                cadena="Ingrese su nombre de usuario";
-
-                break;
-        }
-        return cadena;
-    }
 
     public  String guardarListaRegistros(List<String> listaderegistros){
         EstudianteEntity estudianteEntity=new EstudianteEntity();
@@ -96,32 +51,6 @@ public class BotBl {
         estudianteRespository.save(estudianteEntity);
         return "¡Registro completado exitosamente¡";
     }
-
-
-    public  String MensajesDeRegistroDocente(Update update)
-    {
-        String cadena=new String();
-        switch (numero_de_preguna){
-/*            case 0:
-                LOGGER.info("Ingresando nombre");
-                cadena="Ingrese su nombre ";
-                break;
-*/            case 0:
-                LOGGER.info("Ingresando apellido paterno");
-                cadena="Ingrese apellido paterno ";
-                break;
-            case 1:
-                LOGGER.info("Ingresando apellido materno");
-                cadena="Ingrese su apellido materno ";
-                break;
-            case 2:
-                LOGGER.info("Ingresando nombre de usuario");
-                cadena="Ingrese su nombre de usuario";
-                break;
-        }
-        return cadena;
-    }
-
 
     public  String guardarListaRegistrosDocente(List<String> listaderegistros){
         LOGGER.info("Llega al metodo con : ");
@@ -153,11 +82,8 @@ public class BotBl {
             result.add("Bienvenido al Bot");
         }
 
-        //continueChatWihtUser(CpUser, CpChat)
-
-
-//        return result;
     }
+
 
     private boolean initUser(User user) {
         boolean result = false;
@@ -184,26 +110,6 @@ public class BotBl {
         return result;
     }
 
-    public  String MensajesDeRegistroCurso(Update update)
-    {
-        String cadena=new String();
-        switch (numero_de_preguna){
-/*            case 0:
-                LOGGER.info("Ingresando nombre del curso");
-                cadena="Ingrese el nombre del curso ";
-                break;
- */           case 0:
-                LOGGER.info("Ingresando tipo de curso");
-                cadena="Ingrese el tipo del curso ";
-                break;
-            case 1:
-                LOGGER.info("Ingresando clave del curso");
-                cadena="Ingrese la clave del curso (si no desea el ingreso por clave, escriba '-' sin las comillas)";
-                break;
-        }
-        return cadena;
-    }
-
 
     public  String guardarListaRegistrosCurso(List<String> listaderegistros){
         LOGGER.info("Llega al metodo con : ");
@@ -211,7 +117,6 @@ public class BotBl {
         for (String lag:listaderegistros){
             LOGGER.info("Elemento : "+lag);
         }
-
         DocenteEntity docenteEntity = new DocenteEntity(1);
         CursoEntity cursoEntity=new CursoEntity();
         cursoEntity.setIdDocente(docenteEntity);
@@ -222,37 +127,6 @@ public class BotBl {
         cursoRepository.save(cursoEntity);
         return "¡Registro completado exitosamente¡";
     }
-
-
-    /*
-    public  String notificarRegistroCompleto(Update update)
-    {
-        LOGGER.info("Registro completado");
-        return "Registro completado";
-    }
-
-/*
-    public  String ingressInstitucion(Update update)
-    {
-        LOGGER.info("Ingresando institucion");
-        return "Ingrese la institucion";
-    }
-
-    public String ingreseNombreUser(Update update){
-        LOGGER.info("Ingresando nombre de usuario");
-        return "Ingrese nombre de usuario";
-    }
-
-    public String formularioregistrollenado(Update update){
-        LOGGER.info("Formulario llenado correctamente");
-
-        return  "Formulario llenado correctamente";
-    }
-/*
-    public List<String> processUpdate(Update update){
-        LOGGER.info("Recibiendo primer nombre",update);
-    }
- */
 
 
 
