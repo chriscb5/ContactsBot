@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.BotBl;
+import ucb.edu.kajoybot.bo.databasekajoy.bl.MensajesBL;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class MainBot extends TelegramLongPollingBot {
 
     PersonBL personBL;
     BotBl botBl;
+    MensajesBL mensajesBL;
     private static boolean registrosllenos=false;
     private static boolean entra_a_registro_estudiante=false;
     private static boolean entra_a_registro_docente=false;
@@ -33,10 +35,12 @@ public class MainBot extends TelegramLongPollingBot {
 
 
 
+
     @Autowired
-    public  MainBot(BotBl botBl,PersonBL personBL){
+    public  MainBot(BotBl botBl,PersonBL personBL,MensajesBL mensajesBL){
         this.botBl=botBl;
         this.personBL=personBL;
+        this.mensajesBL=mensajesBL;
     }
 
 
@@ -102,8 +106,8 @@ public class MainBot extends TelegramLongPollingBot {
                     if(registrollenadosList.size()<5)
                     {
                         LOGGER.info("Entra al registros no llenos");
-                        if(BotBl.getNumero_de_preguna()<4){
-                            String mensaje = botBl.MensajesDeRegistro(update);
+                        if(mensajesBL.getNumero_de_pregunta()<4){
+                            String mensaje = /*botBl*/mensajesBL.mensajesRegistroEstudiante(update);
                             SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                                     .setChatId(update.getMessage().getChatId())
                                     .setText(mensaje);
@@ -113,7 +117,7 @@ public class MainBot extends TelegramLongPollingBot {
                                 e.printStackTrace();
                             }
                         }
-                        BotBl.setNumero_de_preguna(BotBl.getNumero_de_preguna()+1) ;//
+                        mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1) ;//
                         registrollenadosList.add(messageTextReceived);
                         LOGGER.info("Tamaño de array "+registrollenadosList.size());
                     }
@@ -138,8 +142,8 @@ public class MainBot extends TelegramLongPollingBot {
                 if(registrollenadosList.size()<4)
                 {
                     LOGGER.info("Entra al registros no llenos");
-                    if(BotBl.getNumero_de_preguna()<3){
-                        String mensaje = botBl.MensajesDeRegistroDocente(update);
+                    if(mensajesBL.getNumero_de_pregunta()<3){
+                        String mensaje = mensajesBL.mensajesRegistroDocente(update);
                         SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                                 .setChatId(update.getMessage().getChatId())
                                 .setText(mensaje);
@@ -149,7 +153,7 @@ public class MainBot extends TelegramLongPollingBot {
                             e.printStackTrace();
                         }
                     }
-                    BotBl.setNumero_de_preguna(BotBl.getNumero_de_preguna()+1) ;//
+                    mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1) ;//
                     registrollenadosList.add(messageTextReceived);
                     LOGGER.info("Tamaño de array "+registrollenadosList.size());
                 }
@@ -174,8 +178,8 @@ public class MainBot extends TelegramLongPollingBot {
                 if(registrollenadosList.size()<3)
                 {
                     LOGGER.info("Entra al registros no llenos");
-                    if(BotBl.getNumero_de_preguna()<2){
-                        String mensaje = botBl.MensajesDeRegistroCurso(update);
+                    if(mensajesBL.getNumero_de_pregunta()<2){
+                        String mensaje = mensajesBL.mensajesRegistroCurso(update);
                         SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                                 .setChatId(update.getMessage().getChatId())
                                 .setText(mensaje);
@@ -185,7 +189,7 @@ public class MainBot extends TelegramLongPollingBot {
                             e.printStackTrace();
                         }
                     }
-                    BotBl.setNumero_de_preguna(BotBl.getNumero_de_preguna()+1) ;//
+                    mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1) ;//
                     registrollenadosList.add(messageTextReceived);
                     LOGGER.info("Tamaño de array "+registrollenadosList.size());
                 }
