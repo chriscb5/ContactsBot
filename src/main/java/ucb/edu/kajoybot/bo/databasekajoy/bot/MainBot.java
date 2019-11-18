@@ -35,6 +35,7 @@ public class MainBot extends TelegramLongPollingBot {
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
+    private static boolean confirmation=false;
     private static final Logger LOGGER = LoggerFactory.getLogger(BotBl.class);
     private static  List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
@@ -226,10 +227,13 @@ public class MainBot extends TelegramLongPollingBot {
                 catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+                confirmation=true;
                 aniade_pregunta_nueva=true;
                 entra_a_registro_test=true;
-
+                entra_a_registro_respuesta=false;
             }
+
+
             if(messageTextReceived.equals("No")){
                 SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                         .setChatId(update.getMessage().getChatId())
@@ -241,140 +245,109 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
                 entra_a_registro_test=false;
-                termina_test=true;
+//                termina_test=true;
             }
 
             //##############################################################
-            if (entra_a_registro_test) {
-                if(termina_test){
-                    entra_a_registro_test=false;
-                }
-                if(termina_test==false){
-                    if(entra_a_registro_respuesta){
-                        if(mensajesBL.getNumero_de_respuesta()==4)
-                        {
-                            LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
-                            int i=0;
-                            int contresppropregunta=3;
-                            String cade="CUESTIONARIO- TEST\n";
-                            for(String preg:registrollenadosList){
-                                cade+=preg+"\n";
-                                int numero=1;
-                                while(i<contresppropregunta){
+            //##############################################################
+            //##############################################################
+            //##############################################################
+            if (entra_a_registro_test){
+                if(entra_a_registro_respuesta){
+                    if(mensajesBL.getNumero_de_respuesta()==4)
+                    {
+                        registrorespuestalist.add(messageTextReceived);
+                        LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
+                        LOGGER.info("ENTRO AL SI CON ARRAY "+registrorespuestalist.size());
+                        int i=0;
+                        int contresppropregunta=4;
+                        String cade="CUESTIONARIO - TEST\n";
+                        for(String preg:registrollenadosList){
+                            cade+=preg+"\n";
+                            int numero=1;
+                            while(i<contresppropregunta){
                                     cade+=numero+". "+registrorespuestalist.get(i)+"\n";
                                     numero++;
                                     i++;
-                                }
-                                contresppropregunta+=3;
                             }
-                            mensajesBL.setNumero_de_respuesta(0);
-                            SendMessage message=new SendMessage()
-                                    .setChatId(update.getMessage().getChatId())
-                                    .setText(cade+"\nDesea añadir una nueva pregunta?");
+                            contresppropregunta+=4;
+                        }
+                        mensajesBL.setNumero_de_respuesta(0);
+                        SendMessage message=new SendMessage()
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(cade+"\nDesea añadir una nueva pregunta?");
 
-                            entra_a_registro_respuesta=false;
+                        entra_a_registro_respuesta=false;
 //                            entra_a_registro_test=false;
-                            aniade_respuesta_nueva=true;
-                            aniade_pregunta_nueva=false;
+                        aniade_respuesta_nueva=true;
+                        aniade_pregunta_nueva=false;
 
-                            try {
-                                this.execute(message);
-                            }
-                            catch (TelegramApiException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            this.execute(message);
                         }
+                        catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                    }//Terminate NUMERO DE RESPUESTAS= 4
 
-                        if(mensajesBL.getNumero_de_respuesta()<4 && entra_a_registro_respuesta){
-                            String mensaje=mensajesBL.mensajeRegistroRespuesta(update);
-                            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                                    .setChatId(update.getMessage().getChatId())
-                                    .setText(mensaje);
-                            try {
-                                this.execute(message);
-                            }
-                            catch (TelegramApiException e) {
-                                e.printStackTrace();
-                            }
-                            mensajesBL.setNumero_de_respuesta(mensajesBL.getNumero_de_respuesta()+1);
+                    if(mensajesBL.getNumero_de_respuesta()<4 && entra_a_registro_respuesta)
+                    {//INGRESANDO A REGISTROS NO COMPLETOS
+                        String mensaje=mensajesBL.mensajeRegistroRespuesta(update);
+                        SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(mensaje);
+                        try {
+                            this.execute(message);
+                        }
+                        catch (TelegramApiException e) {
+                            e.printStackTrace();
+                         }
+                        mensajesBL.setNumero_de_respuesta(mensajesBL.getNumero_de_respuesta()+1);
+                        if(aniade_pregunta_nueva==false){
                             registrorespuestalist.add(messageTextReceived);
-                            aniade_respuesta_nueva=false;
                         }
-
+                        aniade_respuesta_nueva=false;
                     }
-                    if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
-                            String mensaje=mensajesBL.mensajeRegistroTest(update);
-                            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                                    .setChatId(update.getMessage().getChatId())
-                                    .setText(mensaje);
-                            try {
-                                this.execute(message);
-                            } catch (TelegramApiException e) {
-                                e.printStackTrace();
-                            }
-                            mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
-                            entra_a_registro_respuesta=true;
-                            registrollenadosList.add(messageTextReceived);
-                            mensajesBL.setNumero_de_pregunta(0);
-                    }
-
                 }
-            }
-/*            if(entra_a_registro_test){
-                LOGGER.info("Entro a registro test");
-                if(registrollenadosList.size()<4){
-                    String mensaje=new String();
-                    if(entra_a_registro_respuesta){
-                        if(registrorespuestalist.size()<4){
-                            if(mensajesBL.getNumero_de_respuesta()<4){
-                                mensaje=mensajesBL.mensajeRegistroRespuesta(update);
-                                SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                                        .setChatId(update.getMessage().getChatId())
-                                        .setText(mensaje);
-                                try {
-                                    this.execute(message);
-                                } catch (TelegramApiException e) {
-                                    e.printStackTrace();
-                                }
-                                mensajesBL.setNumero_de_respuesta(mensajesBL.getNumero_de_respuesta()+1);
-                            }
-                            if(mensajesBL.getNumero_de_respuesta()==4)
-                            {
-                                entra_a_registro_respuesta=false;
-                            }
-                        }
-                    }
-                    else {
-                        if(mensajesBL.getNumero_de_pregunta()<3){
-                            mensaje = mensajesBL.mensajeRegistroTest(update);
-                            SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                                    .setChatId(update.getMessage().getChatId())
-                                    .setText(mensaje);
-                            try {
-                                this.execute(message);
-                            } catch (TelegramApiException e) {
-                                e.printStackTrace();
-                            }
-                            mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
-                            entra_a_registro_respuesta=true;
-                        }
-                    }
 
+                if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
+                        String mensaje=mensajesBL.mensajeRegistroTest(update);
+                        SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(mensaje);
+                        try {
+                            this.execute(message);
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                        mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
+                        entra_a_registro_respuesta=true;
                 }
-               if (registrollenadosList.size()==4){
+                if(aniade_pregunta_nueva && confirmation==false){
+                    registrollenadosList.add(messageTextReceived);
+                    aniade_pregunta_nueva=false;
+                }
+                if(confirmation==true){
+                    String mensaje=mensajesBL.mensajeRegistroTest(update);
                     SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                             .setChatId(update.getMessage().getChatId())
-                            .setText("Terminaste!");
+                            .setText(mensaje);
                     try {
                         this.execute(message);
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                    entra_a_registro_test=false;
+                    mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
+                    entra_a_registro_respuesta=true;
+                    confirmation=false;
                 }
 
-            }
-*/
+            }// TERMINA REGISTRO TEST
+
+
+            //##############################################################
+            //#############################################################
+            //##############################################################
             botBl.processUsuario(update);
 //            LOGGER.info("Registro de usuario exitoso");
 
@@ -555,6 +528,8 @@ public class MainBot extends TelegramLongPollingBot {
 
             if(messageTextReceived.equals("Test")){
                 entra_a_registro_test=true;
+                confirmation=false;
+                aniade_pregunta_nueva=true;
                 SendMessage message=new SendMessage()
                         .setChatId(chatId)
                         .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
