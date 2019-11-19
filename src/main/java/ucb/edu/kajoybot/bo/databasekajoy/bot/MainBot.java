@@ -322,7 +322,7 @@ public class MainBot extends TelegramLongPollingBot {
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }
-                        mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
+                        mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
                         entra_a_registro_respuesta=true;
                 }
                 if(aniade_pregunta_nueva && confirmation==false){
@@ -330,7 +330,7 @@ public class MainBot extends TelegramLongPollingBot {
                     aniade_pregunta_nueva=false;
                 }
                 if(confirmation==true){
-                    String mensaje=mensajesBL.mensajeRegistroTest(update);
+/*                    String mensaje=mensajesBL.mensajeRegistroTest(update);
                     SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                             .setChatId(update.getMessage().getChatId())
                             .setText(mensaje);
@@ -339,7 +339,7 @@ public class MainBot extends TelegramLongPollingBot {
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                    mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
+                    mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+10);*/
                     entra_a_registro_respuesta=true;
                     confirmation=false;
                 }
