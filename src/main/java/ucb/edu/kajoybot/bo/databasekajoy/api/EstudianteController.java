@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.EstudianteDto;
 
@@ -37,17 +38,19 @@ public class EstudianteController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-/*    List<EstudianteDto> all(@RequestParam(name = "includeCursos") boolean includeCursos) {
+    List<EstudianteDto> all(@RequestParam(name = "includeCursos") boolean includeCursos) {
         if (includeCursos) {
+            //return personBL.findDocenteByNombre("Lalo");
             return personBL.findAllEstudiantesWithCursos();
         } else {
+//            return personBL.findDocenteByNombre("Lalo");
             return personBL.findAllEstudiantesWithCursos();
         }
 
 
     }
- */
 
+/*
     List<EstudianteDto> all()
     {
       List<EstudianteDto> estudianteDtoList=new ArrayList<>();
@@ -56,6 +59,6 @@ public class EstudianteController {
       }
       return personBL.findAllEstudiantes();
     }
-
+*/
 }
 
