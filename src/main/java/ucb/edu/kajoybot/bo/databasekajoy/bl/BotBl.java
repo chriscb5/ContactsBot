@@ -151,20 +151,22 @@ public class BotBl {
     public void saveTest(){
         TestEntity testEntity=new TestEntity();
         CursoEntity cursoEntity= cursoRepository.findByIdCurso(8);
+        LOGGER.info("ENCONTRO en save test esto "+cursoEntity.getClave()+" "+cursoEntity.getNombre()+" "+cursoEntity.getTipoCurso());
         testEntity.setIdCurso(cursoEntity);
         DocenteEntity docenteEntity=new DocenteEntity();
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("Matematica discreta");
+        testEntity.setNombreTest("Ciencias Sociales");
         testRepository.save(testEntity);
     }
 
     public void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findAllByNombreTest("Matematica discreta");
+        TestEntity testEntity=testRepository.findByNombreTest("Ciencias Sociales");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
+        preguntaRepository.save(preguntaEntity);
     }
 
     public void saveQuestionList(List<String> questionList){
@@ -178,19 +180,19 @@ public class BotBl {
 
     public  void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity= new TestEntity();
-        testEntity=testRepository.findAllByNombreTest("Matematica discreta");
+        TestEntity testEntity=testRepository.findByNombreTest("Ciencias Sociales");
         int numberResponse=1;
         int indexQuestionList=0;
+        PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
         for(int i=0;i<responseList.size();i++){
-            if(numberResponse==4){
-                PreguntaEntity preguntaEntity= new PreguntaEntity();
-                preguntaEntity=preguntaRepository.findAllByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
+            if(numberResponse==5 && indexQuestionList<questionList.size()-1){
                 indexQuestionList++;
+                preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
+                numberResponse=1;
                 saveResponse(responseList.get(i),preguntaEntity,numberResponse);
             }
             else {
-                numberResponse=1;
+                saveResponse(responseList.get(i),preguntaEntity,numberResponse);
             }
             numberResponse++;
         }
@@ -202,6 +204,7 @@ public class BotBl {
         respuestaEntity.setContenidoRespuesta(response);
         respuestaEntity.setEsCorrecta(0);
         respuestaEntity.setNumeroRespuesta(numberResponse);
+        respuestaRepository.save(respuestaEntity);
     }
 
 
