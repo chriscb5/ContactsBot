@@ -39,8 +39,6 @@ public class EstudianteDto {
         this.institucion=(estudianteEntity.getInstitucion());
         this.txUser=(estudianteEntity.getTxUser());
         this.status=(estudianteEntity.getStatuss());
-
-
     }
 
     public int getIdEstudiante() {
