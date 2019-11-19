@@ -55,8 +55,7 @@ public class MainBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String messageTextReceived = update.getMessage().getText();
         final long chatId = update.getMessage().getChatId();
-
-
+        botBl.processUsuario(update);
         ///Test conexión a base de Datos
 
         /*if (messageTextReceived.equals("/testCurso")) {
@@ -235,15 +234,18 @@ public class MainBot extends TelegramLongPollingBot {
 
 
             if(messageTextReceived.equals("No")){
+                String registrertest=  botBl.saveCompleteTest(registrollenadosList,registrorespuestalist);
                 SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                         .setChatId(update.getMessage().getChatId())
-                        .setText("Registro de test terminado");
+                        .setText(registrertest);
                 try {
                     this.execute(message);
                 }
                 catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+                registrollenadosList.clear();
+                registrorespuestalist.clear();
                 entra_a_registro_test=false;
 //                termina_test=true;
             }
@@ -320,7 +322,7 @@ public class MainBot extends TelegramLongPollingBot {
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }
-                        mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
+                        mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
                         entra_a_registro_respuesta=true;
                 }
                 if(aniade_pregunta_nueva && confirmation==false){
@@ -328,7 +330,7 @@ public class MainBot extends TelegramLongPollingBot {
                     aniade_pregunta_nueva=false;
                 }
                 if(confirmation==true){
-                    String mensaje=mensajesBL.mensajeRegistroTest(update);
+/*                    String mensaje=mensajesBL.mensajeRegistroTest(update);
                     SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                             .setChatId(update.getMessage().getChatId())
                             .setText(mensaje);
@@ -337,7 +339,7 @@ public class MainBot extends TelegramLongPollingBot {
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                    mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1);
+                    mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+10);*/
                     entra_a_registro_respuesta=true;
                     confirmation=false;
                 }
@@ -348,7 +350,6 @@ public class MainBot extends TelegramLongPollingBot {
             //##############################################################
             //#############################################################
             //##############################################################
-            botBl.processUsuario(update);
 //            LOGGER.info("Registro de usuario exitoso");
 
             if (messageTextReceived.equals("/start")) {
