@@ -10,5 +10,5 @@ public interface PreguntaRepository extends JpaRepository<PreguntaEntity,Integer
 
     List<PreguntaEntity> findAllByIdPregunta(int idPregunta);
     List<PreguntaEntity> findAllByIdTest(int idTest);
-    PreguntaEntity findAllByContenidoPreguntaAndIdTest(String content_question, TestEntity entity);
+    PreguntaEntity findByContenidoPreguntaAndIdTest(String content_question, TestEntity entity);
 }
