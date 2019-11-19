@@ -2,22 +2,17 @@ package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.CursoRepository;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.DocenteRespository;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
+import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.KjEstudianteUserRepository;
-import ucb.edu.kajoybot.bo.databasekajoy.domain.CursoEntity;
-import ucb.edu.kajoybot.bo.databasekajoy.domain.DocenteEntity;
-import ucb.edu.kajoybot.bo.databasekajoy.domain.EstudianteEntity;
-import ucb.edu.kajoybot.bo.databasekajoy.domain.KjEstudianteUserEntity;
+import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
 @Service
@@ -29,14 +24,31 @@ public class BotBl {
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
+    private TestRepository testRepository;
+    private RespuestaRepository respuestaRepository;
+    private PreguntaRepository preguntaRepository;
 
     @Autowired
-    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
+    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
+                 CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository,
+                 TestRepository testRepository, RespuestaRepository respuestaRepository,
+                 PreguntaRepository preguntaRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
         this.kjEstudianteUserRepository = kjEstudianteUserRepository;
+        this.testRepository = testRepository;
+        this.respuestaRepository = respuestaRepository;
+        this.preguntaRepository = preguntaRepository;
     }
+
+/*    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
+        this.estudianteRespository = estudianteRespository;
+        this.docenteRespository = docenteRespository;
+        this.cursoRepository = cursoRepository;
+        this.kjEstudianteUserRepository = kjEstudianteUserRepository;
+    }*/
+
 
 
     public  String guardarListaRegistros(List<String> listaderegistros){
@@ -129,6 +141,68 @@ public class BotBl {
     }
 
 
+    public String saveCompleteTest(List<String> questionsList,List<String> responseList ){
+        saveTest();
+        saveQuestionList(questionsList);
+        saveResponseList(responseList,questionsList);
+        return "REGISTRO DE TEST COMPLETADO";
+    }
+
+    public void saveTest(){
+        TestEntity testEntity=new TestEntity();
+        CursoEntity cursoEntity= cursoRepository.findByIdCurso(8);
+        testEntity.setIdCurso(cursoEntity);
+        DocenteEntity docenteEntity=new DocenteEntity();
+        docenteEntity=docenteRespository.findAllByIdDocente(1);
+        testEntity.setIdDocente(docenteEntity);
+        testEntity.setNombreTest("Matematica discreta");
+        testRepository.save(testEntity);
+    }
+
+    public void  saveQuestion(String question,int questionNumber){
+        PreguntaEntity preguntaEntity= new PreguntaEntity();
+        TestEntity testEntity=testRepository.findAllByNombreTest("Matematica discreta");
+        preguntaEntity.setIdTest(testEntity);
+        preguntaEntity.setContenidoPregunta(question);
+        preguntaEntity.setNumeroPregunta(questionNumber);
+    }
+
+    public void saveQuestionList(List<String> questionList){
+        int count=1;
+        for (String question:questionList){
+            saveQuestion(question,count);
+            count++;
+        }
+
+    }
+
+    public  void saveResponseList(List<String> responseList,List<String> questionList)
+    {
+        TestEntity testEntity= new TestEntity();
+        testEntity=testRepository.findAllByNombreTest("Matematica discreta");
+        int numberResponse=1;
+        int indexQuestionList=0;
+        for(int i=0;i<responseList.size();i++){
+            if(numberResponse==4){
+                PreguntaEntity preguntaEntity= new PreguntaEntity();
+                preguntaEntity=preguntaRepository.findAllByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
+                indexQuestionList++;
+                saveResponse(responseList.get(i),preguntaEntity,numberResponse);
+            }
+            else {
+                numberResponse=1;
+            }
+            numberResponse++;
+        }
+    }
+
+    public void  saveResponse(String response,PreguntaEntity preguntaEntity,int numberResponse){
+        RespuestaEntity respuestaEntity= new RespuestaEntity();
+        respuestaEntity.setIdPregunta(preguntaEntity);
+        respuestaEntity.setContenidoRespuesta(response);
+        respuestaEntity.setEsCorrecta(0);
+        respuestaEntity.setNumeroRespuesta(numberResponse);
+    }
 
 
 }
