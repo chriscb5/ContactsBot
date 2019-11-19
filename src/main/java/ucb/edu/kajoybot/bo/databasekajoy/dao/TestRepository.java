@@ -9,4 +9,6 @@ public interface TestRepository extends JpaRepository<TestEntity,Integer> {
     List<TestEntity> findAllByIdTest(int idTest);
 
     TestEntity findAllByNombreTest(String nombreTest);
+
+    TestEntity findByNombreTest(String nombreTest);
 }
