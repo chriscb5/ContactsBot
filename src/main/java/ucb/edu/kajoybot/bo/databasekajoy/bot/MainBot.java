@@ -458,13 +458,13 @@ public class MainBot extends TelegramLongPollingBot {
         if(messageTextReceived.equals("Iniciar sesión")) {
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
-                    .setText("Seleccione una opción por favor");
+                    .setText("Genial! eres Docente o Estudiante?");
 
             ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
             List<KeyboardRow> keyboard = new ArrayList<>();
             KeyboardRow row = new KeyboardRow();
-            row.add("Docente");
-            row.add("Estudiante");
+            row.add("Soy Docente");
+            row.add("Soy Estudiante");
             keyboard.add(row);
 
             keyboardMarkup.setKeyboard(keyboard);
