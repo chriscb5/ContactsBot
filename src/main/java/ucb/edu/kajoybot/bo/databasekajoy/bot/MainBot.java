@@ -438,12 +438,12 @@ public class MainBot extends TelegramLongPollingBot {
         if(messageTextReceived.equals("Comenzar")) {
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
-                    .setText("Seleccione una opción por favor");
+                    .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!");
 
                 ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
                 List<KeyboardRow> keyboard = new ArrayList<>();
                 KeyboardRow row = new KeyboardRow();
-                row.add("Comenzar sesión");
+                row.add("Iniciar sesión");
                 row.add("Registro");
                 keyboard.add(row);
 
@@ -455,7 +455,7 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
         }
-        if(messageTextReceived.equals("Comenzar sesión")) {
+        if(messageTextReceived.equals("Iniciar sesión")) {
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
                     .setText("Seleccione una opción por favor");
