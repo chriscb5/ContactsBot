@@ -555,10 +555,16 @@ public class MainBot extends TelegramLongPollingBot {
             }
 
             if (messageTextReceived.equals("Registro Estudiante Curso")) {
-                entra_a_registro_estudiante_curso = false;
+                entra_a_registro_estudiante_curso = true;
                 SendMessage message = new SendMessage()
                         .setChatId(chatId)
-                        .setText("Registro de estudiante a un curso\nIngrese el nombre del Curso");
+                        .setText("Registro de estudiante a un curso")
+                        .setText("Ingrese el nombre del curso");
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
 
 
