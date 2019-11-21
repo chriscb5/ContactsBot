@@ -196,6 +196,43 @@ public class MainBot extends TelegramLongPollingBot {
                             e.printStackTrace();
                         }
                     }
+                    mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1) ;
+                    registrollenadosList.add(messageTextReceived);
+                    LOGGER.info("Tamaño de array "+registrollenadosList.size());
+                }
+                if (registrollenadosList.size()==3) {
+                    LOGGER.info("Ingresa a registros llenos");
+                    String mensajecomp = botBl.guardarListaRegistrosCurso(registrollenadosList);
+                    SendMessage message2 = new SendMessage()
+                            .setChatId(update.getMessage().getChatId())
+                            .setText(mensajecomp);
+                    try {
+                        this.execute(message2);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    registrosllenos = false;
+                    registrollenadosList.clear();
+                    entra_a_registro_curso = false;
+                }
+            }
+
+            if (entra_a_registro_estudiante_curso) {
+                LOGGER.info("Entra a el registro de estudiante en curso");
+                if(registrollenadosList.size()<2)
+                {
+                    LOGGER.info("Entra a registros no llenos");
+                    if(mensajesBL.getNumero_de_pregunta()<1){
+                        String mensaje = mensajesBL.mensajesRegistroEstudianteCurso(update);
+                        SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(mensaje);
+                        try {
+                            this.execute(message);
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     mensajesBL.setNumero_de_pregunta(mensajesBL.getNumero_de_pregunta()+1) ;//
                     registrollenadosList.add(messageTextReceived);
                     LOGGER.info("Tamaño de array "+registrollenadosList.size());
