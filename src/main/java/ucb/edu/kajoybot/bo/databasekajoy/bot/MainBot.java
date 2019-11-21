@@ -477,7 +477,7 @@ public class MainBot extends TelegramLongPollingBot {
         }
 
 
-        if(messageTextReceived.equals("Estudiante")){
+        if(messageTextReceived.equals("Soy Estudiante")){
             String response=personBL.ExistDocenteByNombre(messageTextReceived);
             SendMessage message=new SendMessage().setChatId(chatId).setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
             entra_a_iniciar_estudiante=true;
@@ -501,7 +501,7 @@ public class MainBot extends TelegramLongPollingBot {
 
 
         }
-        if(messageTextReceived.equals("Docente")){
+        if(messageTextReceived.equals("Soy Docente")){
             String response=personBL.ExistDocenteByNombre(messageTextReceived);
             SendMessage message=new SendMessage().setChatId(chatId).setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
             entra_a_iniciar_docente=true;
