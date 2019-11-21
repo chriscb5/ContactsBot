@@ -419,14 +419,14 @@ public class MainBot extends TelegramLongPollingBot {
 
         //Información
         if(messageTextReceived.equals("Información")) {
-            String imageFile = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Info_icon_002.svg/480px-Info_icon_002.svg.png";
+            String imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
             SendPhoto sendPhoto = new SendPhoto()
                     .setChatId(chatId)
                     .setPhoto(imageFile);
 
             SendMessage message = new SendMessage()
                     .setChatId(chatId)
-                    .setText("Somos una plataforma para crear test interactivos! \n Los docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+                    .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
             try {
                 execute(sendPhoto);
                 execute(message);
