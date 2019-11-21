@@ -32,6 +32,7 @@ public class MainBot extends TelegramLongPollingBot {
     private static boolean entra_a_iniciar_docentenombre=false;
     private static boolean entra_a_registro_test=false;
     private static boolean entra_a_registro_respuesta=true;
+    private static boolean entra_a_registro_estudiante_curso=true;
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
@@ -551,6 +552,13 @@ public class MainBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+            }
+
+            if (messageTextReceived.equals("Registro Estudiante Curso")) {
+                entra_a_registro_estudiante_curso = false;
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("Registro de estudiante a un curso\nIngrese el nombre del Curso");
             }
 
 
