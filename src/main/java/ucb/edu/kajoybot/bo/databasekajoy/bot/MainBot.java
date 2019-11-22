@@ -286,10 +286,6 @@ public class MainBot extends TelegramLongPollingBot {
 //                termina_test=true;
             }
 
-            //##############################################################
-            //##############################################################
-            //##############################################################
-            //##############################################################
             if (entra_a_registro_test){
                 if(entra_a_registro_respuesta){
                     if(mensajesBL.getNumero_de_respuesta()==4)
@@ -382,12 +378,9 @@ public class MainBot extends TelegramLongPollingBot {
 
             }// TERMINA REGISTRO TEST
 
-
             //##############################################################
             //#############################################################
             //##############################################################
-//            LOGGER.info("Registro de usuario exitoso");
-
             //INICIO BOT
 
             if (messageTextReceived.equals("/start")) {
@@ -456,6 +449,28 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+            //Registro
+            if (messageTextReceived.equals("Registro")) {
+                SendMessage message = new SendMessage()
+                        .setChatId(chatId)
+                        .setText("Seleccione una opción por favor");
+
+                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                List<KeyboardRow> keyboard = new ArrayList<>();
+                KeyboardRow row = new KeyboardRow();
+                row.add("Registro Profesor");
+                row.add("Registro Alumno");
+                keyboard.add(row);
+
+                keyboardMarkup.setKeyboard(keyboard);
+                message.setReplyMarkup(keyboardMarkup);
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+
             //Iniciar Sesion
             if(messageTextReceived.equals("Iniciar sesión")) {
                 SendMessage message = new SendMessage()
@@ -515,27 +530,6 @@ public class MainBot extends TelegramLongPollingBot {
                 }
             }
 
-            //Registro
-            if (messageTextReceived.equals("Registro")) {
-                SendMessage message = new SendMessage()
-                        .setChatId(chatId)
-                        .setText("Seleccione una opción por favor");
-
-                ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                List<KeyboardRow> keyboard = new ArrayList<>();
-                KeyboardRow row = new KeyboardRow();
-                row.add("Registro Profesor");
-                row.add("Registro Alumno");
-                keyboard.add(row);
-
-                keyboardMarkup.setKeyboard(keyboard);
-                message.setReplyMarkup(keyboardMarkup);
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
 
             //Registro Alumno
             if (messageTextReceived.equals("Registro Alumno")) {
