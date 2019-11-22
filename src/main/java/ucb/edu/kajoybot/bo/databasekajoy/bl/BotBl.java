@@ -82,23 +82,49 @@ public class BotBl {
         return "¡Registro completado exitosamente¡";
     }
 
-    public void processUsuario(Update update) {
+
+//intento Multi Usuario
+    public List<String> processUpdate(Update update) {
         LOGGER.info("Recibiendo update {} ", update);
-        List<String> result = new ArrayList<>();
+        List<String> chatResponce = new ArrayList<>();
+        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+        int m=0;
+        continueChatWithUser(kjEstudianteUserEntity,chatResponce,m);
+
         // Si es la primera vez pedir una imagen para su perfil
-        if (initUser(update.getMessage().getFrom())) {
-            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
-            result.add("Por favor ingrese una imagen para su foto de perfil");
-        } else { // Mostrar el menu de opciones
-            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
-            result.add("Bienvenido al Bot");
-        }
+//        if () {
+//            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
+//            result.add("Por favor ingrese una imagen para su foto de perfil");
+//        } else { // Mostrar el menu de opciones
+//            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
+//            result.add("Bienvenido al Bot");
+//        }
+        return result;
+    }
+
+    private void continueChatWithUser(KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponce, int x) {
+
 
     }
 
+/*Primer Version*/
+//    public void processUsuario(Update update) {
+//        LOGGER.info("Recibiendo update {} ", update);
+//        initUser(update.getMessage().getFrom());
+//        List<String> result = new ArrayList<>();
+//        // Si es la primera vez pedir una imagen para su perfil
+//        if () {
+//            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
+//            result.add("Por favor ingrese una imagen para su foto de perfil");
+//        } else { // Mostrar el menu de opciones
+//            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
+//            result.add("Bienvenido al Bot");
+//        }
+//
+//    }
 
-    private boolean initUser(User user) {
-        boolean result = false;
+    private KjEstudianteUserEntity initUser(User user) {
+
         KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findAllByBotUserId(user.getId().toString());
         if (kjEstudianteUserEntity == null) {
             EstudianteEntity estudianteEntity= new EstudianteEntity();
@@ -117,9 +143,9 @@ public class BotBl {
             kjEstudianteUserEntity1.setTxUser("admin");
             kjEstudianteUserEntity1.setTxDate(new Date());
             kjEstudianteUserRepository.save(kjEstudianteUserEntity1);
-            result = true;
+
         }
-        return result;
+        return kjEstudianteUserEntity;
     }
 
 
