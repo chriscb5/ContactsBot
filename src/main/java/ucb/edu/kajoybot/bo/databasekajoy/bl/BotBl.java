@@ -91,7 +91,7 @@ public class BotBl {
         List<String> chatResponce = new ArrayList<>();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         int m=0;
-        continueChatWithUser(kjEstudianteUserEntity,chatResponce,m);
+        continueChatWithUser(update,kjEstudianteUserEntity,chatResponce);
 
         // Si es la primera vez pedir una imagen para su perfil
 //        if () {
@@ -101,12 +101,25 @@ public class BotBl {
 //            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
 //            result.add("Bienvenido al Bot");
 //        }
-        return result;
+        return chatResponce;
     }
 
-    private void continueChatWithUser(KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponce, int x) {
+    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponce) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
-
+        if(lastMenssage == null){
+            String response = "1";
+            KjChatEntity kjChatEntity = new KjChatEntity();
+            kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+            kjChatEntity.setInMessage(update.getMessage().toString());
+            kjChatEntity.setOutMessage(response);
+            kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
+            kjChatEntity.setTxDate(new Date());
+            kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+            kjChatEntity.setTxHost(update.getMessage().toString());
+        }
+        else{
+            chatResponce.add("otra cosa");
+        }
 
     }
 
