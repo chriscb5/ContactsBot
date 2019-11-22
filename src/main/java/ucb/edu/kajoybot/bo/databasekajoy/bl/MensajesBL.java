@@ -76,6 +76,22 @@ public class MensajesBL {
         return cadena;
     }
 
+    public  String mensajesRegistroEstudianteCurso(Update update)
+    {
+        String cadena=new String();
+        switch (numero_de_pregunta){
+            case 0:
+                LOGGER.info("Ingresando nombre curso");
+                cadena="**Unirse a un curso**";
+                break;
+            case 1:
+                LOGGER.info("Ingresando clave");
+                cadena="El curso es privado\n Por favor, ingrese la clave del curso";
+                break;
+        }
+        return cadena;
+    }
+
     public  String mensajeRegistroTest(Update update){
         String caden=new String();
         switch (numero_de_pregunta){
