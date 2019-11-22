@@ -470,7 +470,6 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-
             //Iniciar Sesion
             if(messageTextReceived.equals("Iniciar sesión")) {
                 SendMessage message = new SendMessage()
@@ -493,6 +492,7 @@ public class MainBot extends TelegramLongPollingBot {
                 }
             }
 
+
             //Soy Estudiante
             if(messageTextReceived.equals("Soy Estudiante")){
                 String response=personBL.ExistDocenteByNombre(messageTextReceived);
@@ -504,6 +504,7 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+
 
             //Soy Docente
             if(messageTextReceived.equals("Soy Docente")){
@@ -535,7 +536,7 @@ public class MainBot extends TelegramLongPollingBot {
             if (messageTextReceived.equals("Registro Alumno")) {
                 entra_a_registro_estudiante = true;
                 SendMessage message = new SendMessage()
-                        .setChatId(chatId)
+                        .   setChatId(chatId)
                         .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
 
                 try {

@@ -65,6 +65,9 @@ import javax.persistence.TemporalType;
     private List<EstudianteTestEntity> estudianteTestCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstudiante")
     private List<EstudianteCursoEntity> estudianteCursoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstudiante")
+    private List<KjEstudianteUserEntity> kjestudianteuserCollection;
+
 
     public EstudianteEntity() {
     }
@@ -159,6 +162,22 @@ import javax.persistence.TemporalType;
 
     public void setEstudianteCursoList(List<EstudianteCursoEntity> estudianteCursoCollection) {
         this.estudianteCursoCollection = estudianteCursoCollection;
+    }
+
+    public List<EstudianteCursoEntity> getEstudianteCursoCollection() {
+        return estudianteCursoCollection;
+    }
+
+    public void setEstudianteCursoCollection(List<EstudianteCursoEntity> estudianteCursoCollection) {
+        this.estudianteCursoCollection = estudianteCursoCollection;
+    }
+
+    public List<KjEstudianteUserEntity> getKjestudianteuserCollection() {
+        return kjestudianteuserCollection;
+    }
+
+    public void setKjestudianteuserCollection(List<KjEstudianteUserEntity> kjestudianteuserCollection) {
+        this.kjestudianteuserCollection = kjestudianteuserCollection;
     }
 
     @Override
