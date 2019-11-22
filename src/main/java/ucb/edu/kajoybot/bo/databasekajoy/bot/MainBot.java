@@ -431,6 +431,7 @@ public class MainBot extends TelegramLongPollingBot {
 
             keyboardMarkup.setKeyboard(keyboard);
             message.setReplyMarkup(keyboardMarkup);
+
             try {
                 execute(message);
             } catch (TelegramApiException e) {
@@ -439,16 +440,38 @@ public class MainBot extends TelegramLongPollingBot {
         }
 
 
-        if(messageTextReceived.equals("Estudiante")){
-            String response=personBL.ExistDocenteByNombre(messageTextReceived);
-            SendMessage message=new SendMessage().setChatId(chatId).setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
-            entra_a_iniciar_estudiante=true;
+        if(messageTextReceived.equals("Comenzar sesión")) {
+           SendMessage message = new SendMessage()
+                   .setChatId(chatId)
+                   .setText("Seleccione una opción por favor");
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            List<KeyboardRow> keyboard = new ArrayList<>();
+            KeyboardRow row = new KeyboardRow();
+            row.add("Docente");
+            row.add("Estudiante");
+            keyboard.add(row);
+
+            keyboardMarkup.setKeyboard(keyboard);
+            message.setReplyMarkup(keyboardMarkup);
+
             try {
-                execute(message); // Sending our message object to user
+                execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+
+
+            if(messageTextReceived.equals("Estudiante")){
+                String response=personBL.ExistDocenteByNombre(messageTextReceived);
+                SendMessage message=new SendMessage().setChatId(chatId).setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+                entra_a_iniciar_estudiante=true;
+                try {
+                    execute(message); // Sending our message object to user
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
 
 
         if(messageTextReceived.equals("verificar docente")){
@@ -501,7 +524,7 @@ public class MainBot extends TelegramLongPollingBot {
             if (messageTextReceived.equals("Registro Alumno")) {
                 entra_a_registro_estudiante = true;
                 SendMessage message = new SendMessage()
-                        .setChatId(chatId)
+                        .   setChatId(chatId)
                         .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
 
                 try {
@@ -527,7 +550,7 @@ public class MainBot extends TelegramLongPollingBot {
                 }
             }
 
-            if(messageTextReceived.equals("Test")){
+            if(messageTextReceived.equals("Crear test")){
                 entra_a_registro_test=true;
                 confirmation=false;
                 aniade_pregunta_nueva=true;
@@ -540,6 +563,7 @@ public class MainBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+
 
             if (messageTextReceived.equals("Crear Nuevo Curso")) {
                 entra_a_registro_curso = true;
