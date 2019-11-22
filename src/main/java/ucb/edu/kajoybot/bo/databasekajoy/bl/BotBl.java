@@ -106,21 +106,31 @@ public class BotBl {
 
     private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponce) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
-        if(lastMenssage == null){
-            String response = "1";
-            KjChatEntity kjChatEntity = new KjChatEntity();
-            kjChatEntity.setKjuserid(kjEstudianteUserEntity);
-            kjChatEntity.setInMessage(update.getMessage().toString());
-            kjChatEntity.setOutMessage(response);
-            kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
-            kjChatEntity.setTxDate(new Date());
-            kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
-            kjChatEntity.setTxHost(update.getMessage().toString());
-        }
-        else{
-            chatResponce.add("otra cosa");
-        }
+        String response = null;
 
+        if(lastMenssage == null){
+            response = "1";
+        }
+        else {
+            int lastMessageInt = 0;
+            try {
+                lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
+                response ="" + (lastMessageInt +1);
+            } catch (NumberFormatException nfe){
+                response ="1";
+            }
+
+        }
+        KjChatEntity kjChatEntity = new KjChatEntity();
+        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+        kjChatEntity.setInMessage(update.getMessage().getText());
+        kjChatEntity.setOutMessage(response);
+        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
+        kjChatEntity.setTxDate(new Date());
+        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
+        chatRepository.save(kjChatEntity);
+        chatResponce.add(response);
     }
 
 /*Primer Version*/
