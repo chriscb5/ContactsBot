@@ -27,12 +27,13 @@ public class BotBl {
     private TestRepository testRepository;
     private RespuestaRepository respuestaRepository;
     private PreguntaRepository preguntaRepository;
+    private ChatRepository chatRepository;
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
                  CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository,
                  TestRepository testRepository, RespuestaRepository respuestaRepository,
-                 PreguntaRepository preguntaRepository) {
+                 PreguntaRepository preguntaRepository, ChatRepository chatRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
@@ -40,6 +41,7 @@ public class BotBl {
         this.testRepository = testRepository;
         this.respuestaRepository = respuestaRepository;
         this.preguntaRepository = preguntaRepository;
+        this.chatRepository = chatRepository;
     }
 
 /*    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
@@ -103,6 +105,7 @@ public class BotBl {
     }
 
     private void continueChatWithUser(KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponce, int x) {
+        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
 
 
     }
