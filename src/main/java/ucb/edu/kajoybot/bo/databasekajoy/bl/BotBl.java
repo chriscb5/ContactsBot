@@ -208,8 +208,11 @@ public class BotBl {
                                 setText("Iniciar como Docente\nIngrese su nombre");
 //                        entra_a_iniciar_docentenombre=true;//FIXME celis poner la funcion
                         break;
-//                    case :
-//                        break;
+                    case "Registro Alumno":
+//                      entra_a_registro_estudiante = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                        break;
 //                    case :
 //                        break;
 //                    case :
