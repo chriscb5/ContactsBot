@@ -102,6 +102,8 @@ public class BotBl {
     private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
+        long chatId = update.getMessage().getChatId();
+
         LOGGER.info("ULtimo mensaje comienzo update"+update.getMessage().getText());
         String response = null;
 
@@ -112,14 +114,23 @@ public class BotBl {
             int lastMessageInt = 0;
             try {
 
-
                 if(messageInput.equals("/start")){
-
-
-
-                    lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
-                    response ="DD" + (lastMessageInt +1);
-
+                    String imageFile= "https://beeimg.com/images/r29284261002.png";
+                    SendPhoto sendPhoto = new SendPhoto()
+                            .setChatId(chatId)
+                            .setPhoto(imageFile);
+                    SendMessage message = new SendMessage()
+                            .setChatId(chatId)
+                            .setText("Seleccione una opción por favor");
+                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard = new ArrayList<>();
+                    KeyboardRow row = new KeyboardRow();
+                    row.add("Comenzar");
+                    row.add("Información");
+                    keyboard.add(row);
+                    keyboardMarkup.setKeyboard(keyboard);
+                    message.setReplyMarkup(keyboardMarkup);
+                    response =message.getText();
                 }
                 else {
                     lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
