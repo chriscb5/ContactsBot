@@ -88,10 +88,9 @@ public class BotBl {
 //intento Multi Usuario
     public List<String> processUpdate(Update update) {
         LOGGER.info("Recibiendo update {} ", update);
-        List<String> chatResponce = new ArrayList<>();
+        List<String> chatResponse = new ArrayList<>();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        int m=0;
-        continueChatWithUser(update,kjEstudianteUserEntity,chatResponce);
+        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
 
         // Si es la primera vez pedir una imagen para su perfil
 //        if () {
@@ -101,10 +100,10 @@ public class BotBl {
 //            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
 //            result.add("Bienvenido al Bot");
 //        }
-        return chatResponce;
+        return chatResponse;
     }
 
-    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponce) {
+    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String response = null;
 
@@ -130,7 +129,7 @@ public class BotBl {
         kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
         kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
         chatRepository.save(kjChatEntity);
-        chatResponce.add(response);
+        chatResponse.add(response);
     }
 
 /*Primer Version*/
@@ -151,7 +150,7 @@ public class BotBl {
 
     private KjEstudianteUserEntity initUser(User user) {
 
-        KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findAllByBotUserId(user.getId().toString());
+        KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findByBotUserId(user.getId().toString());
         if (kjEstudianteUserEntity == null) {
             EstudianteEntity estudianteEntity= new EstudianteEntity();
             estudianteEntity.setNombre(user.getFirstName());
