@@ -202,8 +202,12 @@ public class BotBl {
 //                        entra_a_iniciar_docente=true;//FIXME celis poner la funcion
                         break;
 
-//                    case :
-//                        break;
+                    case "verificar docente":
+                        response=personBL.ExistDocenteByNombre(messageInput);
+                        message.setChatId(chatId).
+                                setText("Iniciar como Docente\nIngrese su nombre");
+//                        entra_a_iniciar_docentenombre=true;//FIXME celis poner la funcion
+                        break;
 //                    case :
 //                        break;
 //                    case :
