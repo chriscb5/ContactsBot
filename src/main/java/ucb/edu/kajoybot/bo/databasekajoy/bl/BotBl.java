@@ -225,8 +225,12 @@ public class BotBl {
                         message.setChatId(chatId)
                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
                         break;
-//                    case :
-//                        break;
+                    case "Crear Nuevo Curso":
+//                        entra_a_registro_curso = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
+
+                        break;
 //                    case :
 //                        break;
 //                    case :
