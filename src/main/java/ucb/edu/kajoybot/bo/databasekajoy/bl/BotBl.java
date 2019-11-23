@@ -218,9 +218,23 @@ public class BotBl {
                         message.setChatId(chatId)
                                 .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
                         break;
+                    case "Test":
+//                         entra_a_registro_test=true;//FIXME celis poner la funcion
+//                         confirmation=false;//FIXME celis poner la funcion
+//                         aniade_pregunta_nueva=true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                               .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+                        break;
 //                    case :
 //                        break;
-
+//                    case :
+//                        break;
+//                    case :
+//                        break;
+//                    case :
+//                        break;
+//                    case :
+//                        break;
                     default:
                         lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
                         response = "" + (lastMessageInt + 1);
