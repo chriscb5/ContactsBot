@@ -109,6 +109,10 @@ public class BotBl {
         String imageFile = null;
         SendPhoto sendPhoto = new SendPhoto();
         SendMessage message = new SendMessage();
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
 
         if(lastMenssage == null){
             response = "1";
@@ -118,124 +122,80 @@ public class BotBl {
             try {
                 switch(messageInput) {
                     case "/start":
-                    imageFile= "https://beeimg.com/images/r29284261002.png";
-                    sendPhoto.setChatId(chatId)
-                            .setPhoto(imageFile);
-                    message.setChatId(chatId)
-                            .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-                    List<KeyboardRow> keyboard = new ArrayList<>();
-                    KeyboardRow row = new KeyboardRow();
-                    row.add("Comenzar");
-                    row.add("Información");
-                    keyboard.add(row);
-                    keyboardMarkup.setKeyboard(keyboard);
-                    message.setReplyMarkup(keyboardMarkup);
-                    response =message.getText();
+                        imageFile= "https://beeimg.com/images/r29284261002.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
+                        message.setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+
+                        row.add("Comenzar");
+                        row.add("Información");
+                        keyboard.add(row);
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
                         // code block
                         break;
                     case "Información":
-                    imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
-                    sendPhoto.setChatId(chatId)
-                            .setPhoto(imageFile);
+                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
 
-                    message.setChatId(chatId)
-                            .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+                        message.setChatId(chatId)
+                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
 
-                    response =message.getText();
+                        response =message.getText();
                         // code block
                         break;
+                    case "Comenzar":
+                        message.setChatId(chatId)
+                                .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
+
+                        row.add("Iniciar sesión");
+                        row.add("Registro");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        break;
+                    case "Registro":
+                        message.setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
+
+                        row.add("Registro Profesor");
+                        row.add("Registro Alumno");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        break;
+                    case "Iniciar sesión":
+                        message.setChatId(chatId)
+                            .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+                        row.add("Soy Docente");
+                        row.add("Soy Estudiante");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        break;
+//                    case :
+//                        break;
+//                    case :
+//                        break;
+//                    case :
+//                        break;
+
                     default:
                         lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
                         response = "" + (lastMessageInt + 1);
                         // code block
                 }
-//                if(messageInput.equals("/start")){
-//                    String imageFile= "https://beeimg.com/images/r29284261002.png";
-//                    SendPhoto sendPhoto = new SendPhoto()
-//                            .setChatId(chatId)
-//                            .setPhoto(imageFile);
-//                    SendMessage message = new SendMessage()
-//                            .setChatId(chatId)
-//                            .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-//                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-//                    List<KeyboardRow> keyboard = new ArrayList<>();
-//                    KeyboardRow row = new KeyboardRow();
-//                    row.add("Comenzar");
-//                    row.add("Información");
-//                    keyboard.add(row);
-//                    keyboardMarkup.setKeyboard(keyboard);
-//                    message.setReplyMarkup(keyboardMarkup);
-//                    response =message.getText();
-//                }
-//                //Información
-//                if(messageInput.equals("Información")) {
-//                    String imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
-//                    SendPhoto sendPhoto = new SendPhoto()
-//                            .setChatId(chatId)
-//                            .setPhoto(imageFile);
-//
-//                    SendMessage message = new SendMessage()
-//                            .setChatId(chatId)
-//                            .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-//
-//                    response =message.getText();
-//                }
-//                //Comenzar
-//                if(messageInput.equals("Comenzar")) {
-//                    SendMessage message = new SendMessage()
-//                            .setChatId(chatId)
-//                            .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-//
-//                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-//                    List<KeyboardRow> keyboard = new ArrayList<>();
-//                    KeyboardRow row = new KeyboardRow();
-//                    row.add("Iniciar sesión");
-//                    row.add("Registro");
-//                    keyboard.add(row);
-//
-//                    keyboardMarkup.setKeyboard(keyboard);
-//                    message.setReplyMarkup(keyboardMarkup);
-//                    response =message.getText();
-//                }
-//                //Registro
-//                if (messageInput.equals("Registro")) {
-//                    SendMessage message = new SendMessage()
-//                            .setChatId(chatId)
-//                            .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-//
-//                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-//                    List<KeyboardRow> keyboard = new ArrayList<>();
-//                    KeyboardRow row = new KeyboardRow();
-//                    row.add("Registro Profesor");
-//                    row.add("Registro Alumno");
-//                    keyboard.add(row);
-//
-//                    keyboardMarkup.setKeyboard(keyboard);
-//                    message.setReplyMarkup(keyboardMarkup);
-//                    response =message.getText();
-//                }
-//                //Iniciar Sesion
-//                if(messageInput.equals("Iniciar sesión")) {
-//                    SendMessage message = new SendMessage()
-//                            .setChatId(chatId)
-//                            .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
-//
-//                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-//                    List<KeyboardRow> keyboard = new ArrayList<>();
-//                    KeyboardRow row = new KeyboardRow();
-//                    row.add("Soy Docente");
-//                    row.add("Soy Estudiante");
-//                    keyboard.add(row);
-//
-//                    keyboardMarkup.setKeyboard(keyboard);
-//                    message.setReplyMarkup(keyboardMarkup);
-//                    response =message.getText();
-//                }
-//                else {
-//                    lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
-//                    response = "" + (lastMessageInt + 1);
-//                }
+
+
 
             } catch (NumberFormatException nfe){
                 response ="1";
