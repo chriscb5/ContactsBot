@@ -162,6 +162,23 @@ public class BotBl {
                     message.setReplyMarkup(keyboardMarkup);
                     response =message.getText();
                 }
+                //Registro
+                if (messageInput.equals("Registro")) {
+                    SendMessage message = new SendMessage()
+                            .setChatId(chatId)
+                            .setText("Seleccione una opción por favor");
+
+                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard = new ArrayList<>();
+                    KeyboardRow row = new KeyboardRow();
+                    row.add("Registro Profesor");
+                    row.add("Registro Alumno");
+                    keyboard.add(row);
+
+                    keyboardMarkup.setKeyboard(keyboard);
+                    message.setReplyMarkup(keyboardMarkup);
+                    response =message.getText();
+                }
                 else {
                     lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
                     response = "" + (lastMessageInt + 1);
