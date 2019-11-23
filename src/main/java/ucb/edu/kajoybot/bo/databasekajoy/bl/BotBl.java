@@ -121,7 +121,7 @@ public class BotBl {
                             .setPhoto(imageFile);
                     SendMessage message = new SendMessage()
                             .setChatId(chatId)
-                            .setText("Seleccione una opción por favor");
+                            .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                     ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
                     List<KeyboardRow> keyboard = new ArrayList<>();
                     KeyboardRow row = new KeyboardRow();
@@ -132,7 +132,7 @@ public class BotBl {
                     message.setReplyMarkup(keyboardMarkup);
                     response =message.getText();
                 }
-                            //Información
+                //Información
                 if(messageInput.equals("Información")) {
                     String imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
                     SendPhoto sendPhoto = new SendPhoto()
@@ -149,7 +149,7 @@ public class BotBl {
                 if(messageInput.equals("Comenzar")) {
                     SendMessage message = new SendMessage()
                             .setChatId(chatId)
-                            .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!");
+                            .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
 
                     ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
                     List<KeyboardRow> keyboard = new ArrayList<>();
@@ -166,7 +166,7 @@ public class BotBl {
                 if (messageInput.equals("Registro")) {
                     SendMessage message = new SendMessage()
                             .setChatId(chatId)
-                            .setText("Seleccione una opción por favor");
+                            .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
 
                     ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
                     List<KeyboardRow> keyboard = new ArrayList<>();
