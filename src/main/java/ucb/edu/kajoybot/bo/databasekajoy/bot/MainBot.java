@@ -127,8 +127,7 @@ public class MainBot extends TelegramLongPollingBot {
 //
 //            if (entra_a_registro_estudiante) {
 //                LOGGER.info("Entra a el registro estudiante oficial");
-//                if(registrollenadosList.size()<5)
-//                {
+//                if(registrollenadosList.size()<5) {
 //                    LOGGER.info("Entra al registros no llenos");
 //                    if(mensajesBL.getNumero_de_pregunta()<4){
 //                        String mensaje = /*botBl*/mensajesBL.mensajesRegistroEstudiante(update);
@@ -199,8 +198,7 @@ public class MainBot extends TelegramLongPollingBot {
 //            }
 //            if (entra_a_registro_curso) {
 //                LOGGER.info("Entra a el registro curso oficial");
-//                if(registrollenadosList.size()<3)
-//                {
+//                if(registrollenadosList.size()<3) {
 //                    LOGGER.info("Entra al registros no llenos");
 //                    if(mensajesBL.getNumero_de_pregunta()<2){
 //                        String mensaje = mensajesBL.mensajesRegistroCurso(update);
@@ -236,8 +234,7 @@ public class MainBot extends TelegramLongPollingBot {
 //
 //            if (entra_a_registro_estudiante_curso) {
 //                LOGGER.info("Entra a el registro de estudiante en curso");
-//                if(registrollenadosList.size()<2)
-//                {
+//                if(registrollenadosList.size()<2) {
 //                    LOGGER.info("Entra a registros no llenos");
 //                    if(mensajesBL.getNumero_de_pregunta()<1){
 //                        String mensaje = mensajesBL.mensajesRegistroEstudianteCurso(update);
@@ -307,8 +304,7 @@ public class MainBot extends TelegramLongPollingBot {
 //
 //            if (entra_a_registro_test){
 //                if(entra_a_registro_respuesta){
-//                    if(mensajesBL.getNumero_de_respuesta()==4)
-//                    {
+//                    if(mensajesBL.getNumero_de_respuesta()==4) {
 //                        registrorespuestalist.add(messageTextReceived);
 //                        LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
 //                        LOGGER.info("ENTRO AL SI CON ARRAY "+registrorespuestalist.size());
@@ -343,8 +339,8 @@ public class MainBot extends TelegramLongPollingBot {
 //                        }
 //                    }//Terminate NUMERO DE RESPUESTAS= 4
 //
-//                    if(mensajesBL.getNumero_de_respuesta()<4 && entra_a_registro_respuesta)
-//                    {//INGRESANDO A REGISTROS NO COMPLETOS
+//                    if(mensajesBL.getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
+//                        //INGRESANDO A REGISTROS NO COMPLETOS
 //                        String mensaje=mensajesBL.mensajeRegistroRespuesta(update);
 //                        SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
 //                                .setChatId(update.getMessage().getChatId())
