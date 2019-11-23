@@ -213,8 +213,11 @@ public class BotBl {
                         message.setChatId(chatId)
                                 .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
                         break;
-//                    case :
-//                        break;
+                    case "Registro Docente":
+//                        entra_a_registro_docente = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                        break;
 //                    case :
 //                        break;
 
