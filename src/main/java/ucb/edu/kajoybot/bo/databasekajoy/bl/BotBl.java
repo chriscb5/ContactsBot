@@ -195,6 +195,17 @@ public class BotBl {
                                 .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
 //                        entra_a_iniciar_estudiante=true;//FIXME celis poner la función
                         break;
+                    case "Soy Docente":
+                        response=personBL.ExistDocenteByNombre(messageInput);
+                        message.setChatId(chatId).
+                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+//                        entra_a_iniciar_docente=true;//FIXME celis poner la funcion
+                        break;
+
+//                    case :
+//                        break;
+//                    case :
+//                        break;
 //                    case :
 //                        break;
 //                    case :
