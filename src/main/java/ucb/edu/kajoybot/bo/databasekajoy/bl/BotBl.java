@@ -4,8 +4,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 
 import java.util.ArrayList;
@@ -91,20 +96,13 @@ public class BotBl {
         List<String> chatResponse = new ArrayList<>();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
-
-        // Si es la primera vez pedir una imagen para su perfil
-//        if () {
-//            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
-//            result.add("Por favor ingrese una imagen para su foto de perfil");
-//        } else { // Mostrar el menu de opciones
-//            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
-//            result.add("Bienvenido al Bot");
-//        }
         return chatResponse;
     }
 
     private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+        String messageInput = update.getMessage().getText();
+        LOGGER.info("ULtimo mensaje comienzo update"+update.getMessage().getText());
         String response = null;
 
         if(lastMenssage == null){
@@ -113,8 +111,21 @@ public class BotBl {
         else {
             int lastMessageInt = 0;
             try {
-                lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
-                response ="" + (lastMessageInt +1);
+
+
+                if(messageInput.equals("/start")){
+
+
+
+                    lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
+                    response ="DD" + (lastMessageInt +1);
+
+                }
+                else {
+                    lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
+                    response = "" + (lastMessageInt + 1);
+                }
+
             } catch (NumberFormatException nfe){
                 response ="1";
             }
@@ -129,24 +140,10 @@ public class BotBl {
         kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
         kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
         chatRepository.save(kjChatEntity);
+
         chatResponse.add(response);
     }
 
-/*Primer Version*/
-//    public void processUsuario(Update update) {
-//        LOGGER.info("Recibiendo update {} ", update);
-//        initUser(update.getMessage().getFrom());
-//        List<String> result = new ArrayList<>();
-//        // Si es la primera vez pedir una imagen para su perfil
-//        if () {
-//            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
-//            result.add("Por favor ingrese una imagen para su foto de perfil");
-//        } else { // Mostrar el menu de opciones
-//            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
-//            result.add("Bienvenido al Bot");
-//        }
-//
-//    }
 
     private KjEstudianteUserEntity initUser(User user) {
 
