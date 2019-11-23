@@ -145,6 +145,23 @@ public class BotBl {
 
                     response =message.getText();
                 }
+                //Comenzar
+                if(messageInput.equals("Comenzar")) {
+                    SendMessage message = new SendMessage()
+                            .setChatId(chatId)
+                            .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!");
+
+                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard = new ArrayList<>();
+                    KeyboardRow row = new KeyboardRow();
+                    row.add("Iniciar sesión");
+                    row.add("Registro");
+                    keyboard.add(row);
+
+                    keyboardMarkup.setKeyboard(keyboard);
+                    message.setReplyMarkup(keyboardMarkup);
+                    response =message.getText();
+                }
                 else {
                     lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
                     response = "" + (lastMessageInt + 1);
