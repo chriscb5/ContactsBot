@@ -132,6 +132,19 @@ public class BotBl {
                     message.setReplyMarkup(keyboardMarkup);
                     response =message.getText();
                 }
+                            //Información
+                if(messageInput.equals("Información")) {
+                    String imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                    SendPhoto sendPhoto = new SendPhoto()
+                            .setChatId(chatId)
+                            .setPhoto(imageFile);
+
+                    SendMessage message = new SendMessage()
+                            .setChatId(chatId)
+                            .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+
+                    response =message.getText();
+                }
                 else {
                     lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
                     response = "" + (lastMessageInt + 1);
