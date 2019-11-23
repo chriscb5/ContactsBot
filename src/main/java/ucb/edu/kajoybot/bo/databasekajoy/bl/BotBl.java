@@ -23,6 +23,11 @@ import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 @Service
 public class BotBl {
 
+
+    PersonBL personBL;
+    BotBl botBl;
+    MensajesBL mensajesBL;
+
     private static final Logger LOGGER= LoggerFactory.getLogger(BotBl.class);
 
     private EstudianteRespository estudianteRespository;
@@ -182,8 +187,14 @@ public class BotBl {
                         message.setReplyMarkup(keyboardMarkup);
                         response =message.getText();
                         break;
-//                    case :
-//                        break;
+
+
+                    case "Soy Estudiante":
+                        response=personBL.ExistDocenteByNombre(messageInput);
+                        message.setChatId(chatId)
+                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+//                        entra_a_iniciar_estudiante=true;//FIXME celis poner la función
+                        break;
 //                    case :
 //                        break;
 //                    case :
@@ -214,6 +225,8 @@ public class BotBl {
 
         chatResponse.add(response);
     }
+
+
 
 
     private KjEstudianteUserEntity initUser(User user) {
