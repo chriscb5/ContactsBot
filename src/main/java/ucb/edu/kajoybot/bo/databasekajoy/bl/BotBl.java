@@ -179,6 +179,23 @@ public class BotBl {
                     message.setReplyMarkup(keyboardMarkup);
                     response =message.getText();
                 }
+                //Iniciar Sesion
+                if(messageInput.equals("Iniciar sesión")) {
+                    SendMessage message = new SendMessage()
+                            .setChatId(chatId)
+                            .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+
+                    ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard = new ArrayList<>();
+                    KeyboardRow row = new KeyboardRow();
+                    row.add("Soy Docente");
+                    row.add("Soy Estudiante");
+                    keyboard.add(row);
+
+                    keyboardMarkup.setKeyboard(keyboard);
+                    message.setReplyMarkup(keyboardMarkup);
+                    response =message.getText();
+                }
                 else {
                     lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
                     response = "" + (lastMessageInt + 1);
