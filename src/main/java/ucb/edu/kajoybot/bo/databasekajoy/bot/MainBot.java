@@ -224,7 +224,7 @@ public class MainBot extends TelegramLongPollingBot {
                     LOGGER.info("Entra a registros no llenos");
                     if(mensajesBL.getNumero_de_pregunta()<1){
                         String mensaje = mensajesBL.mensajesRegistroEstudianteCurso(update);
-                        SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+                        SendMessage message = new SendMessage()
                                 .setChatId(update.getMessage().getChatId())
                                 .setText(mensaje);
                         try {

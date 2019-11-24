@@ -78,18 +78,18 @@ public class MensajesBL {
 
     public  String mensajesRegistroEstudianteCurso(Update update)
     {
-        String cadena=new String();
+        String cadena1=new String();
         switch (numero_de_pregunta){
             case 0:
                 LOGGER.info("Ingresando nombre curso");
-                cadena="**Unirse a un curso**";
+                cadena1="**Unirse a un curso**";
                 break;
             case 1:
                 LOGGER.info("Ingresando clave");
-                cadena="El curso es privado\n Por favor, ingrese la clave del curso";
+                cadena1="El curso es privado\n Por favor, ingrese la clave del curso";
                 break;
         }
-        return cadena;
+        return cadena1;
     }
 
     public  String mensajeRegistroTest(Update update){
