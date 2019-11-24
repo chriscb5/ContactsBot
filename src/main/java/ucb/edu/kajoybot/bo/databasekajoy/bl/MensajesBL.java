@@ -118,7 +118,7 @@ public class MensajesBL {
     {
         String cadena=new String();
         switch (numero_de_pregunta){
-           case 0:
+            case 0:
                 LOGGER.info("Ingresando tipo de curso");
                 cadena="Ingrese el tipo del curso ";
                 break;
@@ -198,9 +198,9 @@ public class MensajesBL {
         MensajesBL.numero_de_respuesta = numero_de_respuesta;
     }
     public String iniciarEstudiante(String messageTextReceived){
-            String response=personBL.existPasswordEstudianteByCurso("Lalo",messageTextReceived);
-                entra_a_iniciar_estudiante=false;
-                return response;
+        String response=personBL.existPasswordEstudianteByCurso("Lalo",messageTextReceived);
+        entra_a_iniciar_estudiante=false;
+        return response;
     }
 
     public String iniciarDocente(String messageTextReceived){
@@ -219,8 +219,8 @@ public class MensajesBL {
                 mensaje = mensajesRegistroEstudiante(update);
                 return mensaje;
             }
-           setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
-           registrollenadosList.add(messageTextReceived);
+            setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
+            registrollenadosList.add(messageTextReceived);
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
         if (registrollenadosList.size()==5) {
@@ -315,65 +315,65 @@ public class MensajesBL {
 
     public String afirmacionTerminarRegistroTest(){
         //NO
-                String registrertest=  saveCompleteTest(registrollenadosList,registrorespuestalist);
-                registrollenadosList.clear();
-                registrorespuestalist.clear();
-                entra_a_registro_test=false;
-                return registrertest;
+        String registrertest=  saveCompleteTest(registrollenadosList,registrorespuestalist);
+        registrollenadosList.clear();
+        registrorespuestalist.clear();
+        entra_a_registro_test=false;
+        return registrertest;
     }
 
     public String entraARegistroTest(Update update,String messageTextReceived){
         String mensaje="";
         if (entra_a_registro_test){
-                if(entra_a_registro_respuesta){
-                    if(getNumero_de_respuesta()==4) {
-                        registrorespuestalist.add(messageTextReceived);
-                        LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
-                        LOGGER.info("ENTRO AL SI CON ARRAY "+registrorespuestalist.size());
-                        int i=0;
-                        int contresppropregunta=4;
-                        String cade="CUESTIONARIO - TEST\n";
-                       for(String preg:registrollenadosList){
-                            cade+=preg+"\n";
-                            int numero=1;
-                            while(i<contresppropregunta){
-                                    cade+=numero+". "+registrorespuestalist.get(i)+"\n";
-                                    numero++;
-                                    i++;
-                            }
-                            contresppropregunta+=4;
+            if(entra_a_registro_respuesta){
+                if(getNumero_de_respuesta()==4) {
+                    registrorespuestalist.add(messageTextReceived);
+                    LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
+                    LOGGER.info("ENTRO AL SI CON ARRAY "+registrorespuestalist.size());
+                    int i=0;
+                    int contresppropregunta=4;
+                    String cade="CUESTIONARIO - TEST\n";
+                    for(String preg:registrollenadosList){
+                        cade+=preg+"\n";
+                        int numero=1;
+                        while(i<contresppropregunta){
+                            cade+=numero+". "+registrorespuestalist.get(i)+"\n";
+                            numero++;
+                            i++;
                         }
-                        setNumero_de_respuesta(0);
-                       mensaje+=cade;
-                       mensaje+="\nDesea añadir una nueva pregunta?";
-                        entra_a_registro_respuesta=false;
-//                            entra_a_registro_test=false;
-                        aniade_respuesta_nueva=true;
-                        aniade_pregunta_nueva=false;
-
-                    }//Terminate NUMERO DE RESPUESTAS= 4
-
-                    if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
-                        //INGRESANDO A REGISTROS NO COMPLETOS
-                        mensaje=mensajeRegistroRespuesta(update);
-                        setNumero_de_respuesta(getNumero_de_respuesta()+1);
-                        if(aniade_pregunta_nueva==false){
-                            registrorespuestalist.add(messageTextReceived);
-                        }
-                        aniade_respuesta_nueva=false;
+                        contresppropregunta+=4;
                     }
-                }
-
-                if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
-                    mensaje=mensajeRegistroTest(update);
-                    setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
-                    entra_a_registro_respuesta=true;
-                }
-                if(aniade_pregunta_nueva && confirmation==false){
-                    registrollenadosList.add(messageTextReceived);
+                    setNumero_de_respuesta(0);
+                    mensaje+=cade;
+                    mensaje+="\nDesea añadir una nueva pregunta?";
+                    entra_a_registro_respuesta=false;
+//                            entra_a_registro_test=false;
+                    aniade_respuesta_nueva=true;
                     aniade_pregunta_nueva=false;
+
+                }//Terminate NUMERO DE RESPUESTAS= 4
+
+                if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
+                    //INGRESANDO A REGISTROS NO COMPLETOS
+                    mensaje=mensajeRegistroRespuesta(update);
+                    setNumero_de_respuesta(getNumero_de_respuesta()+1);
+                    if(aniade_pregunta_nueva==false){
+                        registrorespuestalist.add(messageTextReceived);
+                    }
+                    aniade_respuesta_nueva=false;
                 }
-                if(confirmation==true){
+            }
+
+            if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
+                mensaje=mensajeRegistroTest(update);
+                setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
+                entra_a_registro_respuesta=true;
+            }
+            if(aniade_pregunta_nueva && confirmation==false){
+                registrollenadosList.add(messageTextReceived);
+                aniade_pregunta_nueva=false;
+            }
+            if(confirmation==true){
 /*                    String mensaje=mensajesBL.mensajeRegistroTest(update);
                     SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                             .setChatId(update.getMessage().getChatId())
@@ -384,11 +384,11 @@ public class MensajesBL {
                         e.printStackTrace();
                     }
                     mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+10);*/
-                    entra_a_registro_respuesta=true;
-                    confirmation=false;
-                }
+                entra_a_registro_respuesta=true;
+                confirmation=false;
+            }
 
-            }// TERMINA REGISTRO TEST
+        }// TERMINA REGISTRO TEST
         return mensaje;
     }
 
