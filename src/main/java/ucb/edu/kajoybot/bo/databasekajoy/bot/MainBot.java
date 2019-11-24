@@ -23,23 +23,6 @@ public class MainBot extends TelegramLongPollingBot {
     PersonBL personBL;
     BotBl botBl;
     MensajesBL mensajesBL;
-    private static boolean registrosllenos=false;
-    private static boolean entra_a_registro_estudiante=false;
-    private static boolean entra_a_registro_docente=false;
-    private static boolean entra_a_registro_curso=false;
-    private static boolean entra_a_iniciar_estudiante=false;
-    private static boolean entra_a_iniciar_docente=false;
-    private static boolean entra_a_iniciar_docentenombre=false;
-    private static boolean entra_a_registro_test=false;
-    private static boolean entra_a_registro_respuesta=true;
-    private static boolean entra_a_registro_estudiante_curso=true;
-    private static boolean aniade_pregunta_nueva=false;
-    private static boolean aniade_respuesta_nueva=false;
-    private static boolean termina_test=false;
-    private static boolean confirmation=false;
-    private static final Logger LOGGER = LoggerFactory.getLogger(BotBl.class);
-    private static  List<String> registrollenadosList= new ArrayList<>();
-    private static List<String> registrorespuestalist=new ArrayList<>();
 
 
 
@@ -71,13 +54,13 @@ public class MainBot extends TelegramLongPollingBot {
         }
     }
 
-//    @Override
-//    public void onUpdateReceived(Update update) {
-//        final String messageTextReceived = update.getMessage().getText();
+    //@Override
+    //  public void onUpdateReceived(Update update) {
+  //      final String messageTextReceived = update.getMessage().getText();
 //        final long chatId = update.getMessage().getChatId();
 //        botBl.processUpdate(update);
-//        ///Test conexión a base de Datos
-//
+        ///Test conexión a base de Datos
+
 //        /*if (messageTextReceived.equals("/testCurso")) {
 //            //Message message3 = update.getMessage();
 //            CursoEntity cursoEntity=cursoBL.findByIdCurso(1);
