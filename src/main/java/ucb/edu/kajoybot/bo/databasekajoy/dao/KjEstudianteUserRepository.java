@@ -6,5 +6,5 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.KjEstudianteUserEntity;
 import java.util.List;
 
 public interface KjEstudianteUserRepository extends JpaRepository<KjEstudianteUserEntity,Integer> {
-    KjEstudianteUserEntity findAllByBotUserId(String botid_user);
+    KjEstudianteUserEntity findByBotUserId(String botid_user);
 }

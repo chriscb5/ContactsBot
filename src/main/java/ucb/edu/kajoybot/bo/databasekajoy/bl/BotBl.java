@@ -4,8 +4,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 
 import java.util.ArrayList;
@@ -18,6 +23,11 @@ import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 @Service
 public class BotBl {
 
+
+    PersonBL personBL;
+    BotBl botBl;
+    MensajesBL mensajesBL;
+
     private static final Logger LOGGER= LoggerFactory.getLogger(BotBl.class);
 
     private EstudianteRespository estudianteRespository;
@@ -27,12 +37,13 @@ public class BotBl {
     private TestRepository testRepository;
     private RespuestaRepository respuestaRepository;
     private PreguntaRepository preguntaRepository;
+    private ChatRepository chatRepository;
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
                  CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository,
                  TestRepository testRepository, RespuestaRepository respuestaRepository,
-                 PreguntaRepository preguntaRepository) {
+                 PreguntaRepository preguntaRepository, ChatRepository chatRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
@@ -40,6 +51,7 @@ public class BotBl {
         this.testRepository = testRepository;
         this.respuestaRepository = respuestaRepository;
         this.preguntaRepository = preguntaRepository;
+        this.chatRepository = chatRepository;
     }
 
 /*    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
@@ -82,24 +94,186 @@ public class BotBl {
         return "¡Registro completado exitosamente¡";
     }
 
-    public void processUsuario(Update update) {
-        LOGGER.info("Recibiendo update {} ", update);
-        List<String> result = new ArrayList<>();
-        // Si es la primera vez pedir una imagen para su perfil
-        if (initUser(update.getMessage().getFrom())) {
-            LOGGER.info("Primer inicio de sesion para: {} ",update.getMessage().getFrom() );
-            result.add("Por favor ingrese una imagen para su foto de perfil");
-        } else { // Mostrar el menu de opciones
-            LOGGER.info("Dando bienvenida a: {} ",update.getMessage().getFrom() );
-            result.add("Bienvenido al Bot");
-        }
 
+//intento Multi Usuario
+    public List<String> processUpdate(Update update) {
+        LOGGER.info("Recibiendo update {} ", update);
+        List<String> chatResponse = new ArrayList<>();
+        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
+        return chatResponse;
+    }
+
+    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
+        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+        String messageInput = update.getMessage().getText();
+        long chatId = update.getMessage().getChatId();
+
+        LOGGER.info("ULtimo mensaje comienzo update"+update.getMessage().getText());
+        String response = null;
+        String imageFile = null;
+        SendPhoto sendPhoto = new SendPhoto();
+        SendMessage message = new SendMessage();
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+
+        if(lastMenssage == null){
+            response = "1";
+        }
+        else {
+            int lastMessageInt = 0;
+            try {
+                switch(messageInput) {
+                    case "/start":
+                        imageFile= "https://beeimg.com/images/r29284261002.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
+                        message.setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+
+                        row.add("Comenzar");
+                        row.add("Información");
+                        keyboard.add(row);
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        // code block
+                        break;
+                    case "Información":
+                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
+
+                        message.setChatId(chatId)
+                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+
+                        response =message.getText();
+                        // code block
+                        break;
+                    case "Comenzar":
+                        message.setChatId(chatId)
+                                .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
+
+                        row.add("Iniciar sesión");
+                        row.add("Registro");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        break;
+                    case "Registro":
+                        message.setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
+
+                        row.add("Registro Profesor");
+                        row.add("Registro Alumno");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        break;
+                    case "Iniciar sesión":
+                        message.setChatId(chatId)
+                            .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+                        row.add("Soy Docente");
+                        row.add("Soy Estudiante");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        message.setReplyMarkup(keyboardMarkup);
+                        response =message.getText();
+                        break;
+
+
+                    case "Soy Estudiante":
+                        response=personBL.ExistDocenteByNombre(messageInput);
+                        message.setChatId(chatId)
+                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+//                        entra_a_iniciar_estudiante=true;//FIXME celis poner la función
+                        break;
+                    case "Soy Docente":
+                        response=personBL.ExistDocenteByNombre(messageInput);
+                        message.setChatId(chatId).
+                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+//                        entra_a_iniciar_docente=true;//FIXME celis poner la funcion
+                        break;
+
+                    case "verificar docente":
+                        response=personBL.ExistDocenteByNombre(messageInput);
+                        message.setChatId(chatId).
+                                setText("Iniciar como Docente\nIngrese su nombre");
+//                        entra_a_iniciar_docentenombre=true;//FIXME celis poner la funcion
+                        break;
+                    case "Registro Alumno":
+//                      entra_a_registro_estudiante = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                        break;
+                    case "Registro Docente":
+//                        entra_a_registro_docente = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                        break;
+                    case "Test":
+//                         entra_a_registro_test=true;//FIXME celis poner la funcion
+//                         confirmation=false;//FIXME celis poner la funcion
+//                         aniade_pregunta_nueva=true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                               .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+                        break;
+                    case "Crear Nuevo Curso":
+//                        entra_a_registro_curso = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
+
+                        break;
+                    case "Registro Estudiante Curso":
+//                        entra_a_registro_estudiante_curso = true;//FIXME celis poner la funcion
+                        message.setChatId(chatId)
+                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
+                        break;
+//                    case :
+//                        break;
+//                    case :
+//                        break;
+//                    case :
+//                        break;
+                    default:
+                        lastMessageInt = Integer.parseInt(lastMenssage.getOutMessage());
+                        response = "" + (lastMessageInt + 1);
+                        // code block
+                }
+
+
+
+            } catch (NumberFormatException nfe){
+                response ="1";
+            }
+
+        }
+        KjChatEntity kjChatEntity = new KjChatEntity();
+        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+        kjChatEntity.setInMessage(update.getMessage().getText());
+        kjChatEntity.setOutMessage(response);
+        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
+        kjChatEntity.setTxDate(new Date());
+        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
+        chatRepository.save(kjChatEntity);
+
+        chatResponse.add(response);
     }
 
 
-    private boolean initUser(User user) {
-        boolean result = false;
-        KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findAllByBotUserId(user.getId().toString());
+
+
+    private KjEstudianteUserEntity initUser(User user) {
+
+        KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findByBotUserId(user.getId().toString());
         if (kjEstudianteUserEntity == null) {
             EstudianteEntity estudianteEntity= new EstudianteEntity();
             estudianteEntity.setNombre(user.getFirstName());
@@ -117,9 +291,9 @@ public class BotBl {
             kjEstudianteUserEntity1.setTxUser("admin");
             kjEstudianteUserEntity1.setTxDate(new Date());
             kjEstudianteUserRepository.save(kjEstudianteUserEntity1);
-            result = true;
+
         }
-        return result;
+        return kjEstudianteUserEntity;
     }
 
 
