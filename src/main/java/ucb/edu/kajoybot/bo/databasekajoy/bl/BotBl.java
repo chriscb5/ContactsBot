@@ -36,6 +36,7 @@ public class BotBl {
     private RespuestaRepository respuestaRepository;
     private PreguntaRepository preguntaRepository;
     private ChatRepository chatRepository;
+    private String nombreTest="";
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
@@ -162,6 +163,12 @@ public class BotBl {
                 response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
 
             }
+            if(mensajesBL.isEntra_a_responder_test()){
+                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
+                    nombreTest=messageTextReceived;
+                }
+                message=mensajesBL.entraResponderTest(nombreTest);
+            }
             try {
                 switch(messageInput) {
                     case "/start":
@@ -282,8 +289,12 @@ public class BotBl {
                                 .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
                         response=message.getText();
                         break;
-//                    case :
-//                        break;
+                    case "TestR":
+                        mensajesBL.setEntra_a_responder_test(true);
+                        message.setChatId(chatId)
+                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
+                        response=message.getText();
+                        break;
 //                    case :
 //                        break;
 //                    case :
