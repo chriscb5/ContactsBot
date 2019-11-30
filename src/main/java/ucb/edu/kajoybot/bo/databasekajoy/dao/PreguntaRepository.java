@@ -9,6 +9,7 @@ import java.util.List;
 public interface PreguntaRepository extends JpaRepository<PreguntaEntity,Integer> {
 
     List<PreguntaEntity> findAllByIdPregunta(int idPregunta);
-    List<PreguntaEntity> findAllByIdTest(int idTest);
+    List<PreguntaEntity> findByIdTest(int idTest);
     PreguntaEntity findByContenidoPreguntaAndIdTest(String content_question, TestEntity entity);
+    PreguntaEntity findByIdTestAndNumeroPregunta(int idTest,int questionNumber);
 }
