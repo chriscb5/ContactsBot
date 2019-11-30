@@ -54,10 +54,11 @@ public class MensajesBL {
     private RespuestaRepository respuestaRepository;
     private PreguntaRepository preguntaRepository;
     private ChatRepository chatRepository;
+    private EstudianteTestRepository estudianteTestRepository;
     private PersonBL personBL;
 
     @Autowired
-    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL) {
+    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
@@ -67,6 +68,7 @@ public class MensajesBL {
         this.preguntaRepository = preguntaRepository;
         this.chatRepository = chatRepository;
         this.personBL = personBL;
+        this.estudianteTestRepository=estudianteTestRepository;
     }
 
 
@@ -669,7 +671,7 @@ public class MensajesBL {
         respuestaRepository.save(respuestaEntity);
     }
 
-    public SendMessage entraResponderTest(String nombreTest){
+    public SendMessage entraResponderTest(String nombreTest,String nombreStudent){
         TestEntity testEntity=findTestByTestNombre(nombreTest);
         SendMessage sendMessage=new SendMessage();
         KeyboardRow row= new KeyboardRow();
@@ -696,6 +698,7 @@ public class MensajesBL {
         else {
             numero_de_pregunta_respondiendo=1;
             entra_a_responder_test=false;
+            saveStudentTest(nombreStudent,nombreTest);
             sendMessage.setText("TEST RESPONDIDO Y ENTREGADO");
         }
         return sendMessage;
@@ -720,6 +723,17 @@ public class MensajesBL {
     private  List<PreguntaEntity> preguntaEntityListByIdTest(int idTest){
        List<PreguntaEntity> preguntaEntityList=preguntaRepository.findByIdTest(idTest);
        return preguntaEntityList;
+    }
+
+    private void saveStudentTest(String nombreEstudiante, String nombreTest)
+    {
+        EstudianteEntity estudianteEntity=estudianteRespository.findByNombre(nombreEstudiante);
+        TestEntity testEntity= testRepository.findByNombreTest(nombreTest);
+        EstudianteTestEntity estudianteTestEntity=new EstudianteTestEntity();
+        estudianteTestEntity.setIdEstudiante(estudianteEntity);
+        estudianteTestEntity.setIdTest(testEntity);
+        estudianteTestEntity.setPuntaje(60);
+        estudianteTestRepository.save(estudianteTestEntity);
     }
 
 
