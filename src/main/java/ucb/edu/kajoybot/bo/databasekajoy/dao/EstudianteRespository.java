@@ -11,4 +11,6 @@ public interface EstudianteRespository extends JpaRepository<EstudianteEntity,In
     List<EstudianteEntity> findAllByStatuss(int status);
 
     EstudianteEntity findAllByNombre(String nombre);
+
+    EstudianteEntity findByNombre(String nombre);
 }
