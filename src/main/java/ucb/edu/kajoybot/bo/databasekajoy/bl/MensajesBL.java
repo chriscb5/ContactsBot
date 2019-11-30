@@ -1,11 +1,14 @@
 package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
+import org.aspectj.weaver.ast.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
@@ -22,6 +25,8 @@ public class MensajesBL {
     private static final Logger LOGGER= LoggerFactory.getLogger(MensajesBL.class);
     private static int numero_de_pregunta=0;
     private static int numero_de_respuesta=0;
+    private static int numero_de_pregunta_respondiendo=1;
+    private static int nummero_de_respuesta_respondiendo=1;
     private static boolean registrosllenos=false;
     private static boolean entra_a_registro_estudiante=false;
     private static boolean entra_a_registro_docente=false;
@@ -30,6 +35,7 @@ public class MensajesBL {
     private static boolean entra_a_iniciar_docente=false;
     private static boolean entra_a_iniciar_docentenombre=false;
     private static boolean entra_a_registro_test=false;
+    private static boolean entra_a_responder_test=false;
     private static boolean entra_a_registro_respuesta=true;
     private static boolean entra_a_registro_estudiante_curso=false;
     private static boolean aniade_pregunta_nueva=false;
@@ -322,6 +328,7 @@ public class MensajesBL {
         return registrertest;
     }
 
+
     public String entraARegistroTest(Update update,String messageTextReceived){
         String mensaje="";
         if (entra_a_registro_test){
@@ -528,8 +535,21 @@ public class MensajesBL {
         this.personBL = personBL;
     }
 
+    public static boolean isEntra_a_responder_test() {
+        return entra_a_responder_test;
+    }
 
+    public static void setEntra_a_responder_test(boolean entra_a_responder_test) {
+        MensajesBL.entra_a_responder_test = entra_a_responder_test;
+    }
 
+    public static int getNumero_de_pregunta_respondiendo() {
+        return numero_de_pregunta_respondiendo;
+    }
+
+    public static void setNumero_de_pregunta_respondiendo(int numero_de_pregunta_respondiendo) {
+        MensajesBL.numero_de_pregunta_respondiendo = numero_de_pregunta_respondiendo;
+    }
 
 
     /////////////////////////////////////// GUARDAR REGISTROS
@@ -590,7 +610,7 @@ public class MensajesBL {
         return "REGISTRO DE TEST COMPLETADO";
     }
 
-    public void saveTest(){
+    private void saveTest(){
         TestEntity testEntity=new TestEntity();
         CursoEntity cursoEntity= cursoRepository.findByIdCurso(8);
         LOGGER.info("ENCONTRO en save test esto "+cursoEntity.getClave()+" "+cursoEntity.getNombre()+" "+cursoEntity.getTipoCurso());
@@ -598,20 +618,20 @@ public class MensajesBL {
         DocenteEntity docenteEntity=new DocenteEntity();
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("Lagos");
+        testEntity.setNombreTest("Educafis");
         testRepository.save(testEntity);
     }
 
-    public void  saveQuestion(String question,int questionNumber){
+    private void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("Lagos");
+        TestEntity testEntity=testRepository.findByNombreTest("Educafis");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
         preguntaRepository.save(preguntaEntity);
     }
 
-    public void saveQuestionList(List<String> questionList){
+    private void saveQuestionList(List<String> questionList){
         int count=1;
         for (String question:questionList){
             saveQuestion(question,count);
@@ -620,9 +640,9 @@ public class MensajesBL {
 
     }
 
-    public  void saveResponseList(List<String> responseList,List<String> questionList)
+    private void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity=testRepository.findByNombreTest("Lagos");
+        TestEntity testEntity=testRepository.findByNombreTest("Educafis");
         int numberResponse=1;
         int indexQuestionList=0;
         PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
@@ -640,7 +660,7 @@ public class MensajesBL {
         }
     }
 
-    public void  saveResponse(String response,PreguntaEntity preguntaEntity,int numberResponse){
+    private void  saveResponse(String response,PreguntaEntity preguntaEntity,int numberResponse){
         RespuestaEntity respuestaEntity= new RespuestaEntity();
         respuestaEntity.setIdPregunta(preguntaEntity);
         respuestaEntity.setContenidoRespuesta(response);
@@ -648,6 +668,64 @@ public class MensajesBL {
         respuestaEntity.setNumeroRespuesta(numberResponse);
         respuestaRepository.save(respuestaEntity);
     }
+
+    public SendMessage entraResponderTest(String nombreTest){
+        TestEntity testEntity=findTestByTestNombre(nombreTest);
+        SendMessage sendMessage=new SendMessage();
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        List<PreguntaEntity> preguntaEntityList=preguntaEntityListByIdTest(testEntity.getIdTest());
+        if(numero_de_pregunta_respondiendo<=preguntaEntityList.size()){
+            PreguntaEntity preguntaEntity=findPreguntaByIdTestyNumeroPregunta(testEntity.getIdTest(),numero_de_pregunta_respondiendo);
+            List<RespuestaEntity> respuestaEntityList=findRespuestasListByIdPregunta(preguntaEntity.getIdPregunta());
+            for(int i=0;i<respuestaEntityList.size();i++){
+                if(nummero_de_respuesta_respondiendo==3){
+                    keyboard.add(row);
+                    row= new KeyboardRow();
+                }
+                row.add(respuestaEntityList.get(i).getContenidoRespuesta());
+                numero_de_pregunta_respondiendo++;
+            }
+            numero_de_pregunta_respondiendo=1;
+            keyboard.add(row);
+            keyboardMarkup.setKeyboard(keyboard);
+            sendMessage.setReplyMarkup(keyboardMarkup);
+            numero_de_pregunta_respondiendo++;
+        }
+        else {
+            numero_de_pregunta_respondiendo=1;
+            entra_a_responder_test=false;
+            sendMessage.setText("TEST RESPONDIDO Y ENTREGADO");
+        }
+        return sendMessage;
+    }
+
+
+    private PreguntaEntity findPreguntaByIdTestyNumeroPregunta(int idTest,int numero_de_pregunta){
+        PreguntaEntity preguntaEntity=preguntaRepository.findByIdTestAndNumeroPregunta(idTest,numero_de_pregunta);
+        return  preguntaEntity;
+    }
+
+    private List<RespuestaEntity> findRespuestasListByIdPregunta(int idpregunta){
+        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findByIdPregunta(idpregunta);
+        return  respuestaEntityList;
+    }
+
+    private TestEntity findTestByTestNombre(String nameTest){
+        TestEntity test= testRepository.findByNombreTest(nameTest);
+        return test;
+    }
+
+    private  List<PreguntaEntity> preguntaEntityListByIdTest(int idTest){
+       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findByIdTest(idTest);
+       return preguntaEntityList;
+    }
+
+
+
+
+
 
 
 }
