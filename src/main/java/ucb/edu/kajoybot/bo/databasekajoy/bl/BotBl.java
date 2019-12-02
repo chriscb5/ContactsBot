@@ -296,6 +296,12 @@ public class BotBl {
                                 .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
                         message = responseMessage;
                         break;
+                    case "TestR":
+                        mensajesBL.setEntra_a_responder_test(true);
+                        responseMessage.setChatId(chatId)
+                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
+                        message = responseMessage;
+                        break;
                 }
             } catch (NumberFormatException nfe){
                 message.setChatId(chatId)
@@ -347,12 +353,7 @@ public class BotBl {
 
 
 
-                    case "TestR":
-                        mensajesBL.setEntra_a_responder_test(true);
-                        message.setChatId(chatId)
-                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
-                        response=message.getText();
-                        break;
+
 //                    case :
 //                        break;
 //                    case :
