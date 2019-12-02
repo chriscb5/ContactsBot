@@ -225,6 +225,18 @@ public class BotBl {
                         responseMessage.setReplyMarkup(keyboardMarkup);
                         message = responseMessage;
                         break;
+                    case "Registro":
+                        responseMessage.setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
+
+                        row.add("Registro Profesor");
+                        row.add("Registro Alumno");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        responseMessage.setReplyMarkup(keyboardMarkup);
+                        message = responseMessage;
+                        break;
                 }
             } catch (NumberFormatException nfe){
                 message.setChatId(chatId)
@@ -267,16 +279,6 @@ public class BotBl {
 
             try {
                 switch(messageInput) {
-                    case "Comenzar":
-                        message.setChatId(chatId)
-                                .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-                        row.add("Iniciar sesión");
-                        row.add("Registro");
-                        keyboard.add(row);
-                        keyboardMarkup.setKeyboard(keyboard);
-                        message.setReplyMarkup(keyboardMarkup);
-                        response=message.getText();
-                        break;
                     case "Registro":
                         message.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
