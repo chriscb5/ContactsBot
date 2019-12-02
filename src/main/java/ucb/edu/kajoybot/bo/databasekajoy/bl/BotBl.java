@@ -98,13 +98,13 @@ public class BotBl {
 
 
     //intento Multi Usuario
-    public List<String> processUpdate(Update update) {
-        LOGGER.info("Recibiendo update {} ", update);
-        List<String> chatResponse = new ArrayList<>();
-        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
-        return chatResponse;
-    }
+//    public List<String> processUpdate(Update update) {
+//        LOGGER.info("Recibiendo update {} ", update);
+//        List<String> chatResponse = new ArrayList<>();
+//        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+//        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
+//        return chatResponse;
+//    }
 
     public SendMessage processUpdateMesage(Update update){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
@@ -302,6 +302,10 @@ public class BotBl {
                                 .setText("TEST RECIBIDO\nIngrese el nombre del Test");
                         message = responseMessage;
                         break;
+                    default:
+                        responseMessage.setChatId(chatId)
+                                .setText("TNo logro entender lo que me pides");
+                        message = responseMessage;
                 }
             } catch (NumberFormatException nfe){
                 message.setChatId(chatId)
@@ -321,61 +325,6 @@ public class BotBl {
 
         return message;
     }
-
-    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
-        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
-        String messageInput = update.getMessage().getText();
-        long chatId = update.getMessage().getChatId();
-        String messageTextReceived = update.getMessage().getText();
-        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        String response = "";
-        String imageFile = null;
-        SendPhoto sendPhoto = new SendPhoto();
-        SendMessage message = new SendMessage();
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-
-        if(lastMenssage == null){
-            response = "1";
-        }
-        else {
-
-            try {
-                switch(messageInput) {
-
-
-
-
-
-
-
-
-
-
-//                    case :
-//                        break;
-//                    case :
-//                        break;
-                    default:
-                        response += " 1" ;
-                        // code block
-                }
-
-
-            } catch (NumberFormatException nfe){
-//                response ="1";
-            }
-
-        }
-
-
-        chatResponse.add(response);
-    }
-
-
-
 
     private KjEstudianteUserEntity initUser(User user) {
 
