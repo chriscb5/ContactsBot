@@ -191,7 +191,6 @@ public class BotBl {
                 switch(messageInput) {
 
                     case "/start":
-
                         responseMessage.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                         row.add("Comenzar");
@@ -215,6 +214,16 @@ public class BotBl {
 
                         message = responseMessage;
                         // code block
+                        break;
+                    case "Comenzar":
+                        responseMessage.setChatId(chatId)
+                                .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
+                        row.add("Iniciar sesión");
+                        row.add("Registro");
+                        keyboard.add(row);
+                        keyboardMarkup.setKeyboard(keyboard);
+                        responseMessage.setReplyMarkup(keyboardMarkup);
+                        message = responseMessage;
                         break;
                 }
             } catch (NumberFormatException nfe){
@@ -258,32 +267,6 @@ public class BotBl {
 
             try {
                 switch(messageInput) {
-                    case "/start":
-                        imageFile= "https://beeimg.com/images/r29284261002.png";
-                        sendPhoto.setChatId(chatId)
-                                .setPhoto(imageFile);
-                        message.setChatId(chatId)
-                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-
-                        row.add("Comenzar");
-                        row.add("Información");
-                        keyboard.add(row);
-                        keyboardMarkup.setKeyboard(keyboard);
-                        message.setReplyMarkup(keyboardMarkup);
-                        response =message.getText();
-                        // code block
-                        break;
-                    case "Información":
-                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
-                        sendPhoto.setChatId(chatId)
-                                .setPhoto(imageFile);
-
-                        message.setChatId(chatId)
-                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-
-                        response =message.getText();
-                        // code block
-                        break;
                     case "Comenzar":
                         message.setChatId(chatId)
                                 .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
