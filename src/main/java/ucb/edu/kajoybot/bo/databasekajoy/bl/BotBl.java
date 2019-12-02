@@ -97,34 +97,33 @@ public class BotBl {
     }
 
 
-//intento Multi Usuario
+    //intento Multi Usuario
     public List<String> processUpdate(Update update) {
         LOGGER.info("Recibiendo update {} ", update);
         List<String> chatResponse = new ArrayList<>();
-        String Nophoto= new String();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse,Nophoto);
+        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
         return chatResponse;
     }
 
-    public String processUpdatePhoto(Update update) {
-        List<String> chat = new ArrayList<>();
-        String photoLink= "";
+    public SendMessage processUpdateMesage(Update update){
+        LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
+        SendMessage sendMessage = new SendMessage();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        continueChatWithUser(update,kjEstudianteUserEntity,chat,photoLink);
-        return photoLink;
+        continueChatWithUserMessage(update,kjEstudianteUserEntity,sendMessage);
+        return sendMessage;
     }
-    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse, String photo) {
+
+    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String response = "";
-        String imageFile = photo;
+        String imageFile = null;
+        SendPhoto sendPhoto = new SendPhoto();
         SendMessage message = new SendMessage();
-
-
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -181,6 +180,9 @@ public class BotBl {
             try {
                 switch(messageInput) {
                     case "/start":
+                        imageFile= "https://beeimg.com/images/r29284261002.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
                         message.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
 
@@ -190,15 +192,18 @@ public class BotBl {
                         keyboardMarkup.setKeyboard(keyboard);
                         message.setReplyMarkup(keyboardMarkup);
                         response =message.getText();
-                        imageFile= "https://beeimg.com/images/r29284261002.png";
+                        // code block
                         break;
                     case "Información":
+                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
 
                         message.setChatId(chatId)
                                 .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
 
                         response =message.getText();
-                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                        // code block
                         break;
                     case "Comenzar":
                         message.setChatId(chatId)
@@ -224,7 +229,7 @@ public class BotBl {
                         break;
                     case "Iniciar sesión":
                         message.setChatId(chatId)
-                            .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+                                .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
                         row.add("Soy Docente");
                         row.add("Soy Estudiante");
                         keyboard.add(row);
@@ -247,7 +252,7 @@ public class BotBl {
                         message.setChatId(chatId).
                                 setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
                         response=message.getText();
-                       break;
+                        break;
 
                     case "verificar docente":
                         mensajesBL.setEntra_a_registro_docente(true);
@@ -276,7 +281,7 @@ public class BotBl {
                         mensajesBL.setConfirmation(false);//FIXME celis poner la funcion
                         mensajesBL.setAniade_pregunta_nueva(true);//FIXME celis poner la funcion
                         message.setChatId(chatId)
-                               .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
                         response=message.getText();
                         break;
                     case "Crear Nuevo Curso":
@@ -324,7 +329,6 @@ public class BotBl {
         chatRepository.save(kjChatEntity);
 
         chatResponse.add(response);
-        photo = imageFile;
     }
 
 
@@ -358,7 +362,6 @@ public class BotBl {
 /*
     public  String guardarListaRegistrosCurso(List<String> listaderegistros){
         LOGGER.info("Llega al metodo con : ");
-
         for (String lag:listaderegistros){
             LOGGER.info("Elemento : "+lag);
         }
@@ -372,15 +375,12 @@ public class BotBl {
         cursoRepository.save(cursoEntity);
         return "¡Registro completado exitosamente¡";
     }
-
-
     public String saveCompleteTest(List<String> questionsList,List<String> responseList ){
         saveTest();
         saveQuestionList(questionsList);
         saveResponseList(responseList,questionsList);
         return "REGISTRO DE TEST COMPLETADO";
     }
-
     public void saveTest(){
         TestEntity testEntity=new TestEntity();
         CursoEntity cursoEntity= cursoRepository.findByIdCurso(8);
@@ -392,7 +392,6 @@ public class BotBl {
         testEntity.setNombreTest("Ciencias Sociales");
         testRepository.save(testEntity);
     }
-
     public void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
         TestEntity testEntity=testRepository.findByNombreTest("Ciencias Sociales");
@@ -401,16 +400,13 @@ public class BotBl {
         preguntaEntity.setNumeroPregunta(questionNumber);
         preguntaRepository.save(preguntaEntity);
     }
-
     public void saveQuestionList(List<String> questionList){
         int count=1;
         for (String question:questionList){
             saveQuestion(question,count);
             count++;
         }
-
     }
-
     public  void saveResponseList(List<String> responseList,List<String> questionList)
     {
         TestEntity testEntity=testRepository.findByNombreTest("Ciencias Sociales");
@@ -430,7 +426,6 @@ public class BotBl {
             numberResponse++;
         }
     }
-
     public void  saveResponse(String response,PreguntaEntity preguntaEntity,int numberResponse){
         RespuestaEntity respuestaEntity= new RespuestaEntity();
         respuestaEntity.setIdPregunta(preguntaEntity);
