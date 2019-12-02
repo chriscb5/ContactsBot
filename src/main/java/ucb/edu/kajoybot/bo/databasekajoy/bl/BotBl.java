@@ -239,50 +239,7 @@ public class BotBl {
             response = "1";
         }
         else {
-            int lastMessageInt = 0;
-            if(messageTextReceived.equals("Si")){
-                response=mensajesBL.afirmacionAdicionarPregunta();
-                response+="\n\nlast mensaje received \n\n"+lastMenssage.getInMessage();
 
-            }
-            if(messageTextReceived.equals("No")){
-                response=mensajesBL.afirmacionTerminarRegistroTest();
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-            }
-            if(mensajesBL.isEntra_a_iniciar_estudiante()){
-                response+=mensajesBL.iniciarEstudiante(messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-            }
-            if(mensajesBL.isEntra_a_iniciar_docente()){
-                response+=mensajesBL.iniciarDocente(messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-            }
-            if(mensajesBL.isEntra_a_registro_estudiante()){
-                response+=mensajesBL.entraRegistroEstudiante(update,messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-            }
-            if(mensajesBL.isEntra_a_registro_docente()){
-                response+=mensajesBL.entraRegistroDocente(update,messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-            }
-            if(mensajesBL.isEntra_a_registro_curso()){
-                response+=mensajesBL.entraRegistroCurso(update,messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-
-            }
-/*            if(mensajesBL.isEntra_a_registro_estudiante_curso()){
-                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived);
-            }
-*/            if(mensajesBL.isEntra_a_registro_test()){
-                response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
-
-            }
-//            if(mensajesBL.isEntra_a_responder_test()){
-//                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
-//                    nombreTest=messageTextReceived;
-//                }
-//                message=mensajesBL.entraResponderTest(nombreTest);
-//            }
             try {
                 switch(messageInput) {
                     case "/start":
