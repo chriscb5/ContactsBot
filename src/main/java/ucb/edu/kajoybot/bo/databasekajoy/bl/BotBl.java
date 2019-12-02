@@ -261,6 +261,13 @@ public class BotBl {
                                 setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
                         message = responseMessage;
                         break;
+                    case "Registro Alumno":
+                        mensajesBL.setEntra_a_registro_estudiante(true);
+//                      entra_a_registro_estudiante = true;//FIXME celis poner la funcion
+                        responseMessage.setChatId(chatId)
+                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                        message = responseMessage;
+                        break;
 
                 }
             } catch (NumberFormatException nfe){
@@ -309,21 +316,6 @@ public class BotBl {
 
 
 
-                    case "verificar docente":
-                        mensajesBL.setEntra_a_registro_docente(true);
-//                        response=personBL.ExistDocenteByNombre(messageInput);
-                        message.setChatId(chatId).
-                                setText("Iniciar como Docente\nIngrese su nombre");
-//                        entra_a_iniciar_docentenombre=true;//FIXME celis poner la funcion
-                        response=message.getText();
-                        break;
-                    case "Registro Alumno":
-                        mensajesBL.setEntra_a_registro_estudiante(true);
-//                      entra_a_registro_estudiante = true;//FIXME celis poner la funcion
-                        message.setChatId(chatId)
-                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                        response=message.getText();
-                        break;
                     case "Registro Docente":
                         mensajesBL.setEntra_a_registro_docente(true);
 //                        entra_a_registro_docente = true;//FIXME celis poner la funcion
