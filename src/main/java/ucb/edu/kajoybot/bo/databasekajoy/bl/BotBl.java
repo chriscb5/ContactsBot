@@ -108,15 +108,12 @@ public class BotBl {
 
     public SendMessage processUpdateMesage(Update update){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
-        SendMessage sendMessage = new SendMessage();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        continueChatWithUserMessage(update,kjEstudianteUserEntity,sendMessage);
-        return sendMessage;
+        return continueChatWithUserMessage(update,kjEstudianteUserEntity);
     }
 
 
-    private void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, SendMessage sendMessageResponse) {
-
+    public SendMessage continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
@@ -146,18 +143,7 @@ public class BotBl {
                         .setText("DEFAULT");
             }
         }
-
-        KjChatEntity kjChatEntity = new KjChatEntity();
-        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
-        kjChatEntity.setInMessage(update.getMessage().getText());
-        kjChatEntity.setOutMessage("send Message");
-        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
-        kjChatEntity.setTxDate(new Date());
-        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
-        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
-        chatRepository.save(kjChatEntity);
-        sendMessageResponse = message;
-
+        return message;
     }
 
     private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
