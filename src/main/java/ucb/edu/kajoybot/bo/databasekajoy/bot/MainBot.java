@@ -40,9 +40,7 @@ public class MainBot extends TelegramLongPollingBot {
         System.out.println(update);
         update.getMessage().getFrom().getId();
         if (update.hasMessage() && update.getMessage().hasText()) {
-
             //Anterior código mensajes
-
             List<String> messages = botBl.processUpdate(update);
             for(String messageText: messages) {
                 SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
