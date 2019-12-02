@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainBot extends TelegramLongPollingBot {
-    private static final Logger LOGGER= LoggerFactory.getLogger(MainBot.class);
 
     PersonBL personBL;
     BotBl botBl;
@@ -36,42 +35,52 @@ public class MainBot extends TelegramLongPollingBot {
     }
 
 
+//    @Override
+//    public void onUpdateReceived(Update update) {
+//        System.out.println(update);
+//        update.getMessage().getFrom().getId();
+//        if (update.hasMessage() && update.getMessage().hasText()) {
+//
+//            //Anterior código mensajes
+//
+//            List<String> messages = botBl.processUpdate(update);
+//            for(String messageText: messages) {
+//                SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+//                        .setChatId(update.getMessage().getChatId())
+//                        .setText(messageText);
+//                try {
+//                    this.execute(message);
+//                } catch (TelegramApiException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
+
     @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update);
         update.getMessage().getFrom().getId();
-        SendPhoto photo = new SendPhoto();
         if (update.hasMessage() && update.getMessage().hasText()) {
-            //Anterior código mensajes
-            List<String> messages = botBl.processUpdate(update);
-            String photomessages = botBl.processUpdatePhoto(update);
-            for(String messageText: messages) {
-                SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                        .setChatId(update.getMessage().getChatId())
-                        .setText(messageText);
-                SendPhoto sendPhoto = new SendPhoto()
-                    .setChatId(update.getMessage().getChatId())
-                    .setPhoto(photomessages);
 
-                LOGGER.info("ESTA ES LA DIRECCION DE LA PHOTO SI HAY "+sendPhoto.getPhoto(), update);
+            SendMessage message = botBl.processUpdateMesage(update);
+                SendMessage messageChat = new SendMessage() // Create a SendMessage object with mandatory fields
+                        .setChatId(update.getMessage().getChatId())
+                        .setText(message.getText());
                 try {
-                    this.execute(message);
-//                    this.execute(sendPhoto);
+                    this.execute(messageChat);
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
-            }
-
-
         }
     }
 
     //@Override
     //  public void onUpdateReceived(Update update) {
-  //      final String messageTextReceived = update.getMessage().getText();
+    //      final String messageTextReceived = update.getMessage().getText();
 //        final long chatId = update.getMessage().getChatId();
 //        botBl.processUpdate(update);
-        ///Test conexión a base de Datos
+    ///Test conexión a base de Datos
 
 //        /*if (messageTextReceived.equals("/testCurso")) {
 //            //Message message3 = update.getMessage();
