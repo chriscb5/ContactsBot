@@ -237,6 +237,18 @@ public class BotBl {
                         responseMessage.setReplyMarkup(keyboardMarkup);
                         message = responseMessage;
                         break;
+                    case "Iniciar sesión":
+                        responseMessage.setChatId(chatId)
+                                .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+                        row.add("Soy Docente");
+                        row.add("Soy Estudiante");
+                        keyboard.add(row);
+
+                        keyboardMarkup.setKeyboard(keyboard);
+                        responseMessage.setReplyMarkup(keyboardMarkup);
+                        message = responseMessage;
+                        break;
+
                 }
             } catch (NumberFormatException nfe){
                 message.setChatId(chatId)
@@ -279,29 +291,6 @@ public class BotBl {
 
             try {
                 switch(messageInput) {
-                    case "Registro":
-                        message.setChatId(chatId)
-                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-
-                        row.add("Registro Profesor");
-                        row.add("Registro Alumno");
-                        keyboard.add(row);
-
-                        keyboardMarkup.setKeyboard(keyboard);
-                        message.setReplyMarkup(keyboardMarkup);
-                        response =message.getText();
-                        break;
-                    case "Iniciar sesión":
-                        message.setChatId(chatId)
-                                .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
-                        row.add("Soy Docente");
-                        row.add("Soy Estudiante");
-                        keyboard.add(row);
-
-                        keyboardMarkup.setKeyboard(keyboard);
-                        message.setReplyMarkup(keyboardMarkup);
-                        response =message.getText();
-                        break;
 
 
                     case "Soy Estudiante":
