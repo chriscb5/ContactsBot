@@ -101,21 +101,30 @@ public class BotBl {
     public List<String> processUpdate(Update update) {
         LOGGER.info("Recibiendo update {} ", update);
         List<String> chatResponse = new ArrayList<>();
+        String Nophoto= new String();
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
+        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse,Nophoto);
         return chatResponse;
     }
 
-    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
+    public String processUpdatePhoto(Update update) {
+        List<String> chat = new ArrayList<>();
+        String photoLink= "";
+        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+        continueChatWithUser(update,kjEstudianteUserEntity,chat,photoLink);
+        return photoLink;
+    }
+    private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse, String photo) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String response = "";
-        String imageFile = null;
-        SendPhoto sendPhoto = new SendPhoto();
+        String imageFile = photo;
         SendMessage message = new SendMessage();
+
+
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -163,18 +172,15 @@ public class BotBl {
                 response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
 
             }
-            if(mensajesBL.isEntra_a_responder_test()){
-                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
-                    nombreTest=messageTextReceived;
-                }
-                message=mensajesBL.entraResponderTest(nombreTest);
-            }
+//            if(mensajesBL.isEntra_a_responder_test()){
+//                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
+//                    nombreTest=messageTextReceived;
+//                }
+//                message=mensajesBL.entraResponderTest(nombreTest);
+//            }
             try {
                 switch(messageInput) {
                     case "/start":
-                        imageFile= "https://beeimg.com/images/r29284261002.png";
-                        sendPhoto.setChatId(chatId)
-                                .setPhoto(imageFile);
                         message.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
 
@@ -184,18 +190,15 @@ public class BotBl {
                         keyboardMarkup.setKeyboard(keyboard);
                         message.setReplyMarkup(keyboardMarkup);
                         response =message.getText();
-                        // code block
+                        imageFile= "https://beeimg.com/images/r29284261002.png";
                         break;
                     case "Información":
-                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
-                        sendPhoto.setChatId(chatId)
-                                .setPhoto(imageFile);
 
                         message.setChatId(chatId)
                                 .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
 
                         response =message.getText();
-                        // code block
+                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
                         break;
                     case "Comenzar":
                         message.setChatId(chatId)
@@ -321,6 +324,7 @@ public class BotBl {
         chatRepository.save(kjChatEntity);
 
         chatResponse.add(response);
+        photo = imageFile;
     }
 
 
