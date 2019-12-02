@@ -254,6 +254,13 @@ public class BotBl {
                         mensajesBL.setEntra_a_iniciar_estudiante(true);
                         message = responseMessage;
                         break;
+                    case "Soy Docente":
+//                        response=mensajesBL.iniciarDocente(messageTextReceived);
+                        mensajesBL.setEntra_a_iniciar_docente(true);;
+                        responseMessage.setChatId(chatId).
+                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+                        message = responseMessage;
+                        break;
 
                 }
             } catch (NumberFormatException nfe){
@@ -300,13 +307,7 @@ public class BotBl {
 
 
 
-                    case "Soy Docente":
-//                        response=mensajesBL.iniciarDocente(messageTextReceived);
-                        mensajesBL.setEntra_a_iniciar_docente(true);;
-                        message.setChatId(chatId).
-                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
-                        response=message.getText();
-                        break;
+
 
                     case "verificar docente":
                         mensajesBL.setEntra_a_registro_docente(true);
