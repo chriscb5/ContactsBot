@@ -248,6 +248,12 @@ public class BotBl {
                         responseMessage.setReplyMarkup(keyboardMarkup);
                         message = responseMessage;
                         break;
+                    case "Soy Estudiante":
+                        responseMessage.setChatId(chatId)
+                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+                        mensajesBL.setEntra_a_iniciar_estudiante(true);
+                        message = responseMessage;
+                        break;
 
                 }
             } catch (NumberFormatException nfe){
@@ -293,12 +299,7 @@ public class BotBl {
                 switch(messageInput) {
 
 
-                    case "Soy Estudiante":
-                        message.setChatId(chatId)
-                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
-                        mensajesBL.setEntra_a_iniciar_estudiante(true);
-                        response=message.getText();
-                        break;
+
                     case "Soy Docente":
 //                        response=mensajesBL.iniciarDocente(messageTextReceived);
                         mensajesBL.setEntra_a_iniciar_docente(true);;
