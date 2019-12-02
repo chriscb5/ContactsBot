@@ -124,6 +124,7 @@ public class BotBl {
                 .setChatId(chatId)
                 .setText("DEFAULT");
 
+        SendMessage responseMessage = new SendMessage();
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String response = "";
@@ -188,15 +189,30 @@ public class BotBl {
 
             try {
                 switch(messageInput) {
+
                     case "/start":
-                        SendMessage responseMessage = new SendMessage()
-                                .setChatId(chatId)
+
+                        responseMessage.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                         row.add("Comenzar");
                         row.add("Información");
                         keyboard.add(row);
                         keyboardMarkup.setKeyboard(keyboard);
                         responseMessage.setReplyMarkup(keyboardMarkup);
+                        message = responseMessage;
+                        // code block
+                        break;
+                    case "Información":
+                        responseMessage.setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+
+                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                        sendPhoto.setChatId(chatId)
+                                .setPhoto(imageFile);
+
+                        responseMessage.setChatId(chatId)
+                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+
                         message = responseMessage;
                         // code block
                         break;
