@@ -114,6 +114,8 @@ public class BotBl {
 
 
     public SendMessage continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity) {
+
+
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
@@ -122,19 +124,80 @@ public class BotBl {
                 .setChatId(chatId)
                 .setText("DEFAULT");
 
+        String messageTextReceived = update.getMessage().getText();
+        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
+        String response = "";
+        String imageFile = null;
+        SendPhoto sendPhoto = new SendPhoto();
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+
+
+
         if(lastMenssage == null){
             message.setChatId(chatId)
                     .setText("DEFAULT por null");
         }
         else {
+            int lastMessageInt = 0;
+            if(messageTextReceived.equals("Si")){
+                response=mensajesBL.afirmacionAdicionarPregunta();
+                response+="\n\nlast mensaje received \n\n"+lastMenssage.getInMessage();
+
+            }
+            if(messageTextReceived.equals("No")){
+                response=mensajesBL.afirmacionTerminarRegistroTest();
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+            }
+            if(mensajesBL.isEntra_a_iniciar_estudiante()){
+                response+=mensajesBL.iniciarEstudiante(messageTextReceived);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+            }
+            if(mensajesBL.isEntra_a_iniciar_docente()){
+                response+=mensajesBL.iniciarDocente(messageTextReceived);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+            }
+            if(mensajesBL.isEntra_a_registro_estudiante()){
+                response+=mensajesBL.entraRegistroEstudiante(update,messageTextReceived);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+            }
+            if(mensajesBL.isEntra_a_registro_docente()){
+                response+=mensajesBL.entraRegistroDocente(update,messageTextReceived);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+            }
+            if(mensajesBL.isEntra_a_registro_curso()){
+                response+=mensajesBL.entraRegistroCurso(update,messageTextReceived);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+
+            }
+/*            if(mensajesBL.isEntra_a_registro_estudiante_curso()){
+                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived);
+            }
+*/            if(mensajesBL.isEntra_a_registro_test()){
+                response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
+
+            }
+//            if(mensajesBL.isEntra_a_responder_test()){
+//                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
+//                    nombreTest=messageTextReceived;
+//                }
+//                message=mensajesBL.entraResponderTest(nombreTest);
+//            }
+
             try {
                 switch(messageInput) {
                     case "/start":
-                        SendMessage response = new SendMessage()
+                        SendMessage responseMessage = new SendMessage()
                                 .setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-
-                        message = response;
+                        row.add("Comenzar");
+                        row.add("Información");
+                        keyboard.add(row);
+                        keyboardMarkup.setKeyboard(keyboard);
+                        responseMessage.setReplyMarkup(keyboardMarkup);
+                        message = responseMessage;
                         // code block
                         break;
                 }
@@ -143,6 +206,17 @@ public class BotBl {
                         .setText("DEFAULT");
             }
         }
+
+        KjChatEntity kjChatEntity = new KjChatEntity();
+        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+        kjChatEntity.setInMessage(update.getMessage().getText());
+        kjChatEntity.setOutMessage("texto");
+        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
+        kjChatEntity.setTxDate(new Date());
+        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
+        chatRepository.save(kjChatEntity);
+
         return message;
     }
 
@@ -350,15 +424,7 @@ public class BotBl {
             }
 
         }
-        KjChatEntity kjChatEntity = new KjChatEntity();
-        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
-        kjChatEntity.setInMessage(update.getMessage().getText());
-        kjChatEntity.setOutMessage(response);
-        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
-        kjChatEntity.setTxDate(new Date());
-        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
-        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
-        chatRepository.save(kjChatEntity);
+
 
         chatResponse.add(response);
     }
