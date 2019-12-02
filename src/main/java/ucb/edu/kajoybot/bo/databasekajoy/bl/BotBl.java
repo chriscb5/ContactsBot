@@ -290,6 +290,12 @@ public class BotBl {
                                 .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
                         message = responseMessage;
                         break;
+                    case "Registro Estudiante Curso":
+                        mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
+                        responseMessage.setChatId(chatId)
+                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
+                        message = responseMessage;
+                        break;
                 }
             } catch (NumberFormatException nfe){
                 message.setChatId(chatId)
@@ -340,12 +346,7 @@ public class BotBl {
 
 
 
-                    case "Registro Estudiante Curso":
-                        mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
-                        message.setChatId(chatId)
-                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
-                        response=message.getText();
-                        break;
+
                     case "TestR":
                         mensajesBL.setEntra_a_responder_test(true);
                         message.setChatId(chatId)
