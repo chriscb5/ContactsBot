@@ -114,6 +114,52 @@ public class BotBl {
         return sendMessage;
     }
 
+
+    private void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, SendMessage sendMessageResponse) {
+
+        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+        String messageInput = update.getMessage().getText();
+        long chatId = update.getMessage().getChatId();
+        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
+        SendMessage message = new SendMessage()
+                .setChatId(chatId)
+                .setText("DEFAULT");
+
+        if(lastMenssage == null){
+            message.setChatId(chatId)
+                    .setText("DEFAULT por null");
+        }
+        else {
+            try {
+                switch(messageInput) {
+                    case "/start":
+                        SendMessage response = new SendMessage()
+                                .setChatId(chatId)
+                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+
+                        message = response;
+                        // code block
+                        break;
+                }
+            } catch (NumberFormatException nfe){
+                message.setChatId(chatId)
+                        .setText("DEFAULT");
+            }
+        }
+
+        KjChatEntity kjChatEntity = new KjChatEntity();
+        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+        kjChatEntity.setInMessage(update.getMessage().getText());
+        kjChatEntity.setOutMessage("send Message");
+        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
+        kjChatEntity.setTxDate(new Date());
+        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
+        chatRepository.save(kjChatEntity);
+        sendMessageResponse = message;
+
+    }
+
     private void continueChatWithUser(Update update, KjEstudianteUserEntity kjEstudianteUserEntity, List<String> chatResponse) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
