@@ -275,6 +275,14 @@ public class BotBl {
                                 .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
                         message = responseMessage;
                         break;
+                    case "Test":
+                        mensajesBL.setEntra_a_registro_test(true);
+                        mensajesBL.setConfirmation(false);//FIXME celis poner la funcion
+                        mensajesBL.setAniade_pregunta_nueva(true);//FIXME celis poner la funcion
+                        responseMessage.setChatId(chatId)
+                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+                        message = responseMessage;
+                        break;
                 }
             } catch (NumberFormatException nfe){
                 message.setChatId(chatId)
@@ -323,14 +331,7 @@ public class BotBl {
 
 
 
-                    case "Test":
-                        mensajesBL.setEntra_a_registro_test(true);
-                        mensajesBL.setConfirmation(false);//FIXME celis poner la funcion
-                        mensajesBL.setAniade_pregunta_nueva(true);//FIXME celis poner la funcion
-                        message.setChatId(chatId)
-                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
-                        response=message.getText();
-                        break;
+
                     case "Crear Nuevo Curso":
                         mensajesBL.setEntra_a_registro_curso(true);
 //                        entra_a_registro_curso = true;//FIXME celis poner la funcion
