@@ -62,13 +62,15 @@ public class MainBot extends TelegramLongPollingBot {
         System.out.println(update);
         update.getMessage().getFrom().getId();
         if (update.hasMessage() && update.getMessage().hasText()) {
-
-            SendMessage message = botBl.processUpdateMesage(update);
-                SendMessage messageChat = new SendMessage() // Create a SendMessage object with mandatory fields
+              SendMessage message=new SendMessage();
+              /*message =*/ botBl.processUpdateMesage(update,message);
+    /*            SendMessage messageChat = new SendMessage() // Create a SendMessage object with mandatory fields
                         .setChatId(update.getMessage().getChatId())
                         .setText(message.getText());
+     */
                 try {
-                    this.execute(messageChat);
+                    this.execute(message);
+//                    this.execute(messageChat);
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
@@ -405,7 +407,8 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "katariBot";
+        return "Kajoybot";
+//        return "katariBot";
 //        return "kajoy_bot";
 //        return "devKajoy";
     }
@@ -413,7 +416,8 @@ public class MainBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken()
     {
-        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
+        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
+//        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
 //        return "969248445:AAGzAETF0P9AXJk6W3EUDkGLWzJkrPgC_5A";
 //        return "1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k";
     }
