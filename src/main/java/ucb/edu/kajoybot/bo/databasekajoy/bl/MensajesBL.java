@@ -676,23 +676,24 @@ public class MensajesBL {
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard= new ArrayList<>();
-        List<PreguntaEntity> preguntaEntityList=preguntaEntityListByIdTest(testEntity.getIdTest());
+        List<PreguntaEntity> preguntaEntityList=preguntaEntityListByIdTest(testEntity);
         if(numero_de_pregunta_respondiendo<=preguntaEntityList.size()){
-            PreguntaEntity preguntaEntity=findPreguntaByIdTestyNumeroPregunta(testEntity.getIdTest(),numero_de_pregunta_respondiendo);
-            List<RespuestaEntity> respuestaEntityList=findRespuestasListByIdPregunta(preguntaEntity.getIdPregunta());
+            PreguntaEntity preguntaEntity=findPreguntaByIdTestyNumeroPregunta(testEntity,numero_de_pregunta_respondiendo);
+            sendMessage.setText(preguntaEntity.getContenidoPregunta());
+            List<RespuestaEntity> respuestaEntityList=findRespuestasListByIdPregunta(preguntaEntity);
             for(int i=0;i<respuestaEntityList.size();i++){
                 if(nummero_de_respuesta_respondiendo==3){
                     keyboard.add(row);
                     row= new KeyboardRow();
                 }
                 row.add(respuestaEntityList.get(i).getContenidoRespuesta());
-                numero_de_pregunta_respondiendo++;
+                nummero_de_respuesta_respondiendo++;
             }
-            numero_de_pregunta_respondiendo=1;
             keyboard.add(row);
             keyboardMarkup.setKeyboard(keyboard);
             sendMessage.setReplyMarkup(keyboardMarkup);
             numero_de_pregunta_respondiendo++;
+            nummero_de_respuesta_respondiendo=1;
         }
         else {
             numero_de_pregunta_respondiendo=1;
@@ -704,23 +705,23 @@ public class MensajesBL {
     }
 
 
-    private PreguntaEntity findPreguntaByIdTestyNumeroPregunta(int idTest,int numero_de_pregunta){
-        PreguntaEntity preguntaEntity=preguntaRepository.findByIdTestAndNumeroPregunta(idTest,numero_de_pregunta);
+    private PreguntaEntity findPreguntaByIdTestyNumeroPregunta(TestEntity testEntity,int numero_de_pregunta){
+        PreguntaEntity preguntaEntity=preguntaRepository.findByIdTestAndNumeroPregunta(testEntity,numero_de_pregunta);
         return  preguntaEntity;
     }
 
-    private List<RespuestaEntity> findRespuestasListByIdPregunta(int idpregunta){
-        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findAllByIdPregunta(idpregunta);
+    private List<RespuestaEntity> findRespuestasListByIdPregunta(PreguntaEntity preguntaEntity){
+        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findByIdPregunta(preguntaEntity);
         return  respuestaEntityList;
     }
 
-    private TestEntity findTestByTestNombre(String nameTest){
+    public TestEntity findTestByTestNombre(String nameTest){
         TestEntity test= testRepository.findByNombreTest(nameTest);
         return test;
     }
 
-    private  List<PreguntaEntity> preguntaEntityListByIdTest(int idTest){
-       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findAllByIdTest(idTest);
+    public   List<PreguntaEntity> preguntaEntityListByIdTest(TestEntity testEntity){
+       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findAllByIdTest(testEntity);
        return preguntaEntityList;
     }
 
