@@ -109,6 +109,7 @@ public class BotBl {
     public /*SendMessage*/void processUpdateMesage(Update update,SendMessage message){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+        message.setChatId(update.getMessage().getChatId());
         //return continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
         continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
     }
@@ -336,8 +337,10 @@ public class BotBl {
 //                        message = responseMessage;
                         break;
                     default:
-                        sendMessage.setChatId(chatId)
-                                .setText("No logro entender lo que me pides");
+/*                        if(sendMessage.setChatId(chatId).getText()==""){
+                            sendMessage.setChatId(chatId)
+                                    .setText("No logro entender lo que me pides");
+                        }*/
 //                        responseMessage.setChatId(chatId)
 //                                .setText("TNo logro entender lo que me pides");
 //                        message = responseMessage;
