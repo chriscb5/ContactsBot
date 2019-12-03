@@ -8,6 +8,6 @@ import java.util.List;
 public interface RespuestaRepository extends JpaRepository<RespuestaEntity,Integer> {
 
     List<RespuestaEntity> findAllByIdRespuesta(int idRespuesta);
-    List<RespuestaEntity> findByIdPregunta(int idPregunta);
+    List<RespuestaEntity> findAllByIdPregunta(int idPregunta);
     RespuestaEntity findByIdPreguntaAndNumeroRespuesta(int idPregunta,int answerNumber);
 }
