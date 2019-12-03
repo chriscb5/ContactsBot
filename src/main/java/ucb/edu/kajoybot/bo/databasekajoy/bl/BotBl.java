@@ -106,16 +106,15 @@ public class BotBl {
 //        return chatResponse;
 //    }
 
-    public SendMessage processUpdateMesage(Update update){
+    public /*SendMessage*/void processUpdateMesage(Update update,SendMessage message){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-        return continueChatWithUserMessage(update,kjEstudianteUserEntity);
+        //return continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
+        continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
     }
 
 
-    public SendMessage continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity) {
-
-
+    public /*SendMessage*/void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
@@ -146,170 +145,208 @@ public class BotBl {
             if(messageTextReceived.equals("Si")){
                 response=mensajesBL.afirmacionAdicionarPregunta();
                 response+="\n\nlast mensaje received \n\n"+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
 
             }
             if(messageTextReceived.equals("No")){
                 response=mensajesBL.afirmacionTerminarRegistroTest();
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_iniciar_estudiante()){
                 response+=mensajesBL.iniciarEstudiante(messageTextReceived);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_iniciar_docente()){
                 response+=mensajesBL.iniciarDocente(messageTextReceived);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_estudiante()){
                 response+=mensajesBL.entraRegistroEstudiante(update,messageTextReceived);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_docente()){
                 response+=mensajesBL.entraRegistroDocente(update,messageTextReceived);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_curso()){
                 response+=mensajesBL.entraRegistroCurso(update,messageTextReceived);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-
+                sendMessage.setChatId(chatId).setText(response);
             }
 /*            if(mensajesBL.isEntra_a_registro_estudiante_curso()){
                 response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived);
             }
 */            if(mensajesBL.isEntra_a_registro_test()){
                 response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
-
+                sendMessage.setChatId(chatId).setText(response);
             }
-//            if(mensajesBL.isEntra_a_responder_test()){
-//                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
-//                    nombreTest=messageTextReceived;
-//                }
-//                message=mensajesBL.entraResponderTest(nombreTest);
-//            }
+            if(mensajesBL.isEntra_a_responder_test()){
+                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
+                    nombreTest=messageTextReceived;
+                }
+                sendMessage=mensajesBL.entraResponderTest(nombreTest,update.getMessage().getChat().getFirstName(),sendMessage);
+            }
 
             try {
                 switch(messageInput) {
 
                     case "/start":
-                        responseMessage.setChatId(chatId)
+//                        responseMessage.setChatId(chatId)
+//                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+                        sendMessage.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                         row.add("Comenzar");
                         row.add("Información");
                         keyboard.add(row);
                         keyboardMarkup.setKeyboard(keyboard);
-                        responseMessage.setReplyMarkup(keyboardMarkup);
-                        message = responseMessage;
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+//                        responseMessage.setReplyMarkup(keyboardMarkup);
+//                        message = responseMessage;
                         // code block
                         break;
                     case "Información":
-                        responseMessage.setChatId(chatId)
-                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+   //                     responseMessage.setChatId(chatId)
+    //                            .setText("Seleccione una opción por favor\nComenzar\nInformacion");
 
                         imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
                         sendPhoto.setChatId(chatId)
                                 .setPhoto(imageFile);
-
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
 
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId)
+//                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+
+//                        message = responseMessage;
                         // code block
                         break;
                     case "Comenzar":
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
+                            .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
+/*                        responseMessage.setChatId(chatId)
                                 .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-                        row.add("Iniciar sesión");
+*/                        row.add("Iniciar sesión");
                         row.add("Registro");
                         keyboard.add(row);
                         keyboardMarkup.setKeyboard(keyboard);
-                        responseMessage.setReplyMarkup(keyboardMarkup);
-                        message = responseMessage;
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+//                        responseMessage.setReplyMarkup(keyboardMarkup);
+//                        message = responseMessage;
                         break;
                     case "Registro":
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-
+//                        responseMessage.setChatId(chatId)
+//                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
                         row.add("Registro Profesor");
                         row.add("Registro Alumno");
                         keyboard.add(row);
 
                         keyboardMarkup.setKeyboard(keyboard);
-                        responseMessage.setReplyMarkup(keyboardMarkup);
-                        message = responseMessage;
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+//                        responseMessage.setReplyMarkup(keyboardMarkup);
+//                        message = responseMessage;
                         break;
                     case "Iniciar sesión":
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+//                        responseMessage.setChatId(chatId)
+//                                .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
                         row.add("Soy Docente");
                         row.add("Soy Estudiante");
                         keyboard.add(row);
-
                         keyboardMarkup.setKeyboard(keyboard);
-                        responseMessage.setReplyMarkup(keyboardMarkup);
-                        message = responseMessage;
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+//                        responseMessage.setReplyMarkup(keyboardMarkup);
+//                        message = responseMessage;
                         break;
                     case "Soy Estudiante":
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+//                        responseMessage.setChatId(chatId)
+//                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
                         mensajesBL.setEntra_a_iniciar_estudiante(true);
-                        message = responseMessage;
+//                        message = responseMessage;
                         break;
                     case "Soy Docente":
 //                        response=mensajesBL.iniciarDocente(messageTextReceived);
                         mensajesBL.setEntra_a_iniciar_docente(true);;
-                        responseMessage.setChatId(chatId).
+                        sendMessage.setChatId(chatId).
                                 setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId).
+//                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+//                        message = responseMessage;
                         break;
                     case "Registro Alumno":
                         mensajesBL.setEntra_a_registro_estudiante(true);
 //                      entra_a_registro_estudiante = true;//FIXME celis poner la funcion
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId)
+//                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+//                        message = responseMessage;
                         break;
                     case "Registro Docente":
                         mensajesBL.setEntra_a_registro_docente(true);
 //                        entra_a_registro_docente = true;//FIXME celis poner la funcion
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId)
+//                                .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+//                        message = responseMessage;
                         break;
                     case "Test":
                         mensajesBL.setEntra_a_registro_test(true);
                         mensajesBL.setConfirmation(false);//FIXME celis poner la funcion
                         mensajesBL.setAniade_pregunta_nueva(true);//FIXME celis poner la funcion
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId)
+//                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+//                        message = responseMessage;
                         break;
                     case "Crear Nuevo Curso":
                         mensajesBL.setEntra_a_registro_curso(true);
 //                        entra_a_registro_curso = true;//FIXME celis poner la funcion
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId)
+//                                .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
+//                        message = responseMessage;
                         break;
                     case "Registro Estudiante Curso":
                         mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
-                        responseMessage.setChatId(chatId)
+                        sendMessage.setChatId(chatId)
                                 .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
-                        message = responseMessage;
+//                        responseMessage.setChatId(chatId)
+//                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
+//                        message = responseMessage;
                         break;
                     case "TestR":
                         mensajesBL.setEntra_a_responder_test(true);
-                        responseMessage.setChatId(chatId)
-                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
-                        message = responseMessage;
+                        sendMessage.setChatId(chatId)
+                                .setText("RESPONDER TEST\nIngrese el nombre del Test");
+//                        responseMessage.setChatId(chatId)
+//                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
+//                        message = responseMessage;
                         break;
                     default:
-                        responseMessage.setChatId(chatId)
-                                .setText("TNo logro entender lo que me pides");
-                        message = responseMessage;
+                        sendMessage.setChatId(chatId)
+                                .setText("No logro entender lo que me pides");
+//                        responseMessage.setChatId(chatId)
+//                                .setText("TNo logro entender lo que me pides");
+//                        message = responseMessage;
                 }
             } catch (NumberFormatException nfe){
-                message.setChatId(chatId)
+                sendMessage.setChatId(chatId)
                         .setText("DEFAULT");
+//                message.setChatId(chatId)
+//                        .setText("DEFAULT");
             }
         }
 
@@ -323,7 +360,7 @@ public class BotBl {
         kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
         chatRepository.save(kjChatEntity);
 
-        return message;
+//        return message;
     }
 
     private KjEstudianteUserEntity initUser(User user) {
