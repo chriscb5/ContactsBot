@@ -671,9 +671,8 @@ public class MensajesBL {
         respuestaRepository.save(respuestaEntity);
     }
 
-    public SendMessage entraResponderTest(String nombreTest,String nombreStudent){
+    public SendMessage entraResponderTest(String nombreTest,String nombreStudent,SendMessage sendMessage){
         TestEntity testEntity=findTestByTestNombre(nombreTest);
-        SendMessage sendMessage=new SendMessage();
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard= new ArrayList<>();
@@ -711,7 +710,7 @@ public class MensajesBL {
     }
 
     private List<RespuestaEntity> findRespuestasListByIdPregunta(int idpregunta){
-        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findByIdPregunta(idpregunta);
+        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findAllByIdPregunta(idpregunta);
         return  respuestaEntityList;
     }
 
@@ -721,7 +720,7 @@ public class MensajesBL {
     }
 
     private  List<PreguntaEntity> preguntaEntityListByIdTest(int idTest){
-       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findByIdTest(idTest);
+       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findAllByIdTest(idTest);
        return preguntaEntityList;
     }
 
