@@ -180,9 +180,10 @@ public class BotBl {
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_estudiante_curso()){
-                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived);
+//                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
+//                sendMessage.setChatId(chatId);
+                sendMessage=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
             }
             if(mensajesBL.isEntra_a_registro_test()){
                 response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
@@ -391,6 +392,35 @@ public class BotBl {
 
         }
         return kjEstudianteUserEntity;
+    }
+
+    public SendMessage make2OptionsKeyboard(String a,String b,Update update,KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage){
+
+        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+        String messageInput = update.getMessage().getText();
+        long chatId = update.getMessage().getChatId();
+        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
+        SendMessage message = new SendMessage()
+                .setChatId(chatId)
+                .setText("DEFAULT");
+
+        SendMessage responseMessage = new SendMessage();
+        String messageTextReceived = update.getMessage().getText();
+        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
+        String response = "";
+
+        KeyboardRow row = new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        row.add(a);
+        row.add(b);
+        keyboard.add(row);
+
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+
+        return sendMessage;
     }
 
 /*
