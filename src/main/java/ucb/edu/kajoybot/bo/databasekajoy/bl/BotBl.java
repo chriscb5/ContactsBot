@@ -179,10 +179,12 @@ public class BotBl {
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
-/*            if(mensajesBL.isEntra_a_registro_estudiante_curso()){
+            if(mensajesBL.isEntra_a_registro_estudiante_curso()){
                 response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage.setChatId(chatId).setText(response);
             }
-*/            if(mensajesBL.isEntra_a_registro_test()){
+            if(mensajesBL.isEntra_a_registro_test()){
                 response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
                 sendMessage.setChatId(chatId).setText(response);
             }
@@ -323,7 +325,7 @@ public class BotBl {
                     case "Registro Estudiante Curso":
                         mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
                         sendMessage.setChatId(chatId)
-                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
+                                .setText("**Unirse a un curso**");
 //                        responseMessage.setChatId(chatId)
 //                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
 //                        message = responseMessage;

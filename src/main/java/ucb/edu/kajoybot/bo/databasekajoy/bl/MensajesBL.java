@@ -49,6 +49,7 @@ public class MensajesBL {
     private EstudianteRespository estudianteRespository;
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
+    private EstudianteCursoRepository estudianteCursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
     private TestRepository testRepository;
     private RespuestaRepository respuestaRepository;
@@ -143,12 +144,16 @@ public class MensajesBL {
         String cadena=new String();
         switch (numero_de_pregunta){
             case 0:
-                LOGGER.info("Ingresando nombre curso");
-                cadena="**Unirse a un curso**";
+                LOGGER.info("Ingresando id curso");
+                cadena="Ingrese el codigo del curso";
                 break;
             case 1:
-                LOGGER.info("Ingresando clave");
-                cadena="El curso es privado\n Por favor, ingrese la clave del curso";
+                LOGGER.info("Cuso publico");
+                cadena="El curso es publico\nPuede ingresar sin necesidad de una clave";
+                break;
+            case 2:
+                LOGGER.info("Curso privado. Ingresando clave");
+                cadena="El curso es privado\nPor favor, ingrese la clave del curso";
                 break;
         }
         return cadena;
@@ -270,18 +275,18 @@ public class MensajesBL {
 
         LOGGER.info("Entra a el registro curso oficial");
         String mensaje="";
-        if(registrollenadosList.size()<3) {
+        if(registrollenadosList.size()<4) {
             LOGGER.info("Entra al registros no llenos");
-            if(getNumero_de_pregunta()<2){
+            if(getNumero_de_pregunta()<3){
                 mensaje = mensajesRegistroCurso(update);
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;
             registrollenadosList.add(messageTextReceived);
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
-        if (registrollenadosList.size()==3) {
+        if (registrollenadosList.size()==4) {
             LOGGER.info("Ingresa a registros llenos");
-            mensaje = guardarListaRegistrosCurso(registrollenadosList);
+            mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
@@ -584,6 +589,22 @@ public class MensajesBL {
         docenteEntity.setTxDate(new Date());
         LOGGER.info("Entidad docente "+docenteEntity.toString());
         docenteRespository.save(docenteEntity);
+        return "¡Registro completado exitosamente¡";
+    }
+
+    public  String guardarListaRegistrosEstudianteCurso(List<String> listaderegistros){
+        LOGGER.info("Llega al metodo con : ");
+
+        for (String lag:listaderegistros){
+            LOGGER.info("Elemento : "+lag);
+        }
+        EstudianteCursoEntity estudianteCursoEntity = new EstudianteCursoEntity();
+        EstudianteEntity estudianteEntity = new EstudianteEntity(1);
+        CursoEntity cursoEntity=new CursoEntity();
+        estudianteCursoEntity.setIdEstudiante(estudianteEntity);
+        //estudianteCursoEntity.setIdCurso(listaderegistros.get());
+        LOGGER.info("Entidad estudiante_curso "+estudianteCursoEntity.toString());
+        estudianteCursoRepository.save(estudianteCursoEntity);
         return "¡Registro completado exitosamente¡";
     }
 
