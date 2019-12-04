@@ -325,7 +325,7 @@ public class BotBl {
                     case "Registro Estudiante Curso":
                         mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
                         sendMessage.setChatId(chatId)
-                                .setText("**Unirse a un curso**");
+                                .setText("**Unirse a un curso**\nIngrese el codigo del curso");
 //                        responseMessage.setChatId(chatId)
 //                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
 //                        message = responseMessage;

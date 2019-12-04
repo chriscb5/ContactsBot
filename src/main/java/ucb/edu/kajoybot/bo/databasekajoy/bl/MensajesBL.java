@@ -144,14 +144,10 @@ public class MensajesBL {
         String cadena=new String();
         switch (numero_de_pregunta){
             case 0:
-                LOGGER.info("Ingresando id curso");
-                cadena="Ingrese el codigo del curso";
-                break;
-            case 1:
                 LOGGER.info("Cuso publico");
                 cadena="El curso es publico\nPuede ingresar sin necesidad de una clave";
                 break;
-            case 2:
+            case 1:
                 LOGGER.info("Curso privado. Ingresando clave");
                 cadena="El curso es privado\nPor favor, ingrese la clave del curso";
                 break;
@@ -297,7 +293,19 @@ public class MensajesBL {
     public String entraRegistroEstudianteCurso(Update update,String messageTextReceived){
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
-        if(registrollenadosList.size()<2) {
+
+        if(getNumero_de_pregunta()<1){
+            if (existsCursoByIdCurso(messageTextReceived)){
+                mensaje = "Curso encontrado con el Nombre = "+getNombreCurso(messageTextReceived);
+            }else{
+                mensaje = "No se encontró ningún curso con el código ingresado.\n Por favor intente nuevamente";
+                messageTextReceived="";
+                //entra_a_registro_estudiante_curso(update, messageTextReceived);
+            }
+        }
+
+
+        /*if(registrollenadosList.size()<2) {
             LOGGER.info("Entra a registros no llenos");
             if(getNumero_de_pregunta()<1){
                 mensaje = mensajesRegistroEstudianteCurso(update);
@@ -306,13 +314,13 @@ public class MensajesBL {
             registrollenadosList.add(messageTextReceived);
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
-        if (registrollenadosList.size()==3) {
+        if (registrollenadosList.size()==2) {
             LOGGER.info("Ingresa a registros llenos");
             mensaje = guardarListaRegistrosCurso(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
-        }
+        }*/
         return mensaje;
     }
 
@@ -757,10 +765,23 @@ public class MensajesBL {
         estudianteTestRepository.save(estudianteTestEntity);
     }
 
+    private boolean existsCursoByIdCurso(String id){
+        Boolean exists = false;
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        if (cursoEntity==null){
+            LOGGER.info("Returns NULL");
+            exists = false;
+        }else {
+            LOGGER.info(cursoEntity.getNombre());
+            exists = true;
+        }
+        return exists;
+    }
 
-
-
-
+    private String getNombreCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getNombre();
+    }
 
 
 }
