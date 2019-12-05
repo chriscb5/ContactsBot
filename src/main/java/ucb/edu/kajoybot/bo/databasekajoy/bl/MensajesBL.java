@@ -286,7 +286,7 @@ public class MensajesBL {
         }
         if (registrollenadosList.size()==4) {
             LOGGER.info("Ingresa a registros llenos");
-            mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+            mensaje = guardarListaRegistrosCurso(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
