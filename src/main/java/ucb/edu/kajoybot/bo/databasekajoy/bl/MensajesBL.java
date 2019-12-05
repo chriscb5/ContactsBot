@@ -39,12 +39,14 @@ public class MensajesBL {
     private static boolean entra_a_registro_respuesta=true;
     private static boolean entra_a_registro_estudiante_curso=false;
     private static boolean entra_a_listado_estudiantes=false;
+    private static boolean entra_a_listado_docentes=false;
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
     private static boolean confirmation=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
+
 
 
     private EstudianteRespository estudianteRespository;
@@ -382,6 +384,22 @@ public class MensajesBL {
         return sendMessage;
     }
 
+    public SendMessage entraListadoDocentes(Update update,String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<DocenteEntity> docenteEntities = docenteRespository.findAllByStatuss(1);
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|APELLIDOP\t|\tAPELLIDOM\t|\tUSER\n";
+        for (int i=0; i<docenteEntities.size(); i++){
+            message += docenteEntities.get(i).getIdDocente()+"\t|\t"+docenteEntities.get(i).getNombre()+"\t|\t"
+                    +docenteEntities.get(i).getApellidoPaterno()+"\t|\t"+docenteEntities.get(i).getApellidoMaterno()+"\t|\t"
+                    +docenteEntities.get(i).getTxUser()+"\n";
+        }
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setText(message);
+        return sendMessage;
+    }
+
     public String afirmacionAdicionarPregunta(){
         //SI
         confirmation=true;
@@ -630,6 +648,13 @@ public class MensajesBL {
 
     public static void setEntra_a_listado_estudiantes(boolean entra_a_listado_estudiantes) {
         MensajesBL.entra_a_listado_estudiantes = entra_a_listado_estudiantes;
+    }
+    public static boolean isEntra_a_listado_docentes(){
+        return entra_a_listado_docentes;
+    }
+
+    public static void setEntra_a_listado_docentes(boolean entra_a_listado_docentes) {
+        MensajesBL.entra_a_listado_docentes = entra_a_listado_docentes;
     }
 
 
