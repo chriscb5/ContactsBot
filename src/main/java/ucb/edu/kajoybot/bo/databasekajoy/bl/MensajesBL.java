@@ -366,6 +366,11 @@ public class MensajesBL {
         return sendMessage;
     }
 
+    public SendMessage entraListadoEstudiantes(Update update,String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        return sendMessage;
+    }
+
     public String afirmacionAdicionarPregunta(){
         //SI
         confirmation=true;

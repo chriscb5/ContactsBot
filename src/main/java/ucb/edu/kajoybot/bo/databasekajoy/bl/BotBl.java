@@ -185,6 +185,10 @@ public class BotBl {
 //                sendMessage.setChatId(chatId);
                 sendMessage=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
             }
+            if(mensajesBL.isEntra_a_listado_estudiantes()){
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage=mensajesBL.entraListadoEstudiantes(update,messageTextReceived,sendMessage);
+            }
             if(mensajesBL.isEntra_a_registro_test()){
                 response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
                 sendMessage.setChatId(chatId).setText(response);
