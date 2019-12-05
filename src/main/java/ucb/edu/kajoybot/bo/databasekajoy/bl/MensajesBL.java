@@ -293,27 +293,17 @@ public class MensajesBL {
     public SendMessage entraRegistroEstudianteCurso(Update update,String messageTextReceived, SendMessage sendMessage){
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
         if(getNumero_de_pregunta()<1){
             String cursoID = messageTextReceived;
             if (existsCursoByIdCurso(cursoID)){
-                mensaje = "Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n";
+                mensaje += "Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n";
                 LOGGER.info(getNombreCurso(cursoID) +" ; "+ getTipoCurso(cursoID));
                 if(getTipoCurso(cursoID).equals("publico")){
                     setNumero_de_pregunta(0);
                     mensaje += mensajesRegistroEstudianteCurso(update)+"\n";
-                    sendMessage.setChatId(update.getMessage().getChatId())
-                            .setText("Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n"+mensajesRegistroEstudianteCurso(update)+"\nEstás seguro que quieres registrarte al curso \n"+getNombreCurso(messageTextReceived)+"'?");
-                    KeyboardRow row= new KeyboardRow();
-                    ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-                    List<KeyboardRow> keyboard= new ArrayList<>();
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-                    row.add("Registro Profesor");
-                    row.add("Registro Alumno");
-                    keyboard.add(row);
-                    keyboardMarkup.setKeyboard(keyboard);
-                    sendMessage.setReplyMarkup(keyboardMarkup);
-                    //make2OptionsKeyboard("SI","NO");
                     LOGGER.info("Registro curso publico exitoso");
                 }else{
                     if (getTipoCurso(cursoID).equals("privado")){
@@ -324,12 +314,35 @@ public class MensajesBL {
                         }
                     }
                 }
-            }else{
-                mensaje = "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
-                messageTextReceived="";
+                mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(messageTextReceived)+"'?";
+                sendMessage.setChatId(update.getMessage().getChatId())
+                        .setText(mensaje);
 
+                row.add("SI");
+                row.add("NO");
+                keyboard.add(row);
+                keyboardMarkup.setKeyboard(keyboard);
+                sendMessage.setReplyMarkup(keyboardMarkup);
+
+
+
+//                if (update.getMessage().getText().equals("SI")){
+//                    mensaje += "Registro completado exitosamente";
+//                    sendMessage.setChatId(update.getMessage().getChatId())
+//                            .setText(messageTextReceived);
+//                }else {
+//                    mensaje += "Registro cancelado";
+//                    sendMessage.setChatId(update.getMessage().getChatId())
+//                            .setText(messageTextReceived);
+//                }
+            }else{
+                mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
+                messageTextReceived="";
+                sendMessage.setChatId(update.getMessage().getChatId())
+                        .setText(mensaje);
                 //entra_a_registro_estudiante_curso(update, messageTextReceived);
             }
+
         }
 
 
