@@ -368,6 +368,17 @@ public class MensajesBL {
 
     public SendMessage entraListadoEstudiantes(Update update,String messageTextReceived, SendMessage sendMessage){
         LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<EstudianteEntity> estudianteEntities = estudianteRespository.findAllByStatuss(1);
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|APELLIDOP\t|\tAPELLIDOM\t|\tINSTITUCION\t|\tUSER\n";
+        for (int i=0; i<estudianteEntities.size(); i++){
+            message += estudianteEntities.get(i).getIdEstudiante()+"\t|\t"+estudianteEntities.get(i).getNombre()+"\t|\t"
+                    +estudianteEntities.get(i).getApellidoPaterno()+"\t|\t"+estudianteEntities.get(i).getApellidoMaterno()+"\t|\t"
+                    +estudianteEntities.get(i).getInstitucion()+"\t|\t"+estudianteEntities.get(i).getTxUser()+"\n";
+        }
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setText(message);
         return sendMessage;
     }
 

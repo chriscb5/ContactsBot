@@ -180,12 +180,14 @@ public class BotBl {
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_estudiante_curso()){
+//                LOGGER.info("Entra ini est curs");
 //                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
 //                sendMessage.setChatId(chatId);
                 sendMessage=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
             }
             if(mensajesBL.isEntra_a_listado_estudiantes()){
+//                LOGGER.info("Entra inicializator listado");
                 response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage=mensajesBL.entraListadoEstudiantes(update,messageTextReceived,sendMessage);
             }
@@ -346,7 +348,7 @@ public class BotBl {
                     case "Listado Estudiantes":
                         mensajesBL.setEntra_a_listado_estudiantes(true);
                         sendMessage.setChatId(chatId)
-                                .setText("LISTADO DE ESTUDIANTES REGISTRADOS\n");
+                                .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
                         break;
                     default:
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
