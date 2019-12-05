@@ -339,6 +339,11 @@ public class BotBl {
 //                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
 //                        message = responseMessage;
                         break;
+                    case "Listado Estudiantes":
+                        mensajesBL.setEntra_a_listado_estudiantes(true);
+                        sendMessage.setChatId(chatId)
+                                .setText("LISTADO DE ESTUDIANTES REGISTRADOS\n");
+                        break;
                     default:
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
                             sendMessage.setChatId(chatId)

@@ -38,6 +38,7 @@ public class MensajesBL {
     private static boolean entra_a_responder_test=false;
     private static boolean entra_a_registro_respuesta=true;
     private static boolean entra_a_registro_estudiante_curso=false;
+    private static boolean entra_a_listado_estudiantes=false;
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
@@ -324,7 +325,7 @@ public class MensajesBL {
                 keyboardMarkup.setKeyboard(keyboard);
                 sendMessage.setReplyMarkup(keyboardMarkup);
 
-
+                //FIXME agregar registro en la tabla EstudianteCurso
 
 //                if (update.getMessage().getText().equals("SI")){
 //                    mensaje += "Registro completado exitosamente";
@@ -605,6 +606,14 @@ public class MensajesBL {
 
     public static void setNumero_de_pregunta_respondiendo(int numero_de_pregunta_respondiendo) {
         MensajesBL.numero_de_pregunta_respondiendo = numero_de_pregunta_respondiendo;
+    }
+
+    public static boolean isEntra_a_listado_estudiantes(){
+        return entra_a_listado_estudiantes;
+    }
+
+    public static void setEntra_a_listado_estudiantes(boolean entra_a_listado_estudiantes) {
+        MensajesBL.entra_a_listado_estudiantes = entra_a_listado_estudiantes;
     }
 
 
