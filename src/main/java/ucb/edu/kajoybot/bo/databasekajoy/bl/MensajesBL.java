@@ -40,6 +40,7 @@ public class MensajesBL {
     private static boolean entra_a_registro_estudiante_curso=false;
     private static boolean entra_a_listado_estudiantes=false;
     private static boolean entra_a_listado_docentes=false;
+    private static boolean entra_a_listado_cursos=false;
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
@@ -400,6 +401,21 @@ public class MensajesBL {
         return sendMessage;
     }
 
+    public SendMessage entraListadoCursos(Update update,String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<CursoEntity> cursoEntities = cursoRepository.findAll();
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|TIPO CURSO\n";
+        for (int i=0; i<cursoEntities.size(); i++){
+            message += cursoEntities.get(i).getIdCurso()+"\t|\t"+cursoEntities.get(i).getNombre()+"\t|\t"
+                    +cursoEntities.get(i).getTipoCurso()+"\n";
+        }
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setText(message);
+        return sendMessage;
+    }
+
     public String afirmacionAdicionarPregunta(){
         //SI
         confirmation=true;
@@ -649,12 +665,21 @@ public class MensajesBL {
     public static void setEntra_a_listado_estudiantes(boolean entra_a_listado_estudiantes) {
         MensajesBL.entra_a_listado_estudiantes = entra_a_listado_estudiantes;
     }
+
     public static boolean isEntra_a_listado_docentes(){
         return entra_a_listado_docentes;
     }
 
     public static void setEntra_a_listado_docentes(boolean entra_a_listado_docentes) {
         MensajesBL.entra_a_listado_docentes = entra_a_listado_docentes;
+    }
+
+    public static boolean isEntra_a_listado_cursos(){
+        return entra_a_listado_cursos;
+    }
+
+    public static void setEntra_a_listado_cursos(boolean entra_a_listado_cursos) {
+        MensajesBL.entra_a_listado_cursos = entra_a_listado_cursos;
     }
 
 
