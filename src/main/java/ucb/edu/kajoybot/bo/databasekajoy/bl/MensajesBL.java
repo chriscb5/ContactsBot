@@ -38,12 +38,16 @@ public class MensajesBL {
     private static boolean entra_a_responder_test=false;
     private static boolean entra_a_registro_respuesta=true;
     private static boolean entra_a_registro_estudiante_curso=false;
+    private static boolean entra_a_listado_estudiantes=false;
+    private static boolean entra_a_listado_docentes=false;
+    private static boolean entra_a_listado_cursos=false;
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
     private static boolean confirmation=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
+
 
 
     private EstudianteRespository estudianteRespository;
@@ -281,7 +285,7 @@ public class MensajesBL {
         }
         if (registrollenadosList.size()==4) {
             LOGGER.info("Ingresa a registros llenos");
-            mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+            mensaje = guardarListaRegistrosCurso(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
@@ -292,27 +296,17 @@ public class MensajesBL {
     public SendMessage entraRegistroEstudianteCurso(Update update,String messageTextReceived, SendMessage sendMessage){
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
         if(getNumero_de_pregunta()<1){
             String cursoID = messageTextReceived;
             if (existsCursoByIdCurso(cursoID)){
-                mensaje = "Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n";
+                mensaje += "Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n";
                 LOGGER.info(getNombreCurso(cursoID) +" ; "+ getTipoCurso(cursoID));
                 if(getTipoCurso(cursoID).equals("publico")){
                     setNumero_de_pregunta(0);
                     mensaje += mensajesRegistroEstudianteCurso(update)+"\n";
-                    sendMessage.setChatId(update.getMessage().getChatId())
-                            .setText("Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n"+mensajesRegistroEstudianteCurso(update)+"\nEstás seguro que quieres registrarte al curso \n"+getNombreCurso(messageTextReceived)+"'?");
-                    KeyboardRow row= new KeyboardRow();
-                    ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-                    List<KeyboardRow> keyboard= new ArrayList<>();
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-                    row.add("Registro Profesor");
-                    row.add("Registro Alumno");
-                    keyboard.add(row);
-                    keyboardMarkup.setKeyboard(keyboard);
-                    sendMessage.setReplyMarkup(keyboardMarkup);
-                    //make2OptionsKeyboard("SI","NO");
                     LOGGER.info("Registro curso publico exitoso");
                 }else{
                     if (getTipoCurso(cursoID).equals("privado")){
@@ -323,12 +317,35 @@ public class MensajesBL {
                         }
                     }
                 }
-            }else{
-                mensaje = "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
-                messageTextReceived="";
+                mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(messageTextReceived)+"'?";
+                sendMessage.setChatId(update.getMessage().getChatId())
+                        .setText(mensaje);
 
+                row.add("SI");
+                row.add("NO");
+                keyboard.add(row);
+                keyboardMarkup.setKeyboard(keyboard);
+                sendMessage.setReplyMarkup(keyboardMarkup);
+
+                //FIXME agregar registro en la tabla EstudianteCurso
+
+//                if (update.getMessage().getText().equals("SI")){
+//                    mensaje += "Registro completado exitosamente";
+//                    sendMessage.setChatId(update.getMessage().getChatId())
+//                            .setText(messageTextReceived);
+//                }else {
+//                    mensaje += "Registro cancelado";
+//                    sendMessage.setChatId(update.getMessage().getChatId())
+//                            .setText(messageTextReceived);
+//                }
+            }else{
+                mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
+                messageTextReceived="";
+                sendMessage.setChatId(update.getMessage().getChatId())
+                        .setText(mensaje);
                 //entra_a_registro_estudiante_curso(update, messageTextReceived);
             }
+
         }
 
 
@@ -348,6 +365,53 @@ public class MensajesBL {
             registrollenadosList.clear();
             entra_a_registro_curso = false;
         }*/
+        return sendMessage;
+    }
+
+    public SendMessage entraListadoEstudiantes(Update update,String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<EstudianteEntity> estudianteEntities = estudianteRespository.findAllByStatuss(1);
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|APELLIDOP\t|\tAPELLIDOM\t|\tINSTITUCION\t|\tUSER\n";
+        for (int i=0; i<estudianteEntities.size(); i++){
+            message += estudianteEntities.get(i).getIdEstudiante()+"\t|\t"+estudianteEntities.get(i).getNombre()+"\t|\t"
+                    +estudianteEntities.get(i).getApellidoPaterno()+"\t|\t"+estudianteEntities.get(i).getApellidoMaterno()+"\t|\t"
+                    +estudianteEntities.get(i).getInstitucion()+"\t|\t"+estudianteEntities.get(i).getTxUser()+"\n";
+        }
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setText(message);
+        return sendMessage;
+    }
+
+    public SendMessage entraListadoDocentes(Update update,String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<DocenteEntity> docenteEntities = docenteRespository.findAllByStatuss(1);
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|APELLIDOP\t|\tAPELLIDOM\t|\tUSER\n";
+        for (int i=0; i<docenteEntities.size(); i++){
+            message += docenteEntities.get(i).getIdDocente()+"\t|\t"+docenteEntities.get(i).getNombre()+"\t|\t"
+                    +docenteEntities.get(i).getApellidoPaterno()+"\t|\t"+docenteEntities.get(i).getApellidoMaterno()+"\t|\t"
+                    +docenteEntities.get(i).getTxUser()+"\n";
+        }
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setText(message);
+        return sendMessage;
+    }
+
+    public SendMessage entraListadoCursos(Update update,String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<CursoEntity> cursoEntities = cursoRepository.findAll();
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|TIPO CURSO\n";
+        for (int i=0; i<cursoEntities.size(); i++){
+            message += cursoEntities.get(i).getIdCurso()+"\t|\t"+cursoEntities.get(i).getNombre()+"\t|\t"
+                    +cursoEntities.get(i).getTipoCurso()+"\n";
+        }
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setText(message);
         return sendMessage;
     }
 
@@ -601,6 +665,30 @@ public class MensajesBL {
 
     public static void setNumero_de_pregunta_respondiendo(int numero_de_pregunta_respondiendo) {
         MensajesBL.numero_de_pregunta_respondiendo = numero_de_pregunta_respondiendo;
+    }
+
+    public static boolean isEntra_a_listado_estudiantes(){
+        return entra_a_listado_estudiantes;
+    }
+
+    public static void setEntra_a_listado_estudiantes(boolean entra_a_listado_estudiantes) {
+        MensajesBL.entra_a_listado_estudiantes = entra_a_listado_estudiantes;
+    }
+
+    public static boolean isEntra_a_listado_docentes(){
+        return entra_a_listado_docentes;
+    }
+
+    public static void setEntra_a_listado_docentes(boolean entra_a_listado_docentes) {
+        MensajesBL.entra_a_listado_docentes = entra_a_listado_docentes;
+    }
+
+    public static boolean isEntra_a_listado_cursos(){
+        return entra_a_listado_cursos;
+    }
+
+    public static void setEntra_a_listado_cursos(boolean entra_a_listado_cursos) {
+        MensajesBL.entra_a_listado_cursos = entra_a_listado_cursos;
     }
 
 

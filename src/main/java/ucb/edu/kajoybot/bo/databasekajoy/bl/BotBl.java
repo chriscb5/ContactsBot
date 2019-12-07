@@ -181,10 +181,28 @@ public class BotBl {
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_estudiante_curso()){
-                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
+                mensajesBL.entraRegistroEstudianteCurso(messageTextReceived,sendMessage);
 //                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+//                LOGGER.info("Entra ini est curs");
+//                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
 //                sendMessage.setChatId(chatId);
-                sendMessage=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
+                mensajesBL.entraRegistroEstudianteCurso(messageTextReceived,sendMessage);
+            }
+            if(mensajesBL.isEntra_a_listado_estudiantes()){
+//                LOGGER.info("Entra inicializator listado");
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage=mensajesBL.entraListadoEstudiantes(update,messageTextReceived,sendMessage);
+            }
+            if(mensajesBL.isEntra_a_listado_docentes()){
+//                LOGGER.info("Entra inicializator listado");
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage=mensajesBL.entraListadoDocentes(update,messageTextReceived,sendMessage);
+            }
+            if(mensajesBL.isEntra_a_listado_cursos()){
+//                LOGGER.info("Entra inicializator listado");
+                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                sendMessage=mensajesBL.entraListadoCursos(update,messageTextReceived,sendMessage);
             }
             if(mensajesBL.isEntra_a_registro_test()){
                 mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);
@@ -339,6 +357,21 @@ public class BotBl {
 //                        responseMessage.setChatId(chatId)
 //                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
 //                        message = responseMessage;
+                        break;
+                    case "Listado Estudiantes":
+                        mensajesBL.setEntra_a_listado_estudiantes(true);
+                        sendMessage.setChatId(chatId)
+                                .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                        break;
+                    case "Listado Docentes":
+                        mensajesBL.setEntra_a_listado_docentes(true);
+                        sendMessage.setChatId(chatId)
+                                .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                        break;
+                    case "Listado Cursos":
+                        mensajesBL.setEntra_a_listado_cursos(true);
+                        sendMessage.setChatId(chatId)
+                                .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
                         break;
                     default:
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
