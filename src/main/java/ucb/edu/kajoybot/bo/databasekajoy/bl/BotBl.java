@@ -2,7 +2,6 @@ package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -10,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 
 import java.util.ArrayList;
@@ -23,9 +21,6 @@ import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 @Service
 public class BotBl {
 
-
-    MensajesBL mensajesBL;
-
     private static final Logger LOGGER= LoggerFactory.getLogger(BotBl.class);
 
     private EstudianteRespository estudianteRespository;
@@ -37,6 +32,7 @@ public class BotBl {
     private PreguntaRepository preguntaRepository;
     private ChatRepository chatRepository;
     private String nombreTest="";
+    MensajesBL mensajesBL;
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
@@ -55,15 +51,6 @@ public class BotBl {
 
 
     }
-
-/*    public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository) {
-        this.estudianteRespository = estudianteRespository;
-        this.docenteRespository = docenteRespository;
-        this.cursoRepository = cursoRepository;
-        this.kjEstudianteUserRepository = kjEstudianteUserRepository;
-    }*/
-
-
 
     public  String guardarListaRegistros(List<String> listaderegistros){
         EstudianteEntity estudianteEntity=new EstudianteEntity();
@@ -96,131 +83,36 @@ public class BotBl {
         return "¡Registro completado exitosamente¡";
     }
 
-
-    //intento Multi Usuario
-//    public List<String> processUpdate(Update update) {
-//        LOGGER.info("Recibiendo update {} ", update);
-//        List<String> chatResponse = new ArrayList<>();
-//        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-//        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
-//        return chatResponse;
-//    }
-
-    public /*SendMessage*/void processUpdateMesage(Update update,SendMessage message){
+    public void processUpdateMesage(Update update,SendMessage message){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
         KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         message.setChatId(update.getMessage().getChatId());
-        //return continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
         continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
     }
 
 
-    public /*SendMessage*/void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage) {
+    public void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage) {
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
-        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        SendMessage message = new SendMessage()
-                .setChatId(chatId)
-                .setText("DEFAULT");
-
-        SendMessage responseMessage = new SendMessage();
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        String response = "";
         String imageFile = null;
         SendPhoto sendPhoto = new SendPhoto();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
-
-
-
-
+        sendMessage.setChatId(chatId);
         if(lastMenssage == null){
-            message.setChatId(chatId)
+            sendMessage.setChatId(chatId)
                     .setText("DEFAULT por null");
         }
         else {
-            int lastMessageInt = 0;
-            if(messageTextReceived.equals("Si")){
-                response=mensajesBL.afirmacionAdicionarPregunta();
-//                response+="\n\nlast mensaje received \n\n"+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-
-            }
-            if(messageTextReceived.equals("No")){
-                response=mensajesBL.afirmacionTerminarRegistroTest();
-//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_iniciar_estudiante()){
-                response+=mensajesBL.iniciarEstudiante(messageTextReceived);
-//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_iniciar_docente()){
-                response+=mensajesBL.iniciarDocente(messageTextReceived);
-                LOGGER.info("Ingresa con "+response);
-//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_registro_estudiante()){
-                response+=mensajesBL.entraRegistroEstudiante(sendMessage,messageTextReceived);
-//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_registro_docente()){
-                response+=mensajesBL.entraRegistroDocente(sendMessage,messageTextReceived);
-//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_registro_curso()){
-                response+=mensajesBL.entraRegistroCurso(sendMessage,messageTextReceived);
- //               response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_registro_estudiante_curso()){
-                mensajesBL.entraRegistroEstudianteCurso(messageTextReceived,sendMessage);
-//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-//                LOGGER.info("Entra ini est curs");
-//                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-//                sendMessage.setChatId(chatId);
-                mensajesBL.entraRegistroEstudianteCurso(messageTextReceived,sendMessage);
-            }
-            if(mensajesBL.isEntra_a_listado_estudiantes()){
-//                LOGGER.info("Entra inicializator listado");
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage=mensajesBL.entraListadoEstudiantes(update,messageTextReceived,sendMessage);
-            }
-            if(mensajesBL.isEntra_a_listado_docentes()){
-//                LOGGER.info("Entra inicializator listado");
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage=mensajesBL.entraListadoDocentes(update,messageTextReceived,sendMessage);
-            }
-            if(mensajesBL.isEntra_a_listado_cursos()){
-//                LOGGER.info("Entra inicializator listado");
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
-                sendMessage=mensajesBL.entraListadoCursos(update,messageTextReceived,sendMessage);
-            }
-            if(mensajesBL.isEntra_a_registro_test()){
-                mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);
-//                sendMessage.setChatId(chatId).setText(response);
-            }
-            if(mensajesBL.isEntra_a_responder_test()){
-                if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
-                    nombreTest=messageTextReceived;
-                }
-                sendMessage=mensajesBL.entraResponderTest(nombreTest,update.getMessage().getChat().getFirstName(),sendMessage);
-            }
-
+            setModulesMessages(update,sendMessage,messageTextReceived);
             try {
                 switch(messageInput) {
 
                     case "/start":
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                         sendMessage.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                         row.add("Comenzar");
@@ -228,135 +120,82 @@ public class BotBl {
                         keyboard.add(row);
                         keyboardMarkup.setKeyboard(keyboard);
                         sendMessage.setReplyMarkup(keyboardMarkup);
-//                        responseMessage.setReplyMarkup(keyboardMarkup);
-//                        message = responseMessage;
-                        // code block
                         break;
                     case "Información":
-   //                     responseMessage.setChatId(chatId)
-    //                            .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-
                         imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
                         sendPhoto.setChatId(chatId)
                                 .setPhoto(imageFile);
                         sendMessage.setChatId(chatId)
                                 .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-
-//                        message = responseMessage;
-                        // code block
                         break;
                     case "Comenzar":
                         sendMessage.setChatId(chatId)
                             .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-/*                        responseMessage.setChatId(chatId)
-                                .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-*/                        row.add("Iniciar sesión");
+                        row.add("Iniciar sesión");
                         row.add("Registro");
                         keyboard.add(row);
                         keyboardMarkup.setKeyboard(keyboard);
                         sendMessage.setReplyMarkup(keyboardMarkup);
-//                        responseMessage.setReplyMarkup(keyboardMarkup);
-//                        message = responseMessage;
                         break;
                     case "Registro":
                         sendMessage.setChatId(chatId)
                                 .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
                         row.add("Registro Profesor");
                         row.add("Registro Alumno");
                         keyboard.add(row);
-
                         keyboardMarkup.setKeyboard(keyboard);
                         sendMessage.setReplyMarkup(keyboardMarkup);
-//                        responseMessage.setReplyMarkup(keyboardMarkup);
-//                        message = responseMessage;
                         break;
                     case "Iniciar sesión":
                         sendMessage.setChatId(chatId)
                                 .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
                         row.add("Soy Docente");
                         row.add("Soy Estudiante");
                         keyboard.add(row);
                         keyboardMarkup.setKeyboard(keyboard);
                         sendMessage.setReplyMarkup(keyboardMarkup);
-//                        responseMessage.setReplyMarkup(keyboardMarkup);
-//                        message = responseMessage;
                         break;
                     case "Soy Estudiante":
                         sendMessage.setChatId(chatId)
                                 .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
                         mensajesBL.setEntra_a_iniciar_estudiante(true);
-//                        message = responseMessage;
                         break;
                     case "Soy Docente":
-//                        response=mensajesBL.iniciarDocente(messageTextReceived);
                         mensajesBL.setEntra_a_iniciar_docente(true);;
                         sendMessage.setChatId(chatId).
                                 setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
-//                        responseMessage.setChatId(chatId).
-//                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
-//                        message = responseMessage;
                         break;
                     case "Registro Alumno":
                         mensajesBL.setEntra_a_registro_estudiante(true);
-//                      entra_a_registro_estudiante = true;//FIXME celis poner la funcion
                         sendMessage.setChatId(chatId)
                                 .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-//                        message = responseMessage;
                         break;
                     case "Registro Docente":
                         mensajesBL.setEntra_a_registro_docente(true);
-//                        entra_a_registro_docente = true;//FIXME celis poner la funcion
                         sendMessage.setChatId(chatId)
                                 .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-//                        message = responseMessage;
                         break;
                     case "Test":
                         mensajesBL.setEntra_a_registro_test(true);
-                        mensajesBL.setConfirmation(false);//FIXME celis poner la funcion
-                        mensajesBL.setAniade_pregunta_nueva(true);//FIXME celis poner la funcion
+                        mensajesBL.setConfirmation(false);
+                        mensajesBL.setAniade_pregunta_nueva(true);
                         sendMessage.setChatId(chatId)
                                 .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
-//                        message = responseMessage;
                         break;
                     case "Crear Nuevo Curso":
                         mensajesBL.setEntra_a_registro_curso(true);
-//                        entra_a_registro_curso = true;//FIXME celis poner la funcion
                         sendMessage.setChatId(chatId)
                                 .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
-//                        message = responseMessage;
                         break;
                     case "Registro Estudiante Curso":
-                        mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
+                        mensajesBL.setEntra_a_registro_estudiante_curso(true);
                         sendMessage.setChatId(chatId)
                                 .setText("**Unirse a un curso**\nIngrese el codigo del curso");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
-//                        message = responseMessage;
                         break;
                     case "TestR":
                         mensajesBL.setEntra_a_responder_test(true);
                         sendMessage.setChatId(chatId)
                                 .setText("RESPONDER TEST\nIngrese el nombre del Test");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("TEST RECIBIDO\nIngrese el nombre del Test");
-//                        message = responseMessage;
                         break;
                     case "Listado Estudiantes":
                         mensajesBL.setEntra_a_listado_estudiantes(true);
@@ -385,11 +224,8 @@ public class BotBl {
             } catch (NumberFormatException nfe){
                 sendMessage.setChatId(chatId)
                         .setText("DEFAULT");
-//                message.setChatId(chatId)
-//                        .setText("DEFAULT");
             }
         }
-
         KjChatEntity kjChatEntity = new KjChatEntity();
         kjChatEntity.setKjuserid(kjEstudianteUserEntity);
         kjChatEntity.setInMessage(update.getMessage().getText());
@@ -399,8 +235,6 @@ public class BotBl {
         kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
         kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
         chatRepository.save(kjChatEntity);
-
-//        return message;
     }
 
     private KjEstudianteUserEntity initUser(User user) {
@@ -427,6 +261,7 @@ public class BotBl {
         }
         return kjEstudianteUserEntity;
     }
+
 
     public SendMessage make2OptionsKeyboard(String a,String b,Update update,KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage){
 
@@ -457,81 +292,50 @@ public class BotBl {
         return sendMessage;
     }
 
-/*
-    public  String guardarListaRegistrosCurso(List<String> listaderegistros){
-        LOGGER.info("Llega al metodo con : ");
-        for (String lag:listaderegistros){
-            LOGGER.info("Elemento : "+lag);
+
+    private void setModulesMessages(Update update,SendMessage sendMessage,String messageTextReceived){
+        if(messageTextReceived.equals("Si")){
+            sendMessage.setText(mensajesBL.afirmacionAdicionarPregunta());
         }
-        DocenteEntity docenteEntity = new DocenteEntity(1);
-        CursoEntity cursoEntity=new CursoEntity();
-        cursoEntity.setIdDocente(docenteEntity);
-        cursoEntity.setNombre(listaderegistros.get(0));
-        cursoEntity.setTipoCurso(listaderegistros.get(1));
-        cursoEntity.setClave(listaderegistros.get(2));
-        LOGGER.info("Entidad curso "+cursoEntity.toString());
-        cursoRepository.save(cursoEntity);
-        return "¡Registro completado exitosamente¡";
-    }
-    public String saveCompleteTest(List<String> questionsList,List<String> responseList ){
-        saveTest();
-        saveQuestionList(questionsList);
-        saveResponseList(responseList,questionsList);
-        return "REGISTRO DE TEST COMPLETADO";
-    }
-    public void saveTest(){
-        TestEntity testEntity=new TestEntity();
-        CursoEntity cursoEntity= cursoRepository.findByIdCurso(8);
-        LOGGER.info("ENCONTRO en save test esto "+cursoEntity.getClave()+" "+cursoEntity.getNombre()+" "+cursoEntity.getTipoCurso());
-        testEntity.setIdCurso(cursoEntity);
-        DocenteEntity docenteEntity=new DocenteEntity();
-        docenteEntity=docenteRespository.findAllByIdDocente(1);
-        testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("Ciencias Sociales");
-        testRepository.save(testEntity);
-    }
-    public void  saveQuestion(String question,int questionNumber){
-        PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("Ciencias Sociales");
-        preguntaEntity.setIdTest(testEntity);
-        preguntaEntity.setContenidoPregunta(question);
-        preguntaEntity.setNumeroPregunta(questionNumber);
-        preguntaRepository.save(preguntaEntity);
-    }
-    public void saveQuestionList(List<String> questionList){
-        int count=1;
-        for (String question:questionList){
-            saveQuestion(question,count);
-            count++;
+        if(messageTextReceived.equals("No")){
+            sendMessage.setText(mensajesBL.afirmacionTerminarRegistroTest());
         }
-    }
-    public  void saveResponseList(List<String> responseList,List<String> questionList)
-    {
-        TestEntity testEntity=testRepository.findByNombreTest("Ciencias Sociales");
-        int numberResponse=1;
-        int indexQuestionList=0;
-        PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
-        for(int i=0;i<responseList.size();i++){
-            if(numberResponse==5 && indexQuestionList<questionList.size()-1){
-                indexQuestionList++;
-                preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
-                numberResponse=1;
-                saveResponse(responseList.get(i),preguntaEntity,numberResponse);
+        if(mensajesBL.isEntra_a_iniciar_estudiante()){
+            sendMessage.setText(mensajesBL.iniciarEstudiante(messageTextReceived));
+        }
+        if(mensajesBL.isEntra_a_iniciar_docente()){
+            sendMessage.setText(mensajesBL.iniciarDocente(messageTextReceived));
+        }
+        if(mensajesBL.isEntra_a_registro_estudiante()){
+            sendMessage.setText(mensajesBL.entraRegistroEstudiante(sendMessage,messageTextReceived));
+        }
+        if(mensajesBL.isEntra_a_registro_docente()){
+            sendMessage.setText(mensajesBL.entraRegistroDocente(sendMessage,messageTextReceived));
+        }
+        if(mensajesBL.isEntra_a_registro_curso()){
+            sendMessage.setText(mensajesBL.entraRegistroCurso(sendMessage,messageTextReceived));
+        }
+        if(mensajesBL.isEntra_a_registro_estudiante_curso()){
+            mensajesBL.entraRegistroEstudianteCurso(messageTextReceived,sendMessage);
+        }
+        if(mensajesBL.isEntra_a_listado_estudiantes()){
+            mensajesBL.entraListadoEstudiantes(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_listado_docentes()){
+            mensajesBL.entraListadoDocentes(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_listado_cursos()){
+            mensajesBL.entraListadoCursos(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_registro_test()){
+            mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);
+        }
+        if(mensajesBL.isEntra_a_responder_test()){
+            if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
+                nombreTest=messageTextReceived;
             }
-            else {
-                saveResponse(responseList.get(i),preguntaEntity,numberResponse);
-            }
-            numberResponse++;
+            mensajesBL.entraResponderTest(nombreTest,update.getMessage().getChat().getFirstName(),sendMessage);
         }
     }
-    public void  saveResponse(String response,PreguntaEntity preguntaEntity,int numberResponse){
-        RespuestaEntity respuestaEntity= new RespuestaEntity();
-        respuestaEntity.setIdPregunta(preguntaEntity);
-        respuestaEntity.setContenidoRespuesta(response);
-        respuestaEntity.setEsCorrecta(0);
-        respuestaEntity.setNumeroRespuesta(numberResponse);
-        respuestaRepository.save(respuestaEntity);
-    }
-*/
 
 }
