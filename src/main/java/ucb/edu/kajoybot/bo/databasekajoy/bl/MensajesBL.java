@@ -1,19 +1,15 @@
 package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
-import org.aspectj.weaver.ast.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +34,9 @@ public class MensajesBL {
     private static boolean entra_a_responder_test=false;
     private static boolean entra_a_registro_respuesta=true;
     private static boolean entra_a_registro_estudiante_curso=false;
+    private static boolean entra_a_listado_estudiantes=false;
+    private static boolean entra_a_listado_docentes=false;
+    private static boolean entra_a_listado_cursos=false;
     private static boolean aniade_pregunta_nueva=false;
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
@@ -46,9 +45,11 @@ public class MensajesBL {
     private static List<String> registrorespuestalist=new ArrayList<>();
 
 
+
     private EstudianteRespository estudianteRespository;
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
+    private EstudianteCursoRepository estudianteCursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
     private TestRepository testRepository;
     private RespuestaRepository respuestaRepository;
@@ -75,7 +76,7 @@ public class MensajesBL {
 
 
 
-    public  String mensajesRegistroEstudiante(Update update)
+    public String mensajesRegistroEstudiante()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -101,7 +102,7 @@ public class MensajesBL {
     }
 
 
-    public  String mensajesRegistroDocente(Update update)
+    public  String mensajesRegistroDocente()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -122,7 +123,7 @@ public class MensajesBL {
     }
 
 
-    public  String mensajesRegistroCurso(Update update)
+    public  String mensajesRegistroCurso()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -138,39 +139,33 @@ public class MensajesBL {
         return cadena;
     }
 
-    public  String mensajesRegistroEstudianteCurso(Update update)
+    public  String mensajesRegistroEstudianteCurso()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
             case 0:
-                LOGGER.info("Ingresando nombre curso");
-                cadena="**Unirse a un curso**";
+                LOGGER.info("Cuso publico");
+                cadena="El curso es publico\nPuede ingresar sin necesidad de una clave";
                 break;
             case 1:
-                LOGGER.info("Ingresando clave");
-                cadena="El curso es privado\n Por favor, ingrese la clave del curso";
+                LOGGER.info("Curso privado. Ingresando clave");
+                cadena="El curso es privado\nPor favor, ingrese la clave del curso";
                 break;
         }
         return cadena;
     }
 
-    public  String mensajeRegistroTest(Update update){
+    public  String mensajeRegistroTest(){
         String caden=new String();
         switch (numero_de_pregunta){
             case 0:
                 caden="¿Cuál sera la pregunta?";
                 break;
-/*            case 1:
-                caden="¿Cúal sera la tercera pregunta";
-                break;
-            case 2:
-                caden="¿Cúal sera la cuarta pregunta";
-                break;
-  */      }
+      }
         return caden;
     }
 
-    public String mensajeRegistroRespuesta(Update update){
+    public String mensajeRegistroRespuesta(){
         String cadena=new String();
         switch (numero_de_respuesta)
         {
@@ -218,14 +213,13 @@ public class MensajesBL {
         return response;
     }
 
-    public String entraRegistroEstudiante(Update update,String messageTextReceived){
+    public String entraRegistroEstudiante(SendMessage sendMessage,String messageTextReceived){
         LOGGER.info("Entra a el registro estudiante oficial");
         String mensaje="";
         if(registrollenadosList.size()<5) {
             LOGGER.info("Entra al registros no llenos");
             if(getNumero_de_pregunta()<4){
-                mensaje = mensajesRegistroEstudiante(update);
-                return mensaje;
+                mensaje = mensajesRegistroEstudiante();
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
             registrollenadosList.add(messageTextReceived);
@@ -233,53 +227,53 @@ public class MensajesBL {
         }
         if (registrollenadosList.size()==5) {
             LOGGER.info("Ingresa a registros llenos");
-            String mensajecomp = guardarListaRegistros(registrollenadosList);
+            mensaje = guardarListaRegistros(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_estudiante = false;
-            return mensajecomp;
+            setNumero_de_pregunta(0) ;//
         }
         return mensaje;
     }
 
-    public String entraRegistroDocente(Update update,String messageTextReceived){
+    public String entraRegistroDocente(SendMessage sendMessage,String messageTextReceived){
         LOGGER.info("Entra a el registro estudiante oficial");
         String mensaje="";
         if(registrollenadosList.size()<4)
         {
             LOGGER.info("Entra al registros no llenos");
             if(getNumero_de_pregunta()<3){
-                mensaje = mensajesRegistroDocente(update);
+                mensaje = mensajesRegistroDocente();
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
             registrollenadosList.add(messageTextReceived);
-            LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
         if (registrollenadosList.size()==4) {
             LOGGER.info("Ingresa a registros llenos");
-            String mensajecomp = guardarListaRegistrosDocente(registrollenadosList);
+            mensaje = guardarListaRegistrosDocente(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_docente = false;
+            setNumero_de_pregunta(0) ;//
         }
         return mensaje;
     }
 
 
-    public String entraRegistroCurso(Update update,String messageTextReceived){
+    public String entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
 
         LOGGER.info("Entra a el registro curso oficial");
         String mensaje="";
-        if(registrollenadosList.size()<3) {
+        if(registrollenadosList.size()<4) {
             LOGGER.info("Entra al registros no llenos");
-            if(getNumero_de_pregunta()<2){
-                mensaje = mensajesRegistroCurso(update);
+            if(getNumero_de_pregunta()<3){
+                mensaje = mensajesRegistroCurso();
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;
             registrollenadosList.add(messageTextReceived);
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
-        if (registrollenadosList.size()==3) {
+        if (registrollenadosList.size()==4) {
             LOGGER.info("Ingresa a registros llenos");
             mensaje = guardarListaRegistrosCurso(registrollenadosList);
             registrosllenos = false;
@@ -289,10 +283,61 @@ public class MensajesBL {
         return mensaje;
     }
 
-    public String entraRegistroEstudianteCurso(Update update,String messageTextReceived){
+    public void entraRegistroEstudianteCurso(String messageTextReceived, SendMessage sendMessage){
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
-        if(registrollenadosList.size()<2) {
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        if(getNumero_de_pregunta()<1){
+            String cursoID = messageTextReceived;
+            if (existsCursoByIdCurso(cursoID)){
+                mensaje += "Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n";
+                LOGGER.info(getNombreCurso(cursoID) +" ; "+ getTipoCurso(cursoID));
+                if(getTipoCurso(cursoID).equals("publico")){
+                    setNumero_de_pregunta(0);
+                    mensaje += mensajesRegistroEstudianteCurso()+"\n";
+                    LOGGER.info("Registro curso publico exitoso");
+                }else{
+                    if (getTipoCurso(cursoID).equals("privado")){
+                        setNumero_de_pregunta(1);
+                        mensaje += mensajesRegistroEstudianteCurso();
+                        if(getClaveCurso(cursoID).equals(messageTextReceived)){
+                            LOGGER.info("Registro curso privado exitoso");
+                        }
+                    }
+                }
+                mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(messageTextReceived)+"'?";
+                sendMessage.setText(mensaje);
+
+                row.add("SI");
+                row.add("NO");
+                keyboard.add(row);
+                keyboardMarkup.setKeyboard(keyboard);
+                sendMessage.setReplyMarkup(keyboardMarkup);
+
+                //FIXME agregar registro en la tabla EstudianteCurso
+
+//                if (update.getMessage().getText().equals("SI")){
+//                    mensaje += "Registro completado exitosamente";
+//                    sendMessage.setChatId(update.getMessage().getChatId())
+//                            .setText(messageTextReceived);
+//                }else {
+//                    mensaje += "Registro cancelado";
+//                    sendMessage.setChatId(update.getMessage().getChatId())
+//                            .setText(messageTextReceived);
+//                }
+            }else{
+                mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
+                messageTextReceived="";
+                sendMessage.setText(mensaje);
+                //entra_a_registro_estudiante_curso(update, messageTextReceived);
+            }
+
+        }
+
+
+        /*if(registrollenadosList.size()<2) {
             LOGGER.info("Entra a registros no llenos");
             if(getNumero_de_pregunta()<1){
                 mensaje = mensajesRegistroEstudianteCurso(update);
@@ -301,14 +346,57 @@ public class MensajesBL {
             registrollenadosList.add(messageTextReceived);
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
-        if (registrollenadosList.size()==3) {
+        if (registrollenadosList.size()==2) {
             LOGGER.info("Ingresa a registros llenos");
             mensaje = guardarListaRegistrosCurso(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
+        }*/
+//        return sendMessage;
+    }
+
+    public void entraListadoEstudiantes(SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<EstudianteEntity> estudianteEntities = estudianteRespository.findAllByStatuss(1);
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|APELLIDOP\t|\tAPELLIDOM\t|\tINSTITUCION\t|\tUSER\n";
+        for (int i=0; i<estudianteEntities.size(); i++){
+            message += estudianteEntities.get(i).getIdEstudiante()+"\t|\t"+estudianteEntities.get(i).getNombre()+"\t|\t"
+                    +estudianteEntities.get(i).getApellidoPaterno()+"\t|\t"+estudianteEntities.get(i).getApellidoMaterno()+"\t|\t"
+                    +estudianteEntities.get(i).getInstitucion()+"\t|\t"+estudianteEntities.get(i).getTxUser()+"\n";
         }
-        return mensaje;
+        sendMessage.setText(message);
+//        return sendMessage;
+    }
+
+    public void entraListadoDocentes(SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<DocenteEntity> docenteEntities = docenteRespository.findAllByStatuss(1);
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|APELLIDOP\t|\tAPELLIDOM\t|\tUSER\n";
+        for (int i=0; i<docenteEntities.size(); i++){
+            message += docenteEntities.get(i).getIdDocente()+"\t|\t"+docenteEntities.get(i).getNombre()+"\t|\t"
+                    +docenteEntities.get(i).getApellidoPaterno()+"\t|\t"+docenteEntities.get(i).getApellidoMaterno()+"\t|\t"
+                    +docenteEntities.get(i).getTxUser()+"\n";
+        }
+        sendMessage.setText(message);
+    }
+
+    public void entraListadoCursos(SendMessage sendMessage){
+        LOGGER.info("Entra al listado de estudiantes");
+        //EstudianteEntity estudianteEntity = new EstudianteEntity();
+        List<CursoEntity> cursoEntities = cursoRepository.findAll();
+        String message = "";
+        message += "ID\t|\tNOMBRE\t|\t|TIPO CURSO\n";
+        for (int i=0; i<cursoEntities.size(); i++){
+            message += cursoEntities.get(i).getIdCurso()+"\t|\t"+cursoEntities.get(i).getNombre()+"\t|\t"
+                    +cursoEntities.get(i).getTipoCurso()+"\n";
+        }
+        sendMessage.setText(message);
+//        return sendMessage;
     }
 
     public String afirmacionAdicionarPregunta(){
@@ -331,7 +419,7 @@ public class MensajesBL {
     }
 
 
-    public String entraARegistroTest(Update update,String messageTextReceived){
+    public void entraARegistroTest(SendMessage sendMessage,String messageTextReceived){
         String mensaje="";
         if (entra_a_registro_test){
             if(entra_a_registro_respuesta){
@@ -354,9 +442,17 @@ public class MensajesBL {
                     }
                     setNumero_de_respuesta(0);
                     mensaje+=cade;
+                    KeyboardRow row= new KeyboardRow();
+                    ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard= new ArrayList<>();
                     mensaje+="\nDesea añadir una nueva pregunta?";
+                    sendMessage.setText(mensaje);
+                    row.add("Si");
+                    row.add("No");
+                    keyboard.add(row);
+                    keyboardMarkup.setKeyboard(keyboard);
+                    sendMessage.setReplyMarkup(keyboardMarkup);
                     entra_a_registro_respuesta=false;
-//                            entra_a_registro_test=false;
                     aniade_respuesta_nueva=true;
                     aniade_pregunta_nueva=false;
 
@@ -364,7 +460,7 @@ public class MensajesBL {
 
                 if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
                     //INGRESANDO A REGISTROS NO COMPLETOS
-                    mensaje=mensajeRegistroRespuesta(update);
+                    sendMessage.setText(mensajeRegistroRespuesta());
                     setNumero_de_respuesta(getNumero_de_respuesta()+1);
                     if(aniade_pregunta_nueva==false){
                         registrorespuestalist.add(messageTextReceived);
@@ -374,7 +470,7 @@ public class MensajesBL {
             }
 
             if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
-                mensaje=mensajeRegistroTest(update);
+                sendMessage.setText(mensajeRegistroTest());
                 setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
                 entra_a_registro_respuesta=true;
             }
@@ -383,22 +479,12 @@ public class MensajesBL {
                 aniade_pregunta_nueva=false;
             }
             if(confirmation==true){
-/*                    String mensaje=mensajesBL.mensajeRegistroTest(update);
-                    SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                            .setChatId(update.getMessage().getChatId())
-                            .setText(mensaje);
-                    try {
-/                        this.execute(message);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                    mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+10);*/
                 entra_a_registro_respuesta=true;
                 confirmation=false;
             }
 
         }// TERMINA REGISTRO TEST
-        return mensaje;
+
     }
 
     public static boolean isRegistrosllenos() {
@@ -553,6 +639,30 @@ public class MensajesBL {
         MensajesBL.numero_de_pregunta_respondiendo = numero_de_pregunta_respondiendo;
     }
 
+    public static boolean isEntra_a_listado_estudiantes(){
+        return entra_a_listado_estudiantes;
+    }
+
+    public static void setEntra_a_listado_estudiantes(boolean entra_a_listado_estudiantes) {
+        MensajesBL.entra_a_listado_estudiantes = entra_a_listado_estudiantes;
+    }
+
+    public static boolean isEntra_a_listado_docentes(){
+        return entra_a_listado_docentes;
+    }
+
+    public static void setEntra_a_listado_docentes(boolean entra_a_listado_docentes) {
+        MensajesBL.entra_a_listado_docentes = entra_a_listado_docentes;
+    }
+
+    public static boolean isEntra_a_listado_cursos(){
+        return entra_a_listado_cursos;
+    }
+
+    public static void setEntra_a_listado_cursos(boolean entra_a_listado_cursos) {
+        MensajesBL.entra_a_listado_cursos = entra_a_listado_cursos;
+    }
+
 
     /////////////////////////////////////// GUARDAR REGISTROS
 
@@ -584,6 +694,22 @@ public class MensajesBL {
         docenteEntity.setTxDate(new Date());
         LOGGER.info("Entidad docente "+docenteEntity.toString());
         docenteRespository.save(docenteEntity);
+        return "¡Registro completado exitosamente¡";
+    }
+
+    public  String guardarListaRegistrosEstudianteCurso(List<String> listaderegistros){
+        LOGGER.info("Llega al metodo con : ");
+
+        for (String lag:listaderegistros){
+            LOGGER.info("Elemento : "+lag);
+        }
+        EstudianteCursoEntity estudianteCursoEntity = new EstudianteCursoEntity();
+        EstudianteEntity estudianteEntity = new EstudianteEntity(1);
+        CursoEntity cursoEntity=new CursoEntity();
+        estudianteCursoEntity.setIdEstudiante(estudianteEntity);
+        //estudianteCursoEntity.setIdCurso(listaderegistros.get());
+        LOGGER.info("Entidad estudiante_curso "+estudianteCursoEntity.toString());
+        estudianteCursoRepository.save(estudianteCursoEntity);
         return "¡Registro completado exitosamente¡";
     }
 
@@ -620,13 +746,13 @@ public class MensajesBL {
         DocenteEntity docenteEntity=new DocenteEntity();
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("Educafis");
+        testEntity.setNombreTest("MacTest");
         testRepository.save(testEntity);
     }
 
     private void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("Educafis");
+        TestEntity testEntity=testRepository.findByNombreTest("MacTest");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
@@ -644,7 +770,7 @@ public class MensajesBL {
 
     private void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity=testRepository.findByNombreTest("Educafis");
+        TestEntity testEntity=testRepository.findByNombreTest("MacTest");
         int numberResponse=1;
         int indexQuestionList=0;
         PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
@@ -671,29 +797,29 @@ public class MensajesBL {
         respuestaRepository.save(respuestaEntity);
     }
 
-    public SendMessage entraResponderTest(String nombreTest,String nombreStudent){
+    public void entraResponderTest(String nombreTest,String nombreStudent,SendMessage sendMessage){
         TestEntity testEntity=findTestByTestNombre(nombreTest);
-        SendMessage sendMessage=new SendMessage();
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard= new ArrayList<>();
-        List<PreguntaEntity> preguntaEntityList=preguntaEntityListByIdTest(testEntity.getIdTest());
+        List<PreguntaEntity> preguntaEntityList=preguntaEntityListByIdTest(testEntity);
         if(numero_de_pregunta_respondiendo<=preguntaEntityList.size()){
-            PreguntaEntity preguntaEntity=findPreguntaByIdTestyNumeroPregunta(testEntity.getIdTest(),numero_de_pregunta_respondiendo);
-            List<RespuestaEntity> respuestaEntityList=findRespuestasListByIdPregunta(preguntaEntity.getIdPregunta());
+            PreguntaEntity preguntaEntity=findPreguntaByIdTestyNumeroPregunta(testEntity,numero_de_pregunta_respondiendo);
+            sendMessage.setText(preguntaEntity.getContenidoPregunta());
+            List<RespuestaEntity> respuestaEntityList=findRespuestasListByIdPregunta(preguntaEntity);
             for(int i=0;i<respuestaEntityList.size();i++){
                 if(nummero_de_respuesta_respondiendo==3){
                     keyboard.add(row);
                     row= new KeyboardRow();
                 }
                 row.add(respuestaEntityList.get(i).getContenidoRespuesta());
-                numero_de_pregunta_respondiendo++;
+                nummero_de_respuesta_respondiendo++;
             }
-            numero_de_pregunta_respondiendo=1;
             keyboard.add(row);
             keyboardMarkup.setKeyboard(keyboard);
             sendMessage.setReplyMarkup(keyboardMarkup);
             numero_de_pregunta_respondiendo++;
+            nummero_de_respuesta_respondiendo=1;
         }
         else {
             numero_de_pregunta_respondiendo=1;
@@ -701,27 +827,26 @@ public class MensajesBL {
             saveStudentTest(nombreStudent,nombreTest);
             sendMessage.setText("TEST RESPONDIDO Y ENTREGADO");
         }
-        return sendMessage;
     }
 
 
-    private PreguntaEntity findPreguntaByIdTestyNumeroPregunta(int idTest,int numero_de_pregunta){
-        PreguntaEntity preguntaEntity=preguntaRepository.findByIdTestAndNumeroPregunta(idTest,numero_de_pregunta);
+    private PreguntaEntity findPreguntaByIdTestyNumeroPregunta(TestEntity testEntity,int numero_de_pregunta){
+        PreguntaEntity preguntaEntity=preguntaRepository.findByIdTestAndNumeroPregunta(testEntity,numero_de_pregunta);
         return  preguntaEntity;
     }
 
-    private List<RespuestaEntity> findRespuestasListByIdPregunta(int idpregunta){
-        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findByIdPregunta(idpregunta);
+    private List<RespuestaEntity> findRespuestasListByIdPregunta(PreguntaEntity preguntaEntity){
+        List<RespuestaEntity> respuestaEntityList=respuestaRepository.findByIdPregunta(preguntaEntity);
         return  respuestaEntityList;
     }
 
-    private TestEntity findTestByTestNombre(String nameTest){
+    public TestEntity findTestByTestNombre(String nameTest){
         TestEntity test= testRepository.findByNombreTest(nameTest);
         return test;
     }
 
-    private  List<PreguntaEntity> preguntaEntityListByIdTest(int idTest){
-       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findByIdTest(idTest);
+    public   List<PreguntaEntity> preguntaEntityListByIdTest(TestEntity testEntity){
+       List<PreguntaEntity> preguntaEntityList=preguntaRepository.findAllByIdTest(testEntity);
        return preguntaEntityList;
     }
 
@@ -736,10 +861,33 @@ public class MensajesBL {
         estudianteTestRepository.save(estudianteTestEntity);
     }
 
+    private boolean existsCursoByIdCurso(String id){
+        Boolean exists = false;
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        if (cursoEntity==null){
+            LOGGER.info("Returns NULL");
+            exists = false;
+        }else {
+            LOGGER.info(cursoEntity.getNombre());
+            exists = true;
+        }
+        return exists;
+    }
 
+    private String getNombreCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getNombre();
+    }
 
+    private String getTipoCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getTipoCurso();
+    }
 
-
+    private String getClaveCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getClave();
+    }
 
 
 }

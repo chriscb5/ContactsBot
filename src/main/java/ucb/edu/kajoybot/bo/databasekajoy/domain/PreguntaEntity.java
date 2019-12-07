@@ -2,6 +2,7 @@ package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,7 +43,7 @@ import javax.persistence.Table;
     @Column(name = "contenido_pregunta")
     private String contenidoPregunta;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPregunta")
-    private Collection<RespuestaEntity> respuestaCollection;
+    private List<RespuestaEntity> respuestaCollection;
     @JoinColumn(name = "id_test", referencedColumnName = "id_test")
     @ManyToOne(optional = false)
     private TestEntity idTest;
@@ -84,11 +85,11 @@ import javax.persistence.Table;
         this.contenidoPregunta = contenidoPregunta;
     }
 
-    public Collection<RespuestaEntity> getRespuestaCollection() {
+    public Collection<RespuestaEntity> getRespuestaList() {
         return respuestaCollection;
     }
 
-    public void setRespuestaCollection(Collection<RespuestaEntity> respuestaCollection) {
+    public void setRespuestaList(List<RespuestaEntity> respuestaCollection) {
         this.respuestaCollection = respuestaCollection;
     }
 
