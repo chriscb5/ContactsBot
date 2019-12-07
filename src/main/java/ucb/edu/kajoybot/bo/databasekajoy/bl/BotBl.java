@@ -161,14 +161,36 @@ public class BotBl {
 
                             mensajesBL.setEntra_a_iniciar_estudiante(true);
                             break;
+
+
+
                         case "Soy Docente":
                             mensajesBL.setEntra_a_iniciar_docente(true);;
                             sendMessage.setChatId(chatId).
-                                    setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+                                    setText("Iniciar como Docente\nLISTADO DE CURSOS\n");
                             //Identificar si el usuario existe
                             //si es nuevo pedir registro
                             //si es antiguo mostrar el listado de sus cursos
                             break;
+
+                        case "Listado Estudiantes":
+                            mensajesBL.setEntra_a_listado_estudiantes(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                            break;
+
+                        case "Listado Cursos":
+                            mensajesBL.setEntra_a_listado_cursos(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
+                            break;
+
+                        case "Listado Docentes":
+                            mensajesBL.setEntra_a_listado_docentes(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                            break;
+
 
                         case "Registro":
                             sendMessage.setChatId(chatId)
@@ -221,21 +243,7 @@ public class BotBl {
                             sendMessage.setChatId(chatId)
                                     .setText("RESPONDER TEST\nIngrese el nombre del Test");
                             break;
-                        case "Listado Estudiantes":
-                            mensajesBL.setEntra_a_listado_estudiantes(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
-                            break;
-                        case "Listado Docentes":
-                            mensajesBL.setEntra_a_listado_docentes(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
-                            break;
-                        case "Listado Cursos":
-                            mensajesBL.setEntra_a_listado_cursos(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
-                            break;
+
                         default:
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
                             sendMessage.setChatId(chatId)
