@@ -98,13 +98,13 @@ public class BotBl {
 
 
     //intento Multi Usuario
-//    public List<String> processUpdate(Update update) {
-//        LOGGER.info("Recibiendo update {} ", update);
-//        List<String> chatResponse = new ArrayList<>();
-//        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
-//        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
-//        return chatResponse;
-//    }
+    //    public List<String> processUpdate(Update update) {
+    //        LOGGER.info("Recibiendo update {} ", update);
+    //        List<String> chatResponse = new ArrayList<>();
+    //        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+    //        continueChatWithUser(update,kjEstudianteUserEntity,chatResponse);
+    //        return chatResponse;
+    //    }
 
     public SendMessage processUpdateMesage(Update update){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
