@@ -32,6 +32,7 @@ public class BotBl {
     private PreguntaRepository preguntaRepository;
     private ChatRepository chatRepository;
     private String nombreTest="";
+    public  Boolean firstMessage = true;
     MensajesBL mensajesBL;
 
     @Autowired
@@ -102,6 +103,7 @@ public class BotBl {
 
 
     public void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage) {
+
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
@@ -118,8 +120,8 @@ public class BotBl {
                     .setText("DEFAULT por null");
         }
         else {
-
-            if (messageInput.equals("/start")){
+            if (messageInput.equals("/start") || firstMessage==false){
+                firstMessage = false;
                 setModulesMessages(update,sendMessage,messageTextReceived);
                 try {
                     switch(messageInput) {
@@ -141,7 +143,7 @@ public class BotBl {
                             break;
                         case "Comenzar":
                             sendMessage.setChatId(chatId)
-                                    .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
+                                    .setText("Bienvenido!!\nEres Docente o Estudiante");
                             row.add("Soy Docente");
                             row.add("Soy Estudiante");
                             keyboard.add(row);
@@ -155,6 +157,7 @@ public class BotBl {
                             //Identificar si el usuario existe
                             //si es nuevo pedir registro
                             //si es antiguo mostrar el listado de sus cursos
+                            //.setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
 
                             mensajesBL.setEntra_a_iniciar_estudiante(true);
                             break;
