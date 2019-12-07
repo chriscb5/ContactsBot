@@ -123,7 +123,6 @@ public class BotBl {
                 setModulesMessages(update,sendMessage,messageTextReceived);
                 try {
                     switch(messageInput) {
-
                         case "/start":
                             sendMessage.setChatId(chatId)
                                     .setText("Seleccione una opción por favor\nComenzar\nInformacion");
@@ -143,12 +142,31 @@ public class BotBl {
                         case "Comenzar":
                             sendMessage.setChatId(chatId)
                                     .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-                            row.add("Iniciar sesión");
-                            row.add("Registro");
+                            row.add("Soy Docente");
+                            row.add("Soy Estudiante");
                             keyboard.add(row);
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
                             break;
+
+                        case "Soy Estudiante":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+                            //Identificar si el usuario existe
+                            //si es nuevo pedir registro
+                            //si es antiguo mostrar el listado de sus cursos
+
+                            mensajesBL.setEntra_a_iniciar_estudiante(true);
+                            break;
+                        case "Soy Docente":
+                            mensajesBL.setEntra_a_iniciar_docente(true);;
+                            sendMessage.setChatId(chatId).
+                                    setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+                            //Identificar si el usuario existe
+                            //si es nuevo pedir registro
+                            //si es antiguo mostrar el listado de sus cursos
+                            break;
+
                         case "Registro":
                             sendMessage.setChatId(chatId)
                                     .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
@@ -167,16 +185,7 @@ public class BotBl {
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
                             break;
-                        case "Soy Estudiante":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
-                            mensajesBL.setEntra_a_iniciar_estudiante(true);
-                            break;
-                        case "Soy Docente":
-                            mensajesBL.setEntra_a_iniciar_docente(true);;
-                            sendMessage.setChatId(chatId).
-                                    setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
-                            break;
+
                         case "Registro Alumno":
                             mensajesBL.setEntra_a_registro_estudiante(true);
                             sendMessage.setChatId(chatId)
