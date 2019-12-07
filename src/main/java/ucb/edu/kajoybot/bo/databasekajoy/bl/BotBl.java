@@ -118,111 +118,113 @@ public class BotBl {
                     .setText("DEFAULT por null");
         }
         else {
-            setModulesMessages(update,sendMessage,messageTextReceived);
-            try {
-                switch(messageInput) {
 
-                    case "/start":
-                        sendMessage.setChatId(chatId)
-                                .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-                        row.add("Comenzar");
-                        row.add("Información");
-                        keyboard.add(row);
-                        keyboardMarkup.setKeyboard(keyboard);
-                        sendMessage.setReplyMarkup(keyboardMarkup);
-                        break;
-                    case "Información":
-                        imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
-                        sendPhoto.setChatId(chatId)
-                                .setPhoto(imageFile);
-                        sendMessage.setChatId(chatId)
-                                .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-                        break;
-                    case "Comenzar":
-                        sendMessage.setChatId(chatId)
-                            .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-                        row.add("Iniciar sesión");
-                        row.add("Registro");
-                        keyboard.add(row);
-                        keyboardMarkup.setKeyboard(keyboard);
-                        sendMessage.setReplyMarkup(keyboardMarkup);
-                        break;
-                    case "Registro":
-                        sendMessage.setChatId(chatId)
-                                .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-                        row.add("Registro Profesor");
-                        row.add("Registro Alumno");
-                        keyboard.add(row);
-                        keyboardMarkup.setKeyboard(keyboard);
-                        sendMessage.setReplyMarkup(keyboardMarkup);
-                        break;
-                    case "Iniciar sesión":
-                        sendMessage.setChatId(chatId)
-                                .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
-                        row.add("Soy Docente");
-                        row.add("Soy Estudiante");
-                        keyboard.add(row);
-                        keyboardMarkup.setKeyboard(keyboard);
-                        sendMessage.setReplyMarkup(keyboardMarkup);
-                        break;
-                    case "Soy Estudiante":
-                        sendMessage.setChatId(chatId)
-                                .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
-                        mensajesBL.setEntra_a_iniciar_estudiante(true);
-                        break;
-                    case "Soy Docente":
-                        mensajesBL.setEntra_a_iniciar_docente(true);;
-                        sendMessage.setChatId(chatId).
-                                setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
-                        break;
-                    case "Registro Alumno":
-                        mensajesBL.setEntra_a_registro_estudiante(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                        break;
-                    case "Registro Docente":
-                        mensajesBL.setEntra_a_registro_docente(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                        break;
-                    case "Test":
-                        mensajesBL.setEntra_a_registro_test(true);
-                        mensajesBL.setConfirmation(false);
-                        mensajesBL.setAniade_pregunta_nueva(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
-                        break;
-                    case "Crear Nuevo Curso":
-                        mensajesBL.setEntra_a_registro_curso(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
-                        break;
-                    case "Registro Estudiante Curso":
-                        mensajesBL.setEntra_a_registro_estudiante_curso(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("**Unirse a un curso**\nIngrese el codigo del curso");
-                        break;
-                    case "TestR":
-                        mensajesBL.setEntra_a_responder_test(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("RESPONDER TEST\nIngrese el nombre del Test");
-                        break;
-                    case "Listado Estudiantes":
-                        mensajesBL.setEntra_a_listado_estudiantes(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
-                        break;
-                    case "Listado Docentes":
-                        mensajesBL.setEntra_a_listado_docentes(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
-                        break;
-                    case "Listado Cursos":
-                        mensajesBL.setEntra_a_listado_cursos(true);
-                        sendMessage.setChatId(chatId)
-                                .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
-                        break;
-                    default:
+            if (messageInput.equals("/start")){
+                setModulesMessages(update,sendMessage,messageTextReceived);
+                try {
+                    switch(messageInput) {
+
+                        case "/start":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+                            row.add("Comenzar");
+                            row.add("Información");
+                            keyboard.add(row);
+                            keyboardMarkup.setKeyboard(keyboard);
+                            sendMessage.setReplyMarkup(keyboardMarkup);
+                            break;
+                        case "Información":
+                            imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                            sendPhoto.setChatId(chatId)
+                                    .setPhoto(imageFile);
+                            sendMessage.setChatId(chatId)
+                                    .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+                            break;
+                        case "Comenzar":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
+                            row.add("Iniciar sesión");
+                            row.add("Registro");
+                            keyboard.add(row);
+                            keyboardMarkup.setKeyboard(keyboard);
+                            sendMessage.setReplyMarkup(keyboardMarkup);
+                            break;
+                        case "Registro":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
+                            row.add("Registro Profesor");
+                            row.add("Registro Alumno");
+                            keyboard.add(row);
+                            keyboardMarkup.setKeyboard(keyboard);
+                            sendMessage.setReplyMarkup(keyboardMarkup);
+                            break;
+                        case "Iniciar sesión":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+                            row.add("Soy Docente");
+                            row.add("Soy Estudiante");
+                            keyboard.add(row);
+                            keyboardMarkup.setKeyboard(keyboard);
+                            sendMessage.setReplyMarkup(keyboardMarkup);
+                            break;
+                        case "Soy Estudiante":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+                            mensajesBL.setEntra_a_iniciar_estudiante(true);
+                            break;
+                        case "Soy Docente":
+                            mensajesBL.setEntra_a_iniciar_docente(true);;
+                            sendMessage.setChatId(chatId).
+                                    setText("Iniciar como Docente\nEl curso es privado, ingrese la clave correspodiente");
+                            break;
+                        case "Registro Alumno":
+                            mensajesBL.setEntra_a_registro_estudiante(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                            break;
+                        case "Registro Docente":
+                            mensajesBL.setEntra_a_registro_docente(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                            break;
+                        case "Test":
+                            mensajesBL.setEntra_a_registro_test(true);
+                            mensajesBL.setConfirmation(false);
+                            mensajesBL.setAniade_pregunta_nueva(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+                            break;
+                        case "Crear Nuevo Curso":
+                            mensajesBL.setEntra_a_registro_curso(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
+                            break;
+                        case "Registro Estudiante Curso":
+                            mensajesBL.setEntra_a_registro_estudiante_curso(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("**Unirse a un curso**\nIngrese el codigo del curso");
+                            break;
+                        case "TestR":
+                            mensajesBL.setEntra_a_responder_test(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("RESPONDER TEST\nIngrese el nombre del Test");
+                            break;
+                        case "Listado Estudiantes":
+                            mensajesBL.setEntra_a_listado_estudiantes(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                            break;
+                        case "Listado Docentes":
+                            mensajesBL.setEntra_a_listado_docentes(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                            break;
+                        case "Listado Cursos":
+                            mensajesBL.setEntra_a_listado_cursos(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
+                            break;
+                        default:
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
                             sendMessage.setChatId(chatId)
                                     .setText("No logro entender lo que me pides");
@@ -230,11 +232,17 @@ public class BotBl {
 //                        responseMessage.setChatId(chatId)
 //                                .setText("TNo logro entender lo que me pides");
 //                        message = responseMessage;
+                    }
+                } catch (NumberFormatException nfe){
+                    sendMessage.setChatId(chatId)
+                            .setText("DEFAULT");
                 }
-            } catch (NumberFormatException nfe){
-                sendMessage.setChatId(chatId)
-                        .setText("DEFAULT");
             }
+            else {
+                sendMessage.setChatId(chatId)
+                        .setText("Hola, para empezar el bot por favor escribe /start");
+            }
+
         }
         KjChatEntity kjChatEntity = new KjChatEntity();
         kjChatEntity.setKjuserid(kjEstudianteUserEntity);

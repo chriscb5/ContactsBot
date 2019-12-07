@@ -73,9 +73,6 @@ public class MensajesBL {
     }
 
 
-
-
-
     public String mensajesRegistroEstudiante()
     {
         String cadena=new String();
