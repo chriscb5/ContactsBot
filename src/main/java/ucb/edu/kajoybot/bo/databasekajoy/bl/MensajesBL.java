@@ -1,19 +1,15 @@
 package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
-import org.aspectj.weaver.ast.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -165,13 +161,7 @@ public class MensajesBL {
             case 0:
                 caden="¿Cuál sera la pregunta?";
                 break;
-/*            case 1:
-                caden="¿Cúal sera la tercera pregunta";
-                break;
-            case 2:
-                caden="¿Cúal sera la cuarta pregunta";
-                break;
-  */      }
+      }
         return caden;
     }
 
@@ -366,7 +356,7 @@ public class MensajesBL {
 //        return sendMessage;
     }
 
-    public SendMessage entraListadoEstudiantes(Update update,String messageTextReceived, SendMessage sendMessage){
+    public void entraListadoEstudiantes(SendMessage sendMessage){
         LOGGER.info("Entra al listado de estudiantes");
         //EstudianteEntity estudianteEntity = new EstudianteEntity();
         List<EstudianteEntity> estudianteEntities = estudianteRespository.findAllByStatuss(1);
@@ -377,12 +367,11 @@ public class MensajesBL {
                     +estudianteEntities.get(i).getApellidoPaterno()+"\t|\t"+estudianteEntities.get(i).getApellidoMaterno()+"\t|\t"
                     +estudianteEntities.get(i).getInstitucion()+"\t|\t"+estudianteEntities.get(i).getTxUser()+"\n";
         }
-        sendMessage.setChatId(update.getMessage().getChatId())
-                .setText(message);
-        return sendMessage;
+        sendMessage.setText(message);
+//        return sendMessage;
     }
 
-    public SendMessage entraListadoDocentes(Update update,String messageTextReceived, SendMessage sendMessage){
+    public void entraListadoDocentes(SendMessage sendMessage){
         LOGGER.info("Entra al listado de estudiantes");
         //EstudianteEntity estudianteEntity = new EstudianteEntity();
         List<DocenteEntity> docenteEntities = docenteRespository.findAllByStatuss(1);
@@ -393,12 +382,10 @@ public class MensajesBL {
                     +docenteEntities.get(i).getApellidoPaterno()+"\t|\t"+docenteEntities.get(i).getApellidoMaterno()+"\t|\t"
                     +docenteEntities.get(i).getTxUser()+"\n";
         }
-        sendMessage.setChatId(update.getMessage().getChatId())
-                .setText(message);
-        return sendMessage;
+        sendMessage.setText(message);
     }
 
-    public SendMessage entraListadoCursos(Update update,String messageTextReceived, SendMessage sendMessage){
+    public void entraListadoCursos(SendMessage sendMessage){
         LOGGER.info("Entra al listado de estudiantes");
         //EstudianteEntity estudianteEntity = new EstudianteEntity();
         List<CursoEntity> cursoEntities = cursoRepository.findAll();
@@ -408,9 +395,8 @@ public class MensajesBL {
             message += cursoEntities.get(i).getIdCurso()+"\t|\t"+cursoEntities.get(i).getNombre()+"\t|\t"
                     +cursoEntities.get(i).getTipoCurso()+"\n";
         }
-        sendMessage.setChatId(update.getMessage().getChatId())
-                .setText(message);
-        return sendMessage;
+        sendMessage.setText(message);
+//        return sendMessage;
     }
 
     public String afirmacionAdicionarPregunta(){
@@ -467,7 +453,6 @@ public class MensajesBL {
                     keyboardMarkup.setKeyboard(keyboard);
                     sendMessage.setReplyMarkup(keyboardMarkup);
                     entra_a_registro_respuesta=false;
-//                            entra_a_registro_test=false;
                     aniade_respuesta_nueva=true;
                     aniade_pregunta_nueva=false;
 
@@ -475,7 +460,6 @@ public class MensajesBL {
 
                 if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
                     //INGRESANDO A REGISTROS NO COMPLETOS
-//                    mensaje=mensajeRegistroRespuesta();
                     sendMessage.setText(mensajeRegistroRespuesta());
                     setNumero_de_respuesta(getNumero_de_respuesta()+1);
                     if(aniade_pregunta_nueva==false){
@@ -495,16 +479,6 @@ public class MensajesBL {
                 aniade_pregunta_nueva=false;
             }
             if(confirmation==true){
-/*                    String mensaje=mensajesBL.mensajeRegistroTest(update);
-                    SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-                            .setChatId(update.getMessage().getChatId())
-                            .setText(mensaje);
-                    try {
-/                        this.execute(message);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                    mensajesBL.setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+10);*/
                 entra_a_registro_respuesta=true;
                 confirmation=false;
             }
@@ -772,13 +746,13 @@ public class MensajesBL {
         DocenteEntity docenteEntity=new DocenteEntity();
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("InviernoTest");
+        testEntity.setNombreTest("MacTest");
         testRepository.save(testEntity);
     }
 
     private void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("InviernoTest");
+        TestEntity testEntity=testRepository.findByNombreTest("MacTest");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
@@ -796,7 +770,7 @@ public class MensajesBL {
 
     private void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity=testRepository.findByNombreTest("InviernoTest");
+        TestEntity testEntity=testRepository.findByNombreTest("MacTest");
         int numberResponse=1;
         int indexQuestionList=0;
         PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
@@ -823,7 +797,7 @@ public class MensajesBL {
         respuestaRepository.save(respuestaEntity);
     }
 
-    public SendMessage entraResponderTest(String nombreTest,String nombreStudent,SendMessage sendMessage){
+    public void entraResponderTest(String nombreTest,String nombreStudent,SendMessage sendMessage){
         TestEntity testEntity=findTestByTestNombre(nombreTest);
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
@@ -853,7 +827,6 @@ public class MensajesBL {
             saveStudentTest(nombreStudent,nombreTest);
             sendMessage.setText("TEST RESPONDIDO Y ENTREGADO");
         }
-        return sendMessage;
     }
 
 
