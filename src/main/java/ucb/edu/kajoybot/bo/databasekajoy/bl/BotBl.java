@@ -145,49 +145,50 @@ public class BotBl {
             int lastMessageInt = 0;
             if(messageTextReceived.equals("Si")){
                 response=mensajesBL.afirmacionAdicionarPregunta();
-                response+="\n\nlast mensaje received \n\n"+lastMenssage.getInMessage();
+//                response+="\n\nlast mensaje received \n\n"+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
 
             }
             if(messageTextReceived.equals("No")){
                 response=mensajesBL.afirmacionTerminarRegistroTest();
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_iniciar_estudiante()){
                 response+=mensajesBL.iniciarEstudiante(messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_iniciar_docente()){
                 response+=mensajesBL.iniciarDocente(messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                LOGGER.info("Ingresa con "+response);
+//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_estudiante()){
-                response+=mensajesBL.entraRegistroEstudiante(update,messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                response+=mensajesBL.entraRegistroEstudiante(sendMessage,messageTextReceived);
+//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_docente()){
-                response+=mensajesBL.entraRegistroDocente(update,messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                response+=mensajesBL.entraRegistroDocente(sendMessage,messageTextReceived);
+//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_curso()){
-                response+=mensajesBL.entraRegistroCurso(update,messageTextReceived);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                response+=mensajesBL.entraRegistroCurso(sendMessage,messageTextReceived);
+ //               response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
                 sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_registro_estudiante_curso()){
-//                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
-                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
+                response+=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
+//                response+="\n\nlast mensaje received: "+lastMenssage.getInMessage();
 //                sendMessage.setChatId(chatId);
                 sendMessage=mensajesBL.entraRegistroEstudianteCurso(update,messageTextReceived,sendMessage);
             }
             if(mensajesBL.isEntra_a_registro_test()){
-                response+=mensajesBL.entraARegistroTest(update,messageTextReceived);
-                sendMessage.setChatId(chatId).setText(response);
+                mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);
+//                sendMessage.setChatId(chatId).setText(response);
             }
             if(mensajesBL.isEntra_a_responder_test()){
                 if(mensajesBL.getNumero_de_pregunta_respondiendo()==1){
