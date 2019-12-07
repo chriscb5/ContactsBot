@@ -143,7 +143,7 @@ public class MensajesBL {
         return cadena;
     }
 
-    public  String mensajesRegistroEstudianteCurso(Update update)
+    public  String mensajesRegistroEstudianteCurso()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -293,7 +293,7 @@ public class MensajesBL {
         return mensaje;
     }
 
-    public SendMessage entraRegistroEstudianteCurso(Update update,String messageTextReceived, SendMessage sendMessage){
+    public void entraRegistroEstudianteCurso(String messageTextReceived, SendMessage sendMessage){
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
         KeyboardRow row= new KeyboardRow();
@@ -306,20 +306,19 @@ public class MensajesBL {
                 LOGGER.info(getNombreCurso(cursoID) +" ; "+ getTipoCurso(cursoID));
                 if(getTipoCurso(cursoID).equals("publico")){
                     setNumero_de_pregunta(0);
-                    mensaje += mensajesRegistroEstudianteCurso(update)+"\n";
+                    mensaje += mensajesRegistroEstudianteCurso()+"\n";
                     LOGGER.info("Registro curso publico exitoso");
                 }else{
                     if (getTipoCurso(cursoID).equals("privado")){
                         setNumero_de_pregunta(1);
-                        mensaje += mensajesRegistroEstudianteCurso(update);
+                        mensaje += mensajesRegistroEstudianteCurso();
                         if(getClaveCurso(cursoID).equals(messageTextReceived)){
                             LOGGER.info("Registro curso privado exitoso");
                         }
                     }
                 }
                 mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(messageTextReceived)+"'?";
-                sendMessage.setChatId(update.getMessage().getChatId())
-                        .setText(mensaje);
+                sendMessage.setText(mensaje);
 
                 row.add("SI");
                 row.add("NO");
@@ -341,8 +340,7 @@ public class MensajesBL {
             }else{
                 mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
                 messageTextReceived="";
-                sendMessage.setChatId(update.getMessage().getChatId())
-                        .setText(mensaje);
+                sendMessage.setText(mensaje);
                 //entra_a_registro_estudiante_curso(update, messageTextReceived);
             }
 
@@ -365,7 +363,7 @@ public class MensajesBL {
             registrollenadosList.clear();
             entra_a_registro_curso = false;
         }*/
-        return sendMessage;
+//        return sendMessage;
     }
 
     public SendMessage entraListadoEstudiantes(Update update,String messageTextReceived, SendMessage sendMessage){
