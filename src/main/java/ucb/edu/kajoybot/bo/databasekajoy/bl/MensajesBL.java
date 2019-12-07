@@ -76,7 +76,7 @@ public class MensajesBL {
 
 
 
-    public  String mensajesRegistroEstudiante(Update update)
+    public String mensajesRegistroEstudiante()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -102,7 +102,7 @@ public class MensajesBL {
     }
 
 
-    public  String mensajesRegistroDocente(Update update)
+    public  String mensajesRegistroDocente()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -123,7 +123,7 @@ public class MensajesBL {
     }
 
 
-    public  String mensajesRegistroCurso(Update update)
+    public  String mensajesRegistroCurso()
     {
         String cadena=new String();
         switch (numero_de_pregunta){
@@ -155,7 +155,7 @@ public class MensajesBL {
         return cadena;
     }
 
-    public  String mensajeRegistroTest(Update update){
+    public  String mensajeRegistroTest(){
         String caden=new String();
         switch (numero_de_pregunta){
             case 0:
@@ -171,7 +171,7 @@ public class MensajesBL {
         return caden;
     }
 
-    public String mensajeRegistroRespuesta(Update update){
+    public String mensajeRegistroRespuesta(){
         String cadena=new String();
         switch (numero_de_respuesta)
         {
@@ -219,14 +219,13 @@ public class MensajesBL {
         return response;
     }
 
-    public String entraRegistroEstudiante(Update update,String messageTextReceived){
+    public String entraRegistroEstudiante(SendMessage sendMessage,String messageTextReceived){
         LOGGER.info("Entra a el registro estudiante oficial");
         String mensaje="";
         if(registrollenadosList.size()<5) {
             LOGGER.info("Entra al registros no llenos");
             if(getNumero_de_pregunta()<4){
-                mensaje = mensajesRegistroEstudiante(update);
-                return mensaje;
+                mensaje = mensajesRegistroEstudiante();
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
             registrollenadosList.add(messageTextReceived);
@@ -234,47 +233,47 @@ public class MensajesBL {
         }
         if (registrollenadosList.size()==5) {
             LOGGER.info("Ingresa a registros llenos");
-            String mensajecomp = guardarListaRegistros(registrollenadosList);
+            mensaje = guardarListaRegistros(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_estudiante = false;
-            return mensajecomp;
+            setNumero_de_pregunta(0) ;//
         }
         return mensaje;
     }
 
-    public String entraRegistroDocente(Update update,String messageTextReceived){
+    public String entraRegistroDocente(SendMessage sendMessage,String messageTextReceived){
         LOGGER.info("Entra a el registro estudiante oficial");
         String mensaje="";
         if(registrollenadosList.size()<4)
         {
             LOGGER.info("Entra al registros no llenos");
             if(getNumero_de_pregunta()<3){
-                mensaje = mensajesRegistroDocente(update);
+                mensaje = mensajesRegistroDocente();
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
             registrollenadosList.add(messageTextReceived);
-            LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
         if (registrollenadosList.size()==4) {
             LOGGER.info("Ingresa a registros llenos");
-            String mensajecomp = guardarListaRegistrosDocente(registrollenadosList);
+            mensaje = guardarListaRegistrosDocente(registrollenadosList);
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_docente = false;
+            setNumero_de_pregunta(0) ;//
         }
         return mensaje;
     }
 
 
-    public String entraRegistroCurso(Update update,String messageTextReceived){
+    public String entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
 
         LOGGER.info("Entra a el registro curso oficial");
         String mensaje="";
         if(registrollenadosList.size()<4) {
             LOGGER.info("Entra al registros no llenos");
             if(getNumero_de_pregunta()<3){
-                mensaje = mensajesRegistroCurso(update);
+                mensaje = mensajesRegistroCurso();
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;
             registrollenadosList.add(messageTextReceived);
@@ -372,7 +371,7 @@ public class MensajesBL {
     }
 
 
-    public String entraARegistroTest(Update update,String messageTextReceived){
+    public void entraARegistroTest(SendMessage sendMessage,String messageTextReceived){
         String mensaje="";
         if (entra_a_registro_test){
             if(entra_a_registro_respuesta){
@@ -395,7 +394,16 @@ public class MensajesBL {
                     }
                     setNumero_de_respuesta(0);
                     mensaje+=cade;
+                    KeyboardRow row= new KeyboardRow();
+                    ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard= new ArrayList<>();
                     mensaje+="\nDesea añadir una nueva pregunta?";
+                    sendMessage.setText(mensaje);
+                    row.add("Si");
+                    row.add("No");
+                    keyboard.add(row);
+                    keyboardMarkup.setKeyboard(keyboard);
+                    sendMessage.setReplyMarkup(keyboardMarkup);
                     entra_a_registro_respuesta=false;
 //                            entra_a_registro_test=false;
                     aniade_respuesta_nueva=true;
@@ -405,7 +413,8 @@ public class MensajesBL {
 
                 if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
                     //INGRESANDO A REGISTROS NO COMPLETOS
-                    mensaje=mensajeRegistroRespuesta(update);
+//                    mensaje=mensajeRegistroRespuesta();
+                    sendMessage.setText(mensajeRegistroRespuesta());
                     setNumero_de_respuesta(getNumero_de_respuesta()+1);
                     if(aniade_pregunta_nueva==false){
                         registrorespuestalist.add(messageTextReceived);
@@ -415,7 +424,7 @@ public class MensajesBL {
             }
 
             if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
-                mensaje=mensajeRegistroTest(update);
+                sendMessage.setText(mensajeRegistroTest());
                 setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
                 entra_a_registro_respuesta=true;
             }
@@ -439,7 +448,7 @@ public class MensajesBL {
             }
 
         }// TERMINA REGISTRO TEST
-        return mensaje;
+
     }
 
     public static boolean isRegistrosllenos() {
@@ -677,13 +686,13 @@ public class MensajesBL {
         DocenteEntity docenteEntity=new DocenteEntity();
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("Educafis");
+        testEntity.setNombreTest("InviernoTest");
         testRepository.save(testEntity);
     }
 
     private void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("Educafis");
+        TestEntity testEntity=testRepository.findByNombreTest("InviernoTest");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
@@ -701,7 +710,7 @@ public class MensajesBL {
 
     private void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity=testRepository.findByNombreTest("Educafis");
+        TestEntity testEntity=testRepository.findByNombreTest("InviernoTest");
         int numberResponse=1;
         int indexQuestionList=0;
         PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
