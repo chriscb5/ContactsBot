@@ -346,9 +346,6 @@ public class BotBl {
                         mensajesBL.setEntra_a_registro_estudiante_curso(true);//FIXME celis poner la funcion
                         sendMessage.setChatId(chatId)
                                 .setText("**Unirse a un curso**\nIngrese el codigo del curso");
-//                        responseMessage.setChatId(chatId)
-//                                .setText("Registro de estudiante a un curso\nIngrese el nombre del curso");
-//                        message = responseMessage;
                         break;
                     case "TestR":
                         mensajesBL.setEntra_a_responder_test(true);
@@ -428,33 +425,27 @@ public class BotBl {
         return kjEstudianteUserEntity;
     }
 
-    public SendMessage make2OptionsKeyboard(String a,String b,Update update,KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage){
+    private boolean existsCursoByIdCurso(String id){
+        Boolean exists = false;
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        if (cursoEntity==null){
+            LOGGER.info("Returns NULL");
+            exists = false;
+        }else {
+            LOGGER.info(cursoEntity.getNombre());
+            exists = true;
+        }
+        return exists;
+    }
 
-        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
-        String messageInput = update.getMessage().getText();
-        long chatId = update.getMessage().getChatId();
-        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        SendMessage message = new SendMessage()
-                .setChatId(chatId)
-                .setText("DEFAULT");
+    private String getNombreCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getNombre();
+    }
 
-        SendMessage responseMessage = new SendMessage();
-        String messageTextReceived = update.getMessage().getText();
-        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        String response = "";
-
-        KeyboardRow row = new KeyboardRow();
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
-
-        row.add(a);
-        row.add(b);
-        keyboard.add(row);
-
-        keyboardMarkup.setKeyboard(keyboard);
-        sendMessage.setReplyMarkup(keyboardMarkup);
-
-        return sendMessage;
+    private String getTipoCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getTipoCurso();
     }
 
 /*

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
@@ -47,6 +48,10 @@ public class MensajesBL {
     private static boolean confirmation=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
+
+    private boolean isInMenuEC = true;
+    private boolean isCursoPublico = false;
+    private boolean isCursoPrivado = false;
 
 
 
@@ -148,12 +153,48 @@ public class MensajesBL {
         String cadena=new String();
         switch (numero_de_pregunta){
             case 0:
-                LOGGER.info("Cuso publico");
+                LOGGER.info("Curso publico");
                 cadena="El curso es publico\nPuede ingresar sin necesidad de una clave";
                 break;
             case 1:
                 LOGGER.info("Curso privado. Ingresando clave");
                 cadena="El curso es privado\nPor favor, ingrese la clave del curso";
+                break;
+        }
+        return cadena;
+    }
+
+    public  String mensajesRegistroEstudianteCursoPublico(String messageTextReceived)
+    {
+        String cadena=new String();
+        switch (numero_de_pregunta){
+            case 0:
+                LOGGER.info("Confirmacion registro curso publico");
+                cadena="El curso es publico\nPuede ingresar sin necesidad de una clave\nEstá seguro que quieres registrarte al curso \t'"+getNombreCurso(messageTextReceived)+"'?";
+                break;
+            case 1:
+                LOGGER.info("Registro curso publico exitoso");
+                cadena="Se ha registrado en el curso exitosamente";
+                break;
+        }
+        return cadena;
+    }
+
+    public  String mensajesRegistroEstudianteCursoPrivado(String messageTextReceived)
+    {
+        String cadena=new String();
+        switch (numero_de_pregunta){
+            case 0:
+                LOGGER.info("Ingresando clave");
+                cadena="El curso es privado\nPor favor, ingrese la clave del curso";
+                break;
+            case 1:
+                LOGGER.info("Confirmacion registro curso privado");
+                cadena="Está seguro que quieres registrarte al curso \t'"+getNombreCurso(messageTextReceived)+"'?";
+                break;
+            case 2:
+                LOGGER.info("Registro curso privado exitoso");
+                cadena="Se ha registrado en el curso exitosamente";
                 break;
         }
         return cadena;
@@ -294,77 +335,111 @@ public class MensajesBL {
     }
 
     public void entraRegistroEstudianteCurso(String messageTextReceived, SendMessage sendMessage){
+        //FIXME agregar registro en la tabla EstudianteCurso
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+//        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
-        if(getNumero_de_pregunta()<1){
+
+//        mensaje += messageTextReceived;
+//        sendMessage.setText(mensaje);
+
+        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true){
+            //FIXME al momento de crear nuevo curso, validar que la clave ingresada sea de mas de 3 caracteres
+            isInMenuEC=false;
+        }
+
+        if (isInMenuEC==true){
+            LOGGER.info("Entra a menu EC");
             String cursoID = messageTextReceived;
             if (existsCursoByIdCurso(cursoID)){
+                registrollenadosList.add(cursoID);
                 mensaje += "Curso encontrado con el Nombre = "+getNombreCurso(cursoID)+"\n";
                 LOGGER.info(getNombreCurso(cursoID) +" ; "+ getTipoCurso(cursoID));
                 if(getTipoCurso(cursoID).equals("publico")){
+                    isCursoPublico = true;
+                    isCursoPrivado = false;
                     setNumero_de_pregunta(0);
                     mensaje += mensajesRegistroEstudianteCurso()+"\n";
                     LOGGER.info("Registro curso publico exitoso");
+
+                    mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(messageTextReceived)+"'?";
+
+                    row.add("SI");
+                    row.add("NO");
+                    keyboard.add(row);
+                    keyboardMarkup.setKeyboard(keyboard);
+                    sendMessage.setReplyMarkup(keyboardMarkup);
+                    sendMessage.setText(mensaje);
                 }else{
                     if (getTipoCurso(cursoID).equals("privado")){
+                        isCursoPrivado = true;
+                        isCursoPublico = false;
                         setNumero_de_pregunta(1);
                         mensaje += mensajesRegistroEstudianteCurso();
-                        if(getClaveCurso(cursoID).equals(messageTextReceived)){
-                            LOGGER.info("Registro curso privado exitoso");
-                        }
+                        sendMessage.setText(mensaje);
                     }
                 }
-                mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(messageTextReceived)+"'?";
-                sendMessage.setText(mensaje);
-
-                row.add("SI");
-                row.add("NO");
-                keyboard.add(row);
-                keyboardMarkup.setKeyboard(keyboard);
-                sendMessage.setReplyMarkup(keyboardMarkup);
-
-                //FIXME agregar registro en la tabla EstudianteCurso
-
-//                if (update.getMessage().getText().equals("SI")){
-//                    mensaje += "Registro completado exitosamente";
-//                    sendMessage.setChatId(update.getMessage().getChatId())
-//                            .setText(messageTextReceived);
-//                }else {
-//                    mensaje += "Registro cancelado";
-//                    sendMessage.setChatId(update.getMessage().getChatId())
-//                            .setText(messageTextReceived);
-//                }
             }else{
                 mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
-                messageTextReceived="";
                 sendMessage.setText(mensaje);
+                registrosllenos = false;
+                registrollenadosList.clear();
+                entra_a_registro_estudiante_curso = false;
                 //entra_a_registro_estudiante_curso(update, messageTextReceived);
             }
-
-        }
-
-
-        /*if(registrollenadosList.size()<2) {
-            LOGGER.info("Entra a registros no llenos");
-            if(getNumero_de_pregunta()<1){
-                mensaje = mensajesRegistroEstudianteCurso(update);
+        } else{
+            LOGGER.info("Entra a registro EC");
+            if (isCursoPublico){
+                LOGGER.info("Entra registro curso publico");
+                mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+                sendMessage.setText(mensaje);
             }
-            setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
-            registrollenadosList.add(messageTextReceived);
-            LOGGER.info("Tamaño de array "+registrollenadosList.size());
+            if (isCursoPrivado){
+                LOGGER.info("Entra registro curso privado");
+                if (messageTextReceived.equals(getClaveCurso(registrollenadosList.get(0)))){
+                    registrollenadosList.add(messageTextReceived);
+                    mensaje = "Clave correcta\n";
+
+                    mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(registrollenadosList.get(0))+"'?";
+
+                    row.add("SI");
+                    row.add("NO");
+                    keyboard.add(row);
+                    keyboardMarkup.setKeyboard(keyboard);
+                    sendMessage.setReplyMarkup(keyboardMarkup);
+                    sendMessage.setText(mensaje);
+                }else{
+                    mensaje += "Error! Clave incorrecta.\nIntente nuevamente";
+                    registrosllenos = false;
+                    registrollenadosList.clear();
+                    entra_a_registro_estudiante_curso = false;
+                }
+            }
+//            mensaje="";
+//            if(registrollenadosList.size()<2) {
+//                LOGGER.info("Entra a registros no llenos");
+//                if(getNumero_de_pregunta()<1){
+//                    mensaje = mensajesRegistroEstudianteCursoPublico(messageTextReceived);
+//                }
+//                setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
+//                registrollenadosList.add(messageTextReceived);
+//                LOGGER.info("Tamaño de array "+registrollenadosList.size());
+//            }
+//            if (registrollenadosList.size()==2) {
+//                LOGGER.info("Ingresa a registros llenos");
+//                mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+//                registrosllenos = false;
+//                registrollenadosList.clear();
+//                entra_a_registro_estudiante_curso = false;
+//                setNumero_de_pregunta(0) ;//
+//            }
+//            sendMessage.setText(mensaje);
         }
-        if (registrollenadosList.size()==2) {
-            LOGGER.info("Ingresa a registros llenos");
-            mensaje = guardarListaRegistrosCurso(registrollenadosList);
-            registrosllenos = false;
-            registrollenadosList.clear();
-            entra_a_registro_curso = false;
-        }*/
-//        return sendMessage;
     }
+
 
     public SendMessage entraListadoEstudiantes(Update update,String messageTextReceived, SendMessage sendMessage){
         LOGGER.info("Entra al listado de estudiantes");
@@ -731,12 +806,13 @@ public class MensajesBL {
         }
         EstudianteCursoEntity estudianteCursoEntity = new EstudianteCursoEntity();
         EstudianteEntity estudianteEntity = new EstudianteEntity(1);
-        CursoEntity cursoEntity=new CursoEntity();
+        CursoEntity cursoEntity=new CursoEntity(Integer.parseInt(listaderegistros.get(0)));
         estudianteCursoEntity.setIdEstudiante(estudianteEntity);
+        estudianteCursoEntity.setIdCurso(cursoEntity);
         //estudianteCursoEntity.setIdCurso(listaderegistros.get());
         LOGGER.info("Entidad estudiante_curso "+estudianteCursoEntity.toString());
         estudianteCursoRepository.save(estudianteCursoEntity);
-        return "¡Registro completado exitosamente¡";
+        return "¡Registro completado exitosamente!";
     }
 
     public  String guardarListaRegistrosCurso(List<String> listaderegistros){
@@ -888,7 +964,7 @@ public class MensajesBL {
         estudianteTestRepository.save(estudianteTestEntity);
     }
 
-    private boolean existsCursoByIdCurso(String id){
+    public boolean existsCursoByIdCurso(String id){
         Boolean exists = false;
         CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
         if (cursoEntity==null){
