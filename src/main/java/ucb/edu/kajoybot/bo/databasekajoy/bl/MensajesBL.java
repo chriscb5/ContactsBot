@@ -48,6 +48,7 @@ public class MensajesBL {
     private boolean isInMenuEC = true;
     private boolean isCursoPublico = false;
     private boolean isCursoPrivado = false;
+    private boolean isRegisteringCursoPrivado = false;
 
 
 
@@ -339,6 +340,10 @@ public class MensajesBL {
             isInMenuEC=false;
         }
 
+        if (messageTextReceived.equals("SI") && isRegisteringCursoPrivado==true){
+
+        }
+
         if (isInMenuEC==true){
             LOGGER.info("Entra a menu EC");
             String cursoID = messageTextReceived;
@@ -386,25 +391,35 @@ public class MensajesBL {
                 sendMessage.setText(mensaje);
             }
             if (isCursoPrivado){
-                LOGGER.info("Entra registro curso privado");
-                if (messageTextReceived.equals(getClaveCurso(registrollenadosList.get(0)))){
-                    registrollenadosList.add(messageTextReceived);
-                    mensaje = "Clave correcta\n";
+                if (isRegisteringCursoPrivado==false){
+                    LOGGER.info("Entra registro curso privado");
+                    if (messageTextReceived.equals(getClaveCurso(registrollenadosList.get(0)))){
+                        isRegisteringCursoPrivado=true;
+                        registrollenadosList.add(messageTextReceived);
+                        mensaje = "Clave correcta\n";
 
-                    mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(registrollenadosList.get(0))+"'?";
+                        mensaje += "Está seguro que quieres registrarte al curso \n'"+getNombreCurso(registrollenadosList.get(0))+"'?";
 
-                    row.add("SI");
-                    row.add("NO");
-                    keyboard.add(row);
-                    keyboardMarkup.setKeyboard(keyboard);
-                    sendMessage.setReplyMarkup(keyboardMarkup);
-                    sendMessage.setText(mensaje);
-                }else{
-                    mensaje += "Error! Clave incorrecta.\nIntente nuevamente";
-                    registrosllenos = false;
-                    registrollenadosList.clear();
-                    entra_a_registro_estudiante_curso = false;
+                        row.add("SI");
+                        row.add("NO");
+                        keyboard.add(row);
+                        keyboardMarkup.setKeyboard(keyboard);
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+                        sendMessage.setText(mensaje);
+                    }else{
+                        isRegisteringCursoPrivado=false;
+                        mensaje += "Error! Clave incorrecta.\nIntente nuevamente";
+                        registrosllenos = false;
+                        registrollenadosList.clear();
+                        entra_a_registro_estudiante_curso = false;
+                    }
+                }else {
+                    if (isRegisteringCursoPrivado==true){
+                        mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+                        sendMessage.setText(mensaje);
+                    }
                 }
+
             }
 //            mensaje="";
 //            if(registrollenadosList.size()<2) {
