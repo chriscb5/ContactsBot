@@ -64,7 +64,7 @@ public class MensajesBL {
     private PersonBL personBL;
 
     @Autowired
-    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository) {
+    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository, EstudianteCursoRepository estudianteCursoRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
@@ -75,6 +75,7 @@ public class MensajesBL {
         this.chatRepository = chatRepository;
         this.personBL = personBL;
         this.estudianteTestRepository=estudianteTestRepository;
+        this.estudianteCursoRepository=estudianteCursoRepository;
     }
 
 
@@ -776,8 +777,8 @@ public class MensajesBL {
             LOGGER.info("Elemento : "+lag);
         }
         EstudianteCursoEntity estudianteCursoEntity = new EstudianteCursoEntity();
-        EstudianteEntity estudianteEntity = new EstudianteEntity(1);
-        CursoEntity cursoEntity=new CursoEntity(Integer.parseInt(listaderegistros.get(0)));
+        EstudianteEntity estudianteEntity = estudianteRespository.findAllByIdEstudiante(1);
+        CursoEntity cursoEntity= cursoRepository.findByIdCurso(Integer.parseInt(listaderegistros.get(0)));
         estudianteCursoEntity.setIdEstudiante(estudianteEntity);
         estudianteCursoEntity.setIdCurso(cursoEntity);
         //estudianteCursoEntity.setIdCurso(listaderegistros.get());
