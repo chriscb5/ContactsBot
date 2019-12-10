@@ -63,17 +63,28 @@ public class MainBot extends TelegramLongPollingBot {
         update.getMessage().getFrom().getId();
         if (update.hasMessage() && update.getMessage().hasText()) {
               SendMessage message=new SendMessage();
-              /*message =*/ botBl.processUpdateMesage(update,message);
+              SendPhoto photo = new SendPhoto();
+              /*message =*/ botBl.processUpdateMesage(update,message,photo);
     /*            SendMessage messageChat = new SendMessage() // Create a SendMessage object with mandatory fields
                         .setChatId(update.getMessage().getChatId())
                         .setText(message.getText());
      */
-                try {
+            try {
+                if(message == null){
+                    this.execute(photo);
+                }else if(photo == null){
                     this.execute(message);
-//                    this.execute(messageChat);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
+                }else if (message != null || photo != null){
+                    this.execute(message);
+                    this.execute(photo);
                 }
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+            catch(NullPointerException e )
+            {
+                System.out.print("NullPointerException caught");
+            }
         }
     }
 
@@ -408,18 +419,18 @@ public class MainBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
 //        return "Kajoybot";
-//        return "katariBot";
+        return "katariBot";
 //        return "kajoy_bot";
-        return "devKajoy";
+//        return "devKajoy";
     }
 
     @Override
     public String getBotToken()
     {
 //        return "883396045:AAFnccy-vbkbg7dxuqzs7XkvhjYbqw78n4o";
-//        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
+        return "953510535:AAGxU_5R9PdOQUmz6lRI-fWZsUzkYPfHCIA";
 //        return "969248445:AAGzAETF0P9AXJk6W3EUDkGLWzJkrPgC_5A";
-        return "1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k";
+//        return "1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k";
     }
 
 
