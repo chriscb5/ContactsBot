@@ -117,7 +117,6 @@ public class BotBl {
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String imageFile = null;
-        SendPhoto sendPhotoe = new SendPhoto();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -142,13 +141,16 @@ public class BotBl {
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
 
-                            imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                            imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
                             sendPhoto.setChatId(chatId)
                                     .setPhoto(imageFile);
 
                             break;
 
                         case "/start":
+                            imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
+                            sendPhoto.setChatId(chatId)
+                                    .setPhoto(imageFile);
                             sendMessage.setChatId(chatId)
                                     .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                             row.add("Comenzar");
