@@ -60,8 +60,11 @@ import javax.persistence.TemporalType;
     private Date txDate;
     @JoinColumn(name = "kjuserid", referencedColumnName = "userid")
     @ManyToOne(optional = false)
+    private KjUserEntity kjuserid;
+    /*    @JoinColumn(name = "kjuserid", referencedColumnName = "userid")
+    @ManyToOne(optional = false)
     private KjEstudianteUserEntity kjuserid;
-
+*/
     public KjChatEntity() {
     }
 
@@ -133,14 +136,22 @@ import javax.persistence.TemporalType;
     public void setTxDate(Date txDate) {
         this.txDate = txDate;
     }
-
+/*
     public KjEstudianteUserEntity getKjuserid() {
         return kjuserid;
     }
 
     public void setKjuserid(KjEstudianteUserEntity kjuserid) {
         this.kjuserid = kjuserid;
+    }*/
+    public KjUserEntity getKjuserid() {
+        return kjuserid;
     }
+
+    public void setKjuserid(KjUserEntity kjuserid) {
+        this.kjuserid = kjuserid;
+    }
+
 
     @Override
     public int hashCode() {
