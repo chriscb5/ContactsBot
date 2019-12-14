@@ -300,27 +300,25 @@ public class MensajesBL {
     }
 
 
-    public String entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
+    public void entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
 
         LOGGER.info("Entra a el registro curso oficial");
-        String mensaje="";
-        if(registrollenadosList.size()<4) {
+        if(registrollenadosList.size()<3) {
             LOGGER.info("Entra al registros no llenos");
-            if(getNumero_de_pregunta()<3){
-                mensaje = mensajesRegistroCurso();
+            if(getNumero_de_pregunta()<2){
+                sendMessage.setText(mensajesRegistroCurso());
             }
             setNumero_de_pregunta(getNumero_de_pregunta()+1) ;
             registrollenadosList.add(messageTextReceived);
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
-        if (registrollenadosList.size()==4) {
+        if (registrollenadosList.size()==3) {
             LOGGER.info("Ingresa a registros llenos");
-            mensaje = guardarListaRegistrosCurso(registrollenadosList);
+            sendMessage.setText(guardarListaRegistrosCurso(registrollenadosList));
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
         }
-        return mensaje;
     }
 
     public void entraRegistroEstudianteCurso(String messageTextReceived, SendMessage sendMessage){
@@ -825,16 +823,17 @@ public class MensajesBL {
         saveTest();
         saveQuestionList(questionsList);
         saveResponseList(responseList,questionsList);
+
         return "REGISTRO DE TEST COMPLETADO";
         // FIXME COMPLETAR EL REGISTRO DEL TEST A TODOS LOS ESTUDIANTES PERTENECIENTES A EL CURSO
     }
 
     private void saveTest(){
         TestEntity testEntity=new TestEntity();
-        CursoEntity cursoEntity= cursoRepository.findByIdCurso(8);
+        CursoEntity cursoEntity= cursoRepository.findByIdCurso(2);
         LOGGER.info("ENCONTRO en save test esto "+cursoEntity.getClave()+" "+cursoEntity.getNombre()+" "+cursoEntity.getTipoCurso());
         testEntity.setIdCurso(cursoEntity);
-        DocenteEntity docenteEntity=new DocenteEntity();
+        DocenteEntity docenteEntity;
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
         testEntity.setNombreTest("MacTest");
@@ -915,7 +914,7 @@ public class MensajesBL {
         else {
             numero_de_pregunta_respondiendo=1;
             entra_a_responder_test=false;
-            saveStudentTest(nombreStudent,nombreTest);
+            //saveStudentTest(nombreStudent,nombreTest);
             sendMessage.setText("TEST RESPONDIDO Y ENTREGADO");
         }
     }
@@ -953,7 +952,7 @@ public class MensajesBL {
     }
 
     public boolean existsCursoByIdCurso(String id){
-        Boolean exists = false;
+        boolean exists = false;
         CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
         if (cursoEntity==null){
             LOGGER.info("Returns NULL");
@@ -980,5 +979,12 @@ public class MensajesBL {
         return cursoEntity.getClave();
     }
 
+// FIND
 
+    public void saveTestforSendToAllStudentsInTheCurse(CursoEntity cursoEntity){
+        List<EstudianteEntity> estudianteEntityList=estudianteCursoRepository.findAllByIdCurso(cursoEntity);
+        
+
+
+    }
 }
