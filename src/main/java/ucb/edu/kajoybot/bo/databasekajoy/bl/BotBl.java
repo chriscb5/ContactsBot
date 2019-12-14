@@ -221,8 +221,8 @@ public class BotBl {
 
                         case "Registro":
                             sendMessage.setChatId(chatId)
-                                    .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-                            row.add("Registro Profesor");
+                                    .setText("Seleccione una opción por favor\nRegistro Docente\nRegistro Alumno");
+                            row.add("Registro Docente");
                             row.add("Registro Alumno");
                             keyboard.add(row);
                             keyboardMarkup.setKeyboard(keyboard);

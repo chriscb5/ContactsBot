@@ -45,6 +45,9 @@ public class MensajesBL {
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
 
+    private boolean rcIsPublico = false;
+    private boolean rcIsPrivado = false;
+
     private boolean isInMenuEC = true;
     private boolean isCursoPublico = false;
     private boolean isCursoPrivado = false;
@@ -136,8 +139,8 @@ public class MensajesBL {
                 cadena="Ingrese el tipo del curso ";
                 break;
             case 1:
-                LOGGER.info("Ingresando clave del curso");
-                cadena="Ingrese la clave del curso (si no desea el ingreso por clave, escriba '-' sin las comillas)";
+                LOGGER.info("Ingresando clave del curso privado");
+                cadena="Ingrese la clave del curso";
                 break;
         }
         return cadena;
@@ -302,14 +305,43 @@ public class MensajesBL {
 
     public void entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
 
+//        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true){
+//            isInMenuRC=false;
+//        }
         LOGGER.info("Entra a el registro curso oficial");
+        String mensaje="";
         if(registrollenadosList.size()<3) {
             LOGGER.info("Entra al registros no llenos");
             if(getNumero_de_pregunta()<2){
-                sendMessage.setText(mensajesRegistroCurso());
+                mensaje = mensajesRegistroCurso();
+                if (getNumero_de_pregunta()==1 && messageTextReceived.equals("publico")){
+//                    mensaje += "\nReceived curso publico\n";
+                    rcIsPublico = true;
+                    rcIsPrivado = false;
+                }else {
+                    if (getNumero_de_pregunta()==1 && messageTextReceived.equals("privado")){
+//                        mensaje += "\nReceived curso privado\n";
+                        rcIsPrivado = true;
+                        rcIsPublico = false;
+                    }else {
+                        if (getNumero_de_pregunta()==1){
+                            mensaje += "Error!\nIngrese un tipo de curso válido";
+                            setNumero_de_pregunta(1);
+                            registrollenadosList.remove(1);
+                        }
+                    }
+                }
             }
-            setNumero_de_pregunta(getNumero_de_pregunta()+1) ;
-            registrollenadosList.add(messageTextReceived);
+            if (rcIsPublico==true){
+                setNumero_de_pregunta(3);
+                registrollenadosList.add(messageTextReceived);
+                registrollenadosList.add(null);
+            }
+            if (rcIsPrivado==true || (rcIsPrivado==false && rcIsPublico==false) ){
+                setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                registrollenadosList.add(messageTextReceived);
+            }
+
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
         }
         if (registrollenadosList.size()==3) {
@@ -318,6 +350,8 @@ public class MensajesBL {
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_registro_curso = false;
+            rcIsPublico = false;
+            rcIsPrivado = false;
         }
     }
 
@@ -327,7 +361,7 @@ public class MensajesBL {
         String mensaje="";
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-//        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
 
 //        mensaje += messageTextReceived;
