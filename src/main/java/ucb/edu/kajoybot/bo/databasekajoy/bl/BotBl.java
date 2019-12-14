@@ -27,6 +27,7 @@ public class BotBl {
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
+    private KjUserRepository kjUserRepository;
     private TestRepository testRepository;
     private RespuestaRepository respuestaRepository;
     private PreguntaRepository preguntaRepository;
@@ -37,7 +38,7 @@ public class BotBl {
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
-                 CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository,
+                 CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, KjUserRepository kjUserRepository,
                  TestRepository testRepository, RespuestaRepository respuestaRepository,
                  PreguntaRepository preguntaRepository, ChatRepository chatRepository,PersonBL personBL,MensajesBL mensajesBL) {
         this.estudianteRespository = estudianteRespository;
@@ -49,6 +50,7 @@ public class BotBl {
         this.preguntaRepository = preguntaRepository;
         this.chatRepository = chatRepository;
         this.mensajesBL = mensajesBL;
+        this.kjUserRepository=kjUserRepository;
 
 
     }
@@ -96,15 +98,17 @@ public class BotBl {
 
     public void processUpdateMesage(Update update,SendMessage message){
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
-        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+//        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+        KjUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         message.setChatId(update.getMessage().getChatId());
         continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
     }
 
 
-    public void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage) {
+    public void continueChatWithUserMessage(Update update, /*KjEstudianteUserEntity kjEstudianteUserEntity*/KjUserEntity kjUserEntity,SendMessage sendMessage) {
 
-        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+//        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
         String messageTextReceived = update.getMessage().getText();
@@ -265,16 +269,18 @@ public class BotBl {
 
         }
         KjChatEntity kjChatEntity = new KjChatEntity();
-        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+//        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+        kjChatEntity.setKjuserid(kjUserEntity);
         kjChatEntity.setInMessage(update.getMessage().getText());
         kjChatEntity.setOutMessage("texto");
         kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
         kjChatEntity.setTxDate(new Date());
-        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+//        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+        kjChatEntity.setTxUser(kjUserEntity.getUserid().toString());
         kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
         chatRepository.save(kjChatEntity);
     }
-
+/*
     private KjEstudianteUserEntity initUser(User user) {
 
         KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findByBotUserId(user.getId().toString());
@@ -299,7 +305,21 @@ public class BotBl {
         }
         return kjEstudianteUserEntity;
     }
+*/
+    private KjUserEntity initUser(User user) {
 
+        KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(user.getId().toString());
+        if (kjUserEntity == null) {
+            KjUserEntity kjUserEntity1 = new KjUserEntity();
+            kjUserEntity1.setBotUserId(user.getId().toString());//(user.getId().toString());
+            kjUserEntity1.setNombreUser(user.getFirstName());
+            kjUserEntity1.setApellidoUser(user.getLastName());
+            kjUserEntity1.setTxHost("localhost");
+            kjUserEntity1.setTxDate(new Date());
+            kjUserRepository.save(kjUserEntity1);
+        }
+        return kjUserEntity;
+    }
 
     public SendMessage make2OptionsKeyboard(String a,String b,Update update,KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage){
 
