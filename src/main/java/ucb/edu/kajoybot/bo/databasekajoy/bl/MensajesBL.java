@@ -136,8 +136,8 @@ public class MensajesBL {
                 cadena="Ingrese el tipo del curso ";
                 break;
             case 1:
-                LOGGER.info("Ingresando clave del curso");
-                cadena="Ingrese la clave del curso (si no desea el ingreso por clave, escriba '-' sin las comillas)";
+                LOGGER.info("Ingresando clave del curso privado");
+                cadena="Ingrese la clave del curso";
                 break;
         }
         return cadena;
@@ -329,7 +329,7 @@ public class MensajesBL {
         String mensaje="";
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-//        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
 
 //        mensaje += messageTextReceived;
