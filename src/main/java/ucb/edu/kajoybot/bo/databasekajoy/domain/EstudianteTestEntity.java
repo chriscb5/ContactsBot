@@ -34,6 +34,8 @@ import javax.persistence.Table;
     @Basic(optional = false)
     @Column(name = "puntaje")
     private int puntaje;
+    @Column(name = "respondido")
+    private Integer respondido;
     @JoinColumn(name = "id_test", referencedColumnName = "id_test")
     @ManyToOne(optional = false)
     private TestEntity idTest;
@@ -67,6 +69,14 @@ import javax.persistence.Table;
 
     public void setPuntaje(int puntaje) {
         this.puntaje = puntaje;
+    }
+
+    public Integer getRespondido() {
+        return respondido;
+    }
+
+    public void setRespondido(Integer respondido) {
+        this.respondido = respondido;
     }
 
     public TestEntity getIdTest() {
