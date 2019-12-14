@@ -71,10 +71,11 @@ public class MainBot extends TelegramLongPollingBot {
      */
             try {
                 if(message == null){
-                    this.execute(photo);
-                }else if(photo == null){
+                    message.setText("No entiendo lo que me quieres decir");
                     this.execute(message);
-                }else if (message != null || photo != null){
+                }else if(photo.getPhoto() == null && message!=null){
+                    this.execute(message);
+                }else if (message != null && photo.getPhoto() != null){
                     this.execute(message);
                     this.execute(photo);
                 }

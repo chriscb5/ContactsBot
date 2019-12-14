@@ -28,6 +28,7 @@ public class BotBl {
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
+    private KjUserRepository kjUserRepository;
     private TestRepository testRepository;
     private RespuestaRepository respuestaRepository;
     private PreguntaRepository preguntaRepository;
@@ -38,7 +39,7 @@ public class BotBl {
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
-                 CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository,
+                 CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, KjUserRepository kjUserRepository,
                  TestRepository testRepository, RespuestaRepository respuestaRepository,
                  PreguntaRepository preguntaRepository, ChatRepository chatRepository,PersonBL personBL,MensajesBL mensajesBL) {
         this.estudianteRespository = estudianteRespository;
@@ -50,6 +51,7 @@ public class BotBl {
         this.preguntaRepository = preguntaRepository;
         this.chatRepository = chatRepository;
         this.mensajesBL = mensajesBL;
+        this.kjUserRepository=kjUserRepository;
 
 
     }
@@ -98,7 +100,8 @@ public class BotBl {
     public void processUpdateMesage(Update update,SendMessage message, SendPhoto photo){
         MensajeDto mensajeDto;
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
-        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+//        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
+        KjUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         message.setChatId(update.getMessage().getChatId());
         photo.setChatId(update.getMessage().getChatId());
         continueChatWithUserMessage(update,kjEstudianteUserEntity,message,photo);
@@ -106,16 +109,14 @@ public class BotBl {
     }
 
 
-    public void continueChatWithUserMessage(Update update, KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage, SendPhoto sendPhoto) {
-
-//        MensajeDto mensajeDto = new MensajeDto();
-        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+    public void continueChatWithUserMessage(Update update, /*KjEstudianteUserEntity kjEstudianteUserEntity*/KjUserEntity kjUserEntity,SendMessage sendMessage,SendPhoto sendPhoto) {//        MensajeDto mensajeDto = new MensajeDto();
+//        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
+        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String imageFile = null;
-        SendPhoto sendPhotoe = new SendPhoto();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -140,13 +141,16 @@ public class BotBl {
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
 
-                            imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                            imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
                             sendPhoto.setChatId(chatId)
                                     .setPhoto(imageFile);
 
                             break;
 
                         case "/start":
+                            imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
+                            sendPhoto.setChatId(chatId)
+                                    .setPhoto(imageFile);
                             sendMessage.setChatId(chatId)
                                     .setText("Seleccione una opción por favor\nComenzar\nInformacion");
                             row.add("Comenzar");
@@ -217,8 +221,8 @@ public class BotBl {
 
                         case "Registro":
                             sendMessage.setChatId(chatId)
-                                    .setText("Seleccione una opción por favor\nRegistro Profesor\nRegistro Alumno");
-                            row.add("Registro Profesor");
+                                    .setText("Seleccione una opción por favor\nRegistro Docente\nRegistro Alumno");
+                            row.add("Registro Docente");
                             row.add("Registro Alumno");
                             keyboard.add(row);
                             keyboardMarkup.setKeyboard(keyboard);
@@ -288,16 +292,18 @@ public class BotBl {
 
         }
         KjChatEntity kjChatEntity = new KjChatEntity();
-        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+//        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+        kjChatEntity.setKjuserid(kjUserEntity);
         kjChatEntity.setInMessage(update.getMessage().getText());
         kjChatEntity.setOutMessage("texto");
         kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
         kjChatEntity.setTxDate(new Date());
-        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+//        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+        kjChatEntity.setTxUser(kjUserEntity.getUserid().toString());
         kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
         chatRepository.save(kjChatEntity);
     }
-
+/*
     private KjEstudianteUserEntity initUser(User user) {
 
         KjEstudianteUserEntity kjEstudianteUserEntity = kjEstudianteUserRepository.findByBotUserId(user.getId().toString());
@@ -321,6 +327,22 @@ public class BotBl {
 
         }
         return kjEstudianteUserEntity;
+    }
+<<<<<<< HEAD
+*/
+    private KjUserEntity initUser(User user) {
+
+        KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(user.getId().toString());
+        if (kjUserEntity == null) {
+            KjUserEntity kjUserEntity1 = new KjUserEntity();
+            kjUserEntity1.setBotUserId(user.getId().toString());//(user.getId().toString());
+            kjUserEntity1.setNombreUser(user.getFirstName());
+            kjUserEntity1.setApellidoUser(user.getLastName());
+            kjUserEntity1.setTxHost("localhost");
+            kjUserEntity1.setTxDate(new Date());
+            kjUserRepository.save(kjUserEntity1);
+        }
+        return kjUserEntity;
     }
 
     private boolean existsCursoByIdCurso(String id){
