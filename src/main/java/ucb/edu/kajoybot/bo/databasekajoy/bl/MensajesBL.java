@@ -722,6 +722,7 @@ public class MensajesBL {
         cursoEntity.setNombre(listaderegistros.get(0));
         cursoEntity.setTipoCurso(listaderegistros.get(1));
         cursoEntity.setClave(listaderegistros.get(2));
+        cursoEntity.setAudiencia(0);
         LOGGER.info("Entidad curso "+cursoEntity.toString());
         cursoRepository.save(cursoEntity);
         return "¡Registro completado exitosamente¡";
@@ -733,6 +734,7 @@ public class MensajesBL {
         saveQuestionList(questionsList);
         saveResponseList(responseList,questionsList);
         return "REGISTRO DE TEST COMPLETADO";
+        // FIXME COMPLETAR EL REGISTRO DEL TEST A TODOS LOS ESTUDIANTES PERTENECIENTES A EL CURSO
     }
 
     private void saveTest(){
