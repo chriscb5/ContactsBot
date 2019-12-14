@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
+import ucb.edu.kajoybot.bo.databasekajoy.dto.MensajeDto;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
 @Service
@@ -96,17 +97,19 @@ public class BotBl {
     //    }
 
 
-    public void processUpdateMesage(Update update,SendMessage message){
+    public void processUpdateMesage(Update update,SendMessage message, SendPhoto photo){
+        MensajeDto mensajeDto;
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
 //        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         KjUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
         message.setChatId(update.getMessage().getChatId());
-        continueChatWithUserMessage(update,kjEstudianteUserEntity,message);
+        photo.setChatId(update.getMessage().getChatId());
+        continueChatWithUserMessage(update,kjEstudianteUserEntity,message,photo);
+
     }
 
 
-    public void continueChatWithUserMessage(Update update, /*KjEstudianteUserEntity kjEstudianteUserEntity*/KjUserEntity kjUserEntity,SendMessage sendMessage) {
-
+    public void continueChatWithUserMessage(Update update, /*KjEstudianteUserEntity kjEstudianteUserEntity*/KjUserEntity kjUserEntity,SendMessage sendMessage,SendPhoto sendPhoto) {//        MensajeDto mensajeDto = new MensajeDto();
 //        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
         KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjUserEntity.getUserid());
         String messageInput = update.getMessage().getText();
@@ -114,7 +117,7 @@ public class BotBl {
         String messageTextReceived = update.getMessage().getText();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String imageFile = null;
-        SendPhoto sendPhoto = new SendPhoto();
+        SendPhoto sendPhotoe = new SendPhoto();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -129,6 +132,22 @@ public class BotBl {
                 setModulesMessages(update,sendMessage,messageTextReceived);
                 try {
                     switch(messageInput) {
+                        case "Men":
+                            LOGGER.info("ENTRO A PRUEBA DE MULTIMENSAJE");
+                            sendMessage.setChatId(chatId)
+                                    .setText("MULTIMENSAJE");
+                            row.add("Comenzar");
+                            row.add("Información");
+                            keyboard.add(row);
+                            keyboardMarkup.setKeyboard(keyboard);
+                            sendMessage.setReplyMarkup(keyboardMarkup);
+
+                            imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                            sendPhoto.setChatId(chatId)
+                                    .setPhoto(imageFile);
+
+                            break;
+
                         case "/start":
                             sendMessage.setChatId(chatId)
                                     .setText("Seleccione una opción por favor\nComenzar\nInformacion");
@@ -137,6 +156,7 @@ public class BotBl {
                             keyboard.add(row);
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
+
                             break;
                         case "Información":
                             imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
@@ -176,6 +196,7 @@ public class BotBl {
                             //si es nuevo pedir registro
                             //si es antiguo mostrar el listado de sus cursos
                             break;
+
 
                         case "Listado Estudiantes":
                             mensajesBL.setEntra_a_listado_estudiantes(true);
@@ -305,6 +326,7 @@ public class BotBl {
         }
         return kjEstudianteUserEntity;
     }
+<<<<<<< HEAD
 */
     private KjUserEntity initUser(User user) {
 
@@ -321,33 +343,28 @@ public class BotBl {
         return kjUserEntity;
     }
 
-    public SendMessage make2OptionsKeyboard(String a,String b,Update update,KjEstudianteUserEntity kjEstudianteUserEntity,SendMessage sendMessage){
+    private boolean existsCursoByIdCurso(String id){
+        Boolean exists = false;
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        if (cursoEntity==null){
+            LOGGER.info("Returns NULL");
+            exists = false;
+        }else {
+            LOGGER.info(cursoEntity.getNombre());
+            exists = true;
+        }
+        return exists;
+    }
 
-        KjChatEntity lastMenssage = chatRepository.findLastChatByUserId(kjEstudianteUserEntity.getUserid());
-        String messageInput = update.getMessage().getText();
-        long chatId = update.getMessage().getChatId();
-        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        SendMessage message = new SendMessage()
-                .setChatId(chatId)
-                .setText("DEFAULT");
 
-        SendMessage responseMessage = new SendMessage();
-        String messageTextReceived = update.getMessage().getText();
-        LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
-        String response = "";
+    private String getNombreCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getNombre();
+    }
 
-        KeyboardRow row = new KeyboardRow();
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
-
-        row.add(a);
-        row.add(b);
-        keyboard.add(row);
-
-        keyboardMarkup.setKeyboard(keyboard);
-        sendMessage.setReplyMarkup(keyboardMarkup);
-
-        return sendMessage;
+    private String getTipoCurso(String id){
+        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
+        return cursoEntity.getTipoCurso();
     }
 
 

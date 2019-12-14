@@ -90,7 +90,12 @@ import javax.persistence.Table;
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.clases.EstudianteCurso[ idEstudianteCurso=" + idEstudianteCurso + " ]";
+        //return "proyectokajoy.ucb.edu.bo.clases.EstudianteCurso[ idEstudianteCurso=" + idEstudianteCurso + " ]";
+        return "EstudianteCursoEntity{" +
+                "idEstudianteCurso=" + idEstudianteCurso +
+                ", idEstudiante='" + idEstudiante + '\'' +
+                ", idCurso='" + idCurso + '\'' +
+                '}';
     }
 
 }
