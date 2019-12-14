@@ -221,9 +221,9 @@ public class BotBl {
 
                         case "Registro":
                             sendMessage.setChatId(chatId)
-                                    .setText("Seleccione una opción por favor\nRegistro Docente\nRegistro Alumno");
+                                    .setText("Seleccione una opción por favor\nRegistro Docente\nRegistro Estudiante");
                             row.add("Registro Docente");
-                            row.add("Registro Alumno");
+                            row.add("Registro Estudiante");
                             keyboard.add(row);
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
@@ -238,7 +238,7 @@ public class BotBl {
                             sendMessage.setReplyMarkup(keyboardMarkup);
                             break;
 
-                        case "Registro Alumno":
+                        case "Registro Estudiante":
                             mensajesBL.setEntra_a_registro_estudiante(true);
                             sendMessage.setChatId(chatId)
                                     .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
