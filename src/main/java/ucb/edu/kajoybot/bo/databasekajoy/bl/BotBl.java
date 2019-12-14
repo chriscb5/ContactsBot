@@ -271,7 +271,8 @@ public class BotBl {
                                     .setText("RESPONDER TEST\nIngrese el nombre del Test");
                             break;
 
-                        default:
+//                        default:
+
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
                             sendMessage.setChatId(chatId)
                                     .setText("No logro entender lo que me pides");
@@ -390,7 +391,7 @@ public class BotBl {
             sendMessage.setText(mensajesBL.entraRegistroDocente(sendMessage,messageTextReceived));
         }
         if(mensajesBL.isEntra_a_registro_curso()){
-            sendMessage.setText(mensajesBL.entraRegistroCurso(sendMessage,messageTextReceived));
+            mensajesBL.entraRegistroCurso(sendMessage,messageTextReceived);
         }
         if(mensajesBL.isEntra_a_registro_estudiante_curso()){
             mensajesBL.entraRegistroEstudianteCurso(messageTextReceived,sendMessage);
