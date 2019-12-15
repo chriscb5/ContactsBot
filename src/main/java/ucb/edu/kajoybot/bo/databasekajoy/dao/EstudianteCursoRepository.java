@@ -10,6 +10,6 @@ import java.util.List;
 public interface EstudianteCursoRepository extends JpaRepository<EstudianteCursoEntity, Integer> {
     List<EstudianteCursoEntity> findAllByIdEstudianteCurso(int idEstudianteCurso);
     List<EstudianteCursoEntity> findAllByIdEstudiante(int idEstudiante);
-    List<EstudianteEntity> findAllByIdCurso(CursoEntity idCurso);
+    List<EstudianteCursoEntity> findAllByIdCurso(CursoEntity idCurso);
     EstudianteEntity findByIdEstudianteCurso(int IsEstudianteCurso);
 }
