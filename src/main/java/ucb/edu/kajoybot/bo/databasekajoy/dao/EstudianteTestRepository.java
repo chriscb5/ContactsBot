@@ -7,4 +7,6 @@ import ucb.edu.kajoybot.bo.databasekajoy.domain.TestEntity;
 
 public interface EstudianteTestRepository extends JpaRepository<EstudianteTestEntity,Integer> {
     EstudianteTestEntity findByIdTestAndIdEstudiante(TestEntity idTest, EstudianteEntity idEstudiante);
+
+
 }

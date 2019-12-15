@@ -10,5 +10,6 @@ public interface CursoRepository extends JpaRepository<CursoEntity, Integer> {
     List<CursoEntity> findAll();
     List<CursoEntity> findAllByIdCurso(int idCurso);
     List<CursoEntity> findAllByIdDocente(DocenteEntity idDocente);
+    CursoEntity findByNombre(String curseName);
     CursoEntity findByIdCurso(int idCurso);
 }

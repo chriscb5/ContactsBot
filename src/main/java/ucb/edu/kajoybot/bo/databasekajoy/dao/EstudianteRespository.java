@@ -14,5 +14,7 @@ public interface EstudianteRespository extends JpaRepository<EstudianteEntity,In
 
     EstudianteEntity findByNombre(String nombre);
 
+    EstudianteEntity findByNombreAndAndApellidoPaterno(String nombre,String apellidoPaterno);
+
     EstudianteEntity findAllByIdEstudiante(int id);
 }

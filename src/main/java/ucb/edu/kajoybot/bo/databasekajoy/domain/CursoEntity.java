@@ -2,6 +2,7 @@ package ucb.edu.kajoybot.bo.databasekajoy.domain;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -44,13 +45,15 @@ import javax.persistence.Table;
     private String tipoCurso;
     @Column(name = "clave")
     private String clave;
+    @Column(name = "audiencia")
+    private Integer audiencia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurso")
-    private Collection<TestEntity> testCollection;
+    private List<TestEntity> testList;
     @JoinColumn(name = "id_docente", referencedColumnName = "id_docente")
     @ManyToOne(optional = false)
     private DocenteEntity idDocente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurso")
-    private Collection<EstudianteCursoEntity> estudianteCursoCollection;
+    private List<EstudianteCursoEntity> estudianteCursoList;
 
     public CursoEntity() {
     }
@@ -97,12 +100,20 @@ import javax.persistence.Table;
         this.clave = clave;
     }
 
-    public Collection<TestEntity> getTestCollection() {
-        return testCollection;
+    public Integer getAudiencia() {
+        return audiencia;
     }
 
-    public void setTestCollection(Collection<TestEntity> testCollection) {
-        this.testCollection = testCollection;
+    public void setAudiencia(Integer audiencia) {
+        this.audiencia = audiencia;
+    }
+
+    public List<TestEntity> getTestList() {
+        return testList;
+    }
+
+    public void setTestList(List<TestEntity> testList) {
+        this.testList = testList;
     }
 
     public DocenteEntity getIdDocente() {
@@ -113,12 +124,12 @@ import javax.persistence.Table;
         this.idDocente = idDocente;
     }
 
-    public Collection<EstudianteCursoEntity> getEstudianteCursoCollection() {
-        return estudianteCursoCollection;
+    public List<EstudianteCursoEntity> getEstudianteCursoList() {
+        return estudianteCursoList;
     }
 
-    public void setEstudianteCursoCollection(Collection<EstudianteCursoEntity> estudianteCursoCollection) {
-        this.estudianteCursoCollection = estudianteCursoCollection;
+    public void setEstudianteCursoList(List<EstudianteCursoEntity> estudianteCursoList) {
+        this.estudianteCursoList = estudianteCursoList;
     }
 
     @Override
