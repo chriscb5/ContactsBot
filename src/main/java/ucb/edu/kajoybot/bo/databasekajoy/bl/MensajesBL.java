@@ -44,6 +44,8 @@ public class MensajesBL {
     private static boolean confirmation=false;
     private static boolean entra_a_menu_student=false;
     private static boolean entra_a_menu_curse_student=false;
+    private static boolean entra_a_menu_testcurse_student=false;
+    private static boolean entra_a_menu_testcurse_docent=false;
     private static boolean entra_a_menu_docent=false;
     private static boolean entra_a_menu_curse_docent=false;
     private static List<String> registrollenadosList= new ArrayList<>();
@@ -793,7 +795,23 @@ public class MensajesBL {
         MensajesBL.entra_a_menu_curse_docent = entra_a_menu_curse_docent;
     }
 
-/////////////////////////////////////// GUARDAR REGISTROS
+    public static boolean isEntra_a_menu_testcurse_student() {
+        return entra_a_menu_testcurse_student;
+    }
+
+    public static void setEntra_a_menu_testcurse_student(boolean entra_a_menu_testcurse_student) {
+        MensajesBL.entra_a_menu_testcurse_student = entra_a_menu_testcurse_student;
+    }
+
+    public static boolean isEntra_a_menu_testcurse_docent() {
+        return entra_a_menu_testcurse_docent;
+    }
+
+    public static void setEntra_a_menu_testcurse_docent(boolean entra_a_menu_testcurse_docent) {
+        MensajesBL.entra_a_menu_testcurse_docent = entra_a_menu_testcurse_docent;
+    }
+
+    /////////////////////////////////////// GUARDAR REGISTROS
 
     public  String guardarListaRegistros(List<String> listaderegistros){
         EstudianteEntity estudianteEntity=new EstudianteEntity();
@@ -867,7 +885,7 @@ public class MensajesBL {
         saveTest();
         saveQuestionList(questionsList);
         saveResponseList(responseList,questionsList);
-        saveAllStudentsInTheTest("MajoTest");
+        saveAllStudentsInTheTest("FrutaTest");
 
         return "REGISTRO DE TEST COMPLETADO";
         // FIXME COMPLETAR EL REGISTRO DEL TEST A TODOS LOS ESTUDIANTES PERTENECIENTES A EL CURSO
@@ -881,13 +899,13 @@ public class MensajesBL {
         DocenteEntity docenteEntity;
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("MajoTest");
+        testEntity.setNombreTest("FrutaTest");
         testRepository.save(testEntity);
     }
 
     private void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("MajoTest");
+        TestEntity testEntity=testRepository.findByNombreTest("FrutaTest");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
@@ -906,7 +924,7 @@ public class MensajesBL {
 
     private void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity=testRepository.findByNombreTest("MajoTest");
+        TestEntity testEntity=testRepository.findByNombreTest("FrutaTest");
         int numberResponse=1;
         int indexQuestionList=0;
         PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
@@ -1131,5 +1149,18 @@ public class MensajesBL {
         sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
+    public void processMainStudentInATestCurse(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Responder test");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Regresar a menu principal del curso de estudiante");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
 
 }
