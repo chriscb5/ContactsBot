@@ -827,11 +827,13 @@ public class MensajesBL {
         return "¡Registro completado exitosamente¡";
     }
 
-
+//*********************************************
+//*********************************************
     public String saveCompleteTest(List<String> questionsList,List<String> responseList ){
         saveTest();
         saveQuestionList(questionsList);
         saveResponseList(responseList,questionsList);
+        saveAllStudentsInTheTest("MajoTest");
 
         return "REGISTRO DE TEST COMPLETADO";
         // FIXME COMPLETAR EL REGISTRO DEL TEST A TODOS LOS ESTUDIANTES PERTENECIENTES A EL CURSO
@@ -845,13 +847,13 @@ public class MensajesBL {
         DocenteEntity docenteEntity;
         docenteEntity=docenteRespository.findAllByIdDocente(1);
         testEntity.setIdDocente(docenteEntity);
-        testEntity.setNombreTest("MacTest");
+        testEntity.setNombreTest("MajoTest");
         testRepository.save(testEntity);
     }
 
     private void  saveQuestion(String question,int questionNumber){
         PreguntaEntity preguntaEntity= new PreguntaEntity();
-        TestEntity testEntity=testRepository.findByNombreTest("MacTest");
+        TestEntity testEntity=testRepository.findByNombreTest("MajoTest");
         preguntaEntity.setIdTest(testEntity);
         preguntaEntity.setContenidoPregunta(question);
         preguntaEntity.setNumeroPregunta(questionNumber);
@@ -867,9 +869,10 @@ public class MensajesBL {
 
     }
 
+
     private void saveResponseList(List<String> responseList,List<String> questionList)
     {
-        TestEntity testEntity=testRepository.findByNombreTest("MacTest");
+        TestEntity testEntity=testRepository.findByNombreTest("MajoTest");
         int numberResponse=1;
         int indexQuestionList=0;
         PreguntaEntity preguntaEntity=preguntaRepository.findByContenidoPreguntaAndIdTest(questionList.get(indexQuestionList),testEntity);
@@ -895,6 +898,8 @@ public class MensajesBL {
         respuestaEntity.setNumeroRespuesta(numberResponse);
         respuestaRepository.save(respuestaEntity);
     }
+//*********************************************
+//*********************************************
 
     public void entraResponderTest(String nombreTest,String nombreStudent,SendMessage sendMessage){
         TestEntity testEntity=findTestByTestNombre(nombreTest);
@@ -990,10 +995,47 @@ public class MensajesBL {
 
 // FIND
 
-    public void saveTestforSendToAllStudentsInTheCurse(CursoEntity cursoEntity){
-        List<EstudianteEntity> estudianteEntityList=estudianteCursoRepository.findAllByIdCurso(cursoEntity);
-        
-
-
+    public  void saveAllStudentsInTheTest(String nameTest){
+        TestEntity testEntity=testRepository.findByNombreTest(nameTest);
+        saveTestforSendToAllStudentsInTheCurse(testEntity.getIdCurso(),testEntity);
     }
+
+    public void saveTestforSendToAllStudentsInTheCurse(CursoEntity cursoEntity, TestEntity testEntity){
+        List<EstudianteCursoEntity> estudianteCursoEntityList=estudianteCursoRepository.findAllByIdCurso(cursoEntity);
+        for(EstudianteCursoEntity estudianteCursoEntity:estudianteCursoEntityList){
+            EstudianteTestEntity estudianteTestEntity=new EstudianteTestEntity();
+            estudianteTestEntity.setIdTest(testEntity);
+            estudianteTestEntity.setIdEstudiante(estudianteCursoEntity.getIdEstudiante());
+            estudianteTestEntity.setPuntaje(0);
+            estudianteTestEntity.setRespondido(0);
+            estudianteTestRepository.save(estudianteTestEntity);
+        }
+    }
+
+
+    public void ListadoDeTest(SendMessage sendMessage,String studentName,String studentLastName){
+        EstudianteEntity estudianteEntity=estudianteRespository.findByNombreAndAndApellidoPaterno(studentName,studentLastName);
+        CursoEntity cursoEntity=cursoRepository.findByNombre("Metafisica");
+        methodTestList(sendMessage,estudianteEntity,cursoEntity);
+    }
+
+    private void methodTestList(SendMessage sendMessage,EstudianteEntity estudianteEntity,CursoEntity cursoEntity){
+        List<TestEntity> testEntityList=testRepository.findAllByIdCurso(cursoEntity);
+        String cad="";
+        int cont=1;
+        for(TestEntity testEntity:testEntityList){
+            EstudianteTestEntity estudianteTestEntity= estudianteTestRepository.findByIdTestAndIdEstudiante(testEntity,estudianteEntity);
+            cad+=cont+". "+testEntity.getNombreTest()+"\t                ";
+            if(estudianteTestEntity.getRespondido()==0){
+                cad+="Nuevo\n";
+            }
+            else {
+                cad+="Respondido\n";
+            }
+            cont++;
+        }
+        sendMessage.setText(cad);
+    }
+
+
 }

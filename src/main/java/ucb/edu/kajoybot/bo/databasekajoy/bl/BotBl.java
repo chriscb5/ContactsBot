@@ -270,7 +270,9 @@ public class BotBl {
                             sendMessage.setChatId(chatId)
                                     .setText("RESPONDER TEST\nIngrese el nombre del Test");
                             break;
-
+                        case "TestList":
+//                            mensajesBL.ListadoDeTest(sendMessage,update.getMessage().getChat().getFirstName(),update.getMessage().getChat().getLastName());
+                            mensajesBL.ListadoDeTest(sendMessage,"kevin","Cosner");
 //                        default:
 
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
