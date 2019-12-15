@@ -162,41 +162,6 @@ public class MensajesBL {
         return cadena;
     }
 
-    public  String mensajesRegistroEstudianteCursoPublico(String messageTextReceived)
-    {
-        String cadena=new String();
-        switch (numero_de_pregunta){
-            case 0:
-                LOGGER.info("Confirmacion registro curso publico");
-                cadena="El curso es publico\nPuede ingresar sin necesidad de una clave\nEstá seguro que quieres registrarte al curso \t'"+getNombreCurso(messageTextReceived)+"'?";
-                break;
-            case 1:
-                LOGGER.info("Registro curso publico exitoso");
-                cadena="Se ha registrado en el curso exitosamente";
-                break;
-        }
-        return cadena;
-    }
-
-    public  String mensajesRegistroEstudianteCursoPrivado(String messageTextReceived)
-    {
-        String cadena=new String();
-        switch (numero_de_pregunta){
-            case 0:
-                LOGGER.info("Ingresando clave");
-                cadena="El curso es privado\nPor favor, ingrese la clave del curso";
-                break;
-            case 1:
-                LOGGER.info("Confirmacion registro curso privado");
-                cadena="Está seguro que quieres registrarte al curso \t'"+getNombreCurso(messageTextReceived)+"'?";
-                break;
-            case 2:
-                LOGGER.info("Registro curso privado exitoso");
-                cadena="Se ha registrado en el curso exitosamente";
-                break;
-        }
-        return cadena;
-    }
 
     public  String mensajeRegistroTest(){
         String caden=new String();
@@ -415,6 +380,13 @@ public class MensajesBL {
                 LOGGER.info("Entra registro curso publico");
                 mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
                 sendMessage.setText(mensaje);
+                registrosllenos = false;
+                registrollenadosList.clear();
+                entra_a_registro_estudiante_curso = false;
+                isInMenuEC = true;
+                isCursoPublico = false;
+                isCursoPrivado = false;
+                isRegisteringCursoPrivado = false;
             }
             if (isCursoPrivado){
                 if (isRegisteringCursoPrivado==false){
@@ -434,15 +406,20 @@ public class MensajesBL {
                         sendMessage.setText(mensaje);
                     }else{
                         isRegisteringCursoPrivado=false;
-                        mensaje += "Error! Clave incorrecta.\nIntente nuevamente";
-                        registrosllenos = false;
-                        registrollenadosList.clear();
-                        entra_a_registro_estudiante_curso = false;
+                        mensaje = "Error! Clave incorrecta.\nIntente nuevamente";
+                        sendMessage.setText(mensaje);
                     }
                 }else {
                     if (isRegisteringCursoPrivado==true){
                         mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
                         sendMessage.setText(mensaje);
+                        registrosllenos = false;
+                        registrollenadosList.clear();
+                        entra_a_registro_estudiante_curso = false;
+                        isInMenuEC = true;
+                        isCursoPublico = false;
+                        isCursoPrivado = false;
+                        isRegisteringCursoPrivado = false;
                     }
                 }
 
