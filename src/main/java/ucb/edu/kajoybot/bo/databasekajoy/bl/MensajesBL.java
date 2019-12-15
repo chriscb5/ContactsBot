@@ -372,9 +372,9 @@ public class MensajesBL {
             isInMenuEC=false;
         }
 
-        if (messageTextReceived.equals("SI") && isRegisteringCursoPrivado==true){
-
-        }
+//        if (messageTextReceived.equals("SI") && isRegisteringCursoPrivado==true){
+//
+//        }
 
         if (isInMenuEC==true){
             LOGGER.info("Entra a menu EC");
