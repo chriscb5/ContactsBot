@@ -42,6 +42,10 @@ public class MensajesBL {
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
     private static boolean confirmation=false;
+    private static boolean entra_a_menu_student=false;
+    private static boolean entra_a_menu_curse_student=false;
+    private static boolean entra_a_menu_docent=false;
+    private static boolean entra_a_menu_curse_docent=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
 
@@ -757,8 +761,39 @@ public class MensajesBL {
         MensajesBL.entra_a_listado_cursos = entra_a_listado_cursos;
     }
 
+    public static boolean isEntra_a_menu_student() {
+        return entra_a_menu_student;
+    }
 
-    /////////////////////////////////////// GUARDAR REGISTROS
+    public static void setEntra_a_menu_student(boolean entra_a_menu_student) {
+        MensajesBL.entra_a_menu_student = entra_a_menu_student;
+    }
+
+    public static boolean isEntra_a_menu_curse_student() {
+        return entra_a_menu_curse_student;
+    }
+
+    public static void setEntra_a_menu_curse_student(boolean entra_a_menu_curse_student) {
+        MensajesBL.entra_a_menu_curse_student = entra_a_menu_curse_student;
+    }
+
+    public static boolean isEntra_a_menu_docent() {
+        return entra_a_menu_docent;
+    }
+
+    public static void setEntra_a_menu_docent(boolean entra_a_menu_docent) {
+        MensajesBL.entra_a_menu_docent = entra_a_menu_docent;
+    }
+
+    public static boolean isEntra_a_menu_curse_docent() {
+        return entra_a_menu_curse_docent;
+    }
+
+    public static void setEntra_a_menu_curse_docent(boolean entra_a_menu_curse_docent) {
+        MensajesBL.entra_a_menu_curse_docent = entra_a_menu_curse_docent;
+    }
+
+/////////////////////////////////////// GUARDAR REGISTROS
 
     public  String guardarListaRegistros(List<String> listaderegistros){
         EstudianteEntity estudianteEntity=new EstudianteEntity();
@@ -1034,6 +1069,66 @@ public class MensajesBL {
             cont++;
         }
         sendMessage.setText(cad);
+    }
+
+
+    public void processMainDocent(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Crear nuevo curso");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Lista de cursos");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public void processMainDocentInACurse(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Crear nuevo test");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Listado de test");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Regresar a menu principal docente");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public void processMainStudent(SendMessage sendMessage){
+        sendMessage.setText("MENU ESTUDIANTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Buscar nuevo curso");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Lista de cursos inscrito");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public void processMainStudentInACurse(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Listado de test en el curso");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Regresar a menu principal estudiante");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
 
