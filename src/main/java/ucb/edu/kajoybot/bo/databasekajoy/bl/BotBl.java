@@ -267,14 +267,15 @@ public class BotBl {
                             sendMessage.setChatId(chatId)
                                     .setText("**Unirse a un curso**\nIngrese el codigo del curso");
                             break;
-                        case "TestR":
+                        case "Responder test":
+                            mensajesBL.setEntra_a_menu_testcurse_student(false);
                             mensajesBL.setEntra_a_menu_curse_docent(false);
                             mensajesBL.setEntra_a_responder_test(true);
                             mensajesBL.setEntra_a_menu_curse_student(false);
                             sendMessage.setChatId(chatId)
                                     .setText("RESPONDER TEST\nIngrese el nombre del Test");
                             break;
-                        case "TestList":
+                        case "Listado de test en el curso":
 //                            mensajesBL.ListadoDeTest(sendMessage,update.getMessage().getChat().getFirstName(),update.getMessage().getChat().getLastName());
                             mensajesBL.ListadoDeTest(sendMessage,"kevin","Cosner");
                             mensajesBL.setEntra_a_menu_curse_student(false);
@@ -288,11 +289,23 @@ public class BotBl {
                             break;
                         case "Menu de docente":
                             mensajesBL.setEntra_a_menu_docent(true);
-                            sendMessage.setText("MENUU DOCENTE");
+                            mensajesBL.processMainDocent(sendMessage);
                             break;
                         case "Lista de cursos":
                             mensajesBL.setEntra_a_menu_curse_docent(true);
                             mensajesBL.setEntra_a_menu_docent(false);
+                            break;
+                        case "Menu estudiante 2":
+                            mensajesBL.setEntra_a_menu_curse_student(true);
+                            mensajesBL.processMainStudentInACurse(sendMessage);
+                            break;
+                        case "Menu docente 2":
+                            mensajesBL.setEntra_a_menu_curse_docent(true);
+                            mensajesBL.processMainDocentInACurse(sendMessage);
+                            break;
+                        case "Menu estudiante 3":
+                            mensajesBL.setEntra_a_menu_testcurse_student(true);
+                            mensajesBL.processMainStudentInATestCurse(sendMessage);
                             break;
                             //                        default:
 
@@ -448,6 +461,9 @@ public class BotBl {
         }
         if(mensajesBL.isEntra_a_menu_curse_docent()){
             mensajesBL.processMainDocentInACurse(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_menu_testcurse_student()){
+            mensajesBL.processMainStudentInATestCurse(sendMessage);
         }
     }
 
