@@ -31,7 +31,8 @@ import javax.persistence.TemporalType;
         @NamedQuery(name = "KjUser.findByApellidoUser", query = "SELECT k FROM KjUser k WHERE k.apellidoUser = :apellidoUser"),
         @NamedQuery(name = "KjUser.findByTxHost", query = "SELECT k FROM KjUser k WHERE k.txHost = :txHost"),
         @NamedQuery(name = "KjUser.findByTxDate", query = "SELECT k FROM KjUser k WHERE k.txDate = :txDate")})
-*/public class KjUserEntity implements Serializable {
+*/
+public class KjUserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id

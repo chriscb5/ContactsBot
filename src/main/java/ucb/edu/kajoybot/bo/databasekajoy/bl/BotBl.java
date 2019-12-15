@@ -180,6 +180,10 @@ public class BotBl {
                         case "Soy Estudiante":
                             sendMessage.setChatId(chatId)
                                     .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+
+                            mensajesBL.setEntra_a_verificacion_estudiante(true);
+
+
                             //Identificar si el usuario existe
                             //si es nuevo pedir registro
                             //si es antiguo mostrar el listado de sus cursos
@@ -422,6 +426,9 @@ public class BotBl {
         }
         if(mensajesBL.isEntra_a_registro_estudiante()){
             sendMessage.setText(mensajesBL.entraRegistroEstudiante(sendMessage,messageTextReceived));
+        }
+        if(mensajesBL.isEntra_a_verificacion_estudiante()){
+            sendMessage.setText(mensajesBL.entraverficarEstudiante(sendMessage,messageTextReceived));
         }
         if(mensajesBL.isEntra_a_registro_docente()){
             sendMessage.setText(mensajesBL.entraRegistroDocente(sendMessage,messageTextReceived));

@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface EstudianteRespository extends JpaRepository<EstudianteEntity,Integer> {
 
-
     List<EstudianteEntity> findAllByStatuss(int status);
 
     EstudianteEntity findAllByNombre(String nombre);
