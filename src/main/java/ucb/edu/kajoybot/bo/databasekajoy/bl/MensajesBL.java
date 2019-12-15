@@ -50,8 +50,6 @@ public class MensajesBL {
     private boolean isCursoPrivado = false;
     private boolean isRegisteringCursoPrivado = false;
 
-
-
     private EstudianteRespository estudianteRespository;
     private DocenteRespository docenteRespository;
     private CursoRepository cursoRepository;
@@ -298,7 +296,6 @@ public class MensajesBL {
         }
         return mensaje;
     }
-
 
     public String entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
 

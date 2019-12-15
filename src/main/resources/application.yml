@@ -3,7 +3,7 @@ spring:
     name: Kajoy
   datasource:
     platform: mysql
-    url: jdbc:mysql://localhost:3306/kajoydatabase?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3307/kajoydatabase?serverTimezone=UTC
     username: root
     password:
 
