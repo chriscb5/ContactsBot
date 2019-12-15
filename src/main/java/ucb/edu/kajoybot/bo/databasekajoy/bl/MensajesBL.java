@@ -305,7 +305,7 @@ public class MensajesBL {
             }
 
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
-
+            sendMessage.setText(mensaje);
         }
         if (registrollenadosList.size()==3) {
             LOGGER.info("Ingresa a registros llenos");
