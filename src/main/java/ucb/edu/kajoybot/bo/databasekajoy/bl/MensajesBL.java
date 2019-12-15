@@ -330,7 +330,7 @@ public class MensajesBL {
 //        mensaje += messageTextReceived;
 //        sendMessage.setText(mensaje);
 
-        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true){
+        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true || messageTextReceived.equals("NO") && isCursoPublico==true){
             //FIXME al momento de crear nuevo curso, validar que la clave ingresada sea de mas de 3 caracteres
             isInMenuEC=false;
         }
@@ -369,24 +369,34 @@ public class MensajesBL {
             }else{
                 mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
                 sendMessage.setText(mensaje);
-                registrosllenos = false;
-                registrollenadosList.clear();
-                entra_a_registro_estudiante_curso = false;
-                //entra_a_registro_estudiante_curso(update, messageTextReceived);
             }
         } else{
             LOGGER.info("Entra a registro EC");
             if (isCursoPublico){
                 LOGGER.info("Entra registro curso publico");
-                mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
-                sendMessage.setText(mensaje);
-                registrosllenos = false;
-                registrollenadosList.clear();
-                entra_a_registro_estudiante_curso = false;
-                isInMenuEC = true;
-                isCursoPublico = false;
-                isCursoPrivado = false;
-                isRegisteringCursoPrivado = false;
+                if (messageTextReceived.equals("SI")){
+                    mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+                    sendMessage.setText(mensaje);
+                    registrosllenos = false;
+                    registrollenadosList.clear();
+                    entra_a_registro_estudiante_curso = false;
+                    isInMenuEC = true;
+                    isCursoPublico = false;
+                    isCursoPrivado = false;
+                    isRegisteringCursoPrivado = false;
+                }else {
+                    if (messageTextReceived.equals("NO")){
+                        mensaje = "Registro Cancelado";
+                        sendMessage.setText(mensaje);
+                        registrosllenos = false;
+                        registrollenadosList.clear();
+                        entra_a_registro_estudiante_curso = false;
+                        isInMenuEC = true;
+                        isCursoPublico = false;
+                        isCursoPrivado = false;
+                        isRegisteringCursoPrivado = false;
+                    }
+                }
             }
             if (isCursoPrivado){
                 if (isRegisteringCursoPrivado==false){
@@ -410,7 +420,7 @@ public class MensajesBL {
                         sendMessage.setText(mensaje);
                     }
                 }else {
-                    if (isRegisteringCursoPrivado==true){
+                    if (isRegisteringCursoPrivado==true && messageTextReceived.equals("SI")){
                         mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
                         sendMessage.setText(mensaje);
                         registrosllenos = false;
@@ -420,6 +430,18 @@ public class MensajesBL {
                         isCursoPublico = false;
                         isCursoPrivado = false;
                         isRegisteringCursoPrivado = false;
+                    }else{
+                        if (messageTextReceived.equals("NO")){
+                            mensaje = "Registro Cancelado";
+                            sendMessage.setText(mensaje);
+                            registrosllenos = false;
+                            registrollenadosList.clear();
+                            entra_a_registro_estudiante_curso = false;
+                            isInMenuEC = true;
+                            isCursoPublico = false;
+                            isCursoPrivado = false;
+                            isRegisteringCursoPrivado = false;
+                        }
                     }
                 }
 
