@@ -305,9 +305,6 @@ public class MensajesBL {
 
     public void entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
 
-//        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true){
-//            isInMenuRC=false;
-//        }
         LOGGER.info("Entra a el registro curso oficial");
         String mensaje="";
         if(registrollenadosList.size()<3) {
@@ -343,6 +340,7 @@ public class MensajesBL {
             }
 
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
+
         }
         if (registrollenadosList.size()==3) {
             LOGGER.info("Ingresa a registros llenos");
@@ -371,10 +369,6 @@ public class MensajesBL {
             //FIXME al momento de crear nuevo curso, validar que la clave ingresada sea de mas de 3 caracteres
             isInMenuEC=false;
         }
-
-//        if (messageTextReceived.equals("SI") && isRegisteringCursoPrivado==true){
-//
-//        }
 
         if (isInMenuEC==true){
             LOGGER.info("Entra a menu EC");
@@ -453,25 +447,6 @@ public class MensajesBL {
                 }
 
             }
-//            mensaje="";
-//            if(registrollenadosList.size()<2) {
-//                LOGGER.info("Entra a registros no llenos");
-//                if(getNumero_de_pregunta()<1){
-//                    mensaje = mensajesRegistroEstudianteCursoPublico(messageTextReceived);
-//                }
-//                setNumero_de_pregunta(getNumero_de_pregunta()+1) ;//
-//                registrollenadosList.add(messageTextReceived);
-//                LOGGER.info("Tamaño de array "+registrollenadosList.size());
-//            }
-//            if (registrollenadosList.size()==2) {
-//                LOGGER.info("Ingresa a registros llenos");
-//                mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
-//                registrosllenos = false;
-//                registrollenadosList.clear();
-//                entra_a_registro_estudiante_curso = false;
-//                setNumero_de_pregunta(0) ;//
-//            }
-//            sendMessage.setText(mensaje);
         }
     }
 
