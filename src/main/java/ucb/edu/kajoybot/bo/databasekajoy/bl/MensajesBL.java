@@ -14,6 +14,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class MensajesBL {
@@ -26,6 +27,7 @@ public class MensajesBL {
     private static int nummero_de_respuesta_respondiendo=1;
     private static boolean registrosllenos=false;
     private static boolean entra_a_registro_estudiante=false;
+    private static boolean entra_a_verificacion_estudiante = false;
     private static boolean entra_a_registro_docente=false;
     private static boolean entra_a_registro_curso=false;
     private static boolean entra_a_iniciar_estudiante=false;
@@ -276,6 +278,30 @@ public class MensajesBL {
         }
         return mensaje;
     }
+
+    public String entraverficarEstudiante(SendMessage sendMessage,String messageTextReceived){
+        LOGGER.info("Entra a el verificar estudiante oficial");
+        String mensaje="";
+        sendMessage.getChatId();
+        KjUserRepository kjUserRepository = null;
+        String id =sendMessage.getChatId();
+        //arregalra if
+        Random rand = null;
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((2 - 0) + 1) + 0;
+
+        if(randomNum == 0){
+            entraRegistroDocente(sendMessage, messageTextReceived);
+        }
+        else{
+            mensaje = "Que gusto tenerte de nuevo!";
+        }
+
+        return mensaje;
+    }
+
 
     public String entraRegistroDocente(SendMessage sendMessage,String messageTextReceived){
         LOGGER.info("Entra a el registro estudiante oficial");
@@ -589,9 +615,16 @@ public class MensajesBL {
     public static boolean isEntra_a_registro_estudiante() {
         return entra_a_registro_estudiante;
     }
+    public static boolean isEntra_a_verificacion_estudiante() {
+        return entra_a_verificacion_estudiante;
+    }
 
     public static void setEntra_a_registro_estudiante(boolean entra_a_registro_estudiante) {
         MensajesBL.entra_a_registro_estudiante = entra_a_registro_estudiante;
+    }
+
+    public static void setEntra_a_verificacion_estudiante(boolean entra_a_registro_estudiante) {
+        MensajesBL.entra_a_verificacion_estudiante = entra_a_registro_estudiante;
     }
 
     public static boolean isEntra_a_registro_docente() {
