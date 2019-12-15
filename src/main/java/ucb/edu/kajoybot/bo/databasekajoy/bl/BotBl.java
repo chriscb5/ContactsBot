@@ -252,15 +252,17 @@ public class BotBl {
                             sendMessage.setChatId(chatId)
                                     .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
                             break;
-                        case "Test":
+                        case "Crear nuevo test":
                             mensajesBL.setEntra_a_registro_test(true);
                             mensajesBL.setConfirmation(false);
                             mensajesBL.setAniade_pregunta_nueva(true);
+                            mensajesBL.setEntra_a_menu_curse_docent(false);
                             sendMessage.setChatId(chatId)
                                     .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
                             break;
                         case "Crear Nuevo Curso":
                             mensajesBL.setEntra_a_registro_curso(true);
+                            mensajesBL.setEntra_a_menu_docent(false);
                             sendMessage.setChatId(chatId)
                                     .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
                             break;
@@ -270,14 +272,33 @@ public class BotBl {
                                     .setText("**Unirse a un curso**\nIngrese el codigo del curso");
                             break;
                         case "TestR":
+                            mensajesBL.setEntra_a_menu_curse_docent(false);
                             mensajesBL.setEntra_a_responder_test(true);
+                            mensajesBL.setEntra_a_menu_curse_student(false);
                             sendMessage.setChatId(chatId)
                                     .setText("RESPONDER TEST\nIngrese el nombre del Test");
                             break;
                         case "TestList":
 //                            mensajesBL.ListadoDeTest(sendMessage,update.getMessage().getChat().getFirstName(),update.getMessage().getChat().getLastName());
                             mensajesBL.ListadoDeTest(sendMessage,"kevin","Cosner");
-//                        default:
+                            mensajesBL.setEntra_a_menu_curse_student(false);
+                            break;
+                        case "Menu estudiante":
+                            mensajesBL.setEntra_a_menu_student(true);
+                            break;
+                        case "Lista de cursos inscrito":
+                            mensajesBL.setEntra_a_menu_curse_student(true);
+                            mensajesBL.setEntra_a_menu_student(false);
+                            break;
+                        case "Menu de docente":
+                            mensajesBL.setEntra_a_menu_docent(true);
+                            sendMessage.setText("MENUU DOCENTE");
+                            break;
+                        case "Lista de cursos":
+                            mensajesBL.setEntra_a_menu_curse_docent(true);
+                            mensajesBL.setEntra_a_menu_docent(false);
+                            break;
+                            //                        default:
 
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
                             sendMessage.setChatId(chatId)
@@ -422,6 +443,18 @@ public class BotBl {
                 nombreTest=messageTextReceived;
             }
             mensajesBL.entraResponderTest(nombreTest,update.getMessage().getChat().getFirstName(),sendMessage);
+        }
+        if (mensajesBL.isEntra_a_menu_student()) {
+            mensajesBL.processMainStudent(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_menu_curse_student()){
+            mensajesBL.processMainStudentInACurse(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_menu_docent()){
+            mensajesBL.processMainDocent(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_menu_curse_docent()){
+            mensajesBL.processMainDocentInACurse(sendMessage);
         }
     }
 

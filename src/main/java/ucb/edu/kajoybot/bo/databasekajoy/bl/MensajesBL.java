@@ -44,6 +44,10 @@ public class MensajesBL {
     private static boolean aniade_respuesta_nueva=false;
     private static boolean termina_test=false;
     private static boolean confirmation=false;
+    private static boolean entra_a_menu_student=false;
+    private static boolean entra_a_menu_curse_student=false;
+    private static boolean entra_a_menu_docent=false;
+    private static boolean entra_a_menu_curse_docent=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
 
@@ -162,41 +166,6 @@ public class MensajesBL {
         return cadena;
     }
 
-    public  String mensajesRegistroEstudianteCursoPublico(String messageTextReceived)
-    {
-        String cadena=new String();
-        switch (numero_de_pregunta){
-            case 0:
-                LOGGER.info("Confirmacion registro curso publico");
-                cadena="El curso es publico\nPuede ingresar sin necesidad de una clave\nEstá seguro que quieres registrarte al curso \t'"+getNombreCurso(messageTextReceived)+"'?";
-                break;
-            case 1:
-                LOGGER.info("Registro curso publico exitoso");
-                cadena="Se ha registrado en el curso exitosamente";
-                break;
-        }
-        return cadena;
-    }
-
-    public  String mensajesRegistroEstudianteCursoPrivado(String messageTextReceived)
-    {
-        String cadena=new String();
-        switch (numero_de_pregunta){
-            case 0:
-                LOGGER.info("Ingresando clave");
-                cadena="El curso es privado\nPor favor, ingrese la clave del curso";
-                break;
-            case 1:
-                LOGGER.info("Confirmacion registro curso privado");
-                cadena="Está seguro que quieres registrarte al curso \t'"+getNombreCurso(messageTextReceived)+"'?";
-                break;
-            case 2:
-                LOGGER.info("Registro curso privado exitoso");
-                cadena="Se ha registrado en el curso exitosamente";
-                break;
-        }
-        return cadena;
-    }
 
     public  String mensajeRegistroTest(){
         String caden=new String();
@@ -362,7 +331,7 @@ public class MensajesBL {
             }
 
             LOGGER.info("Tamaño de array "+registrollenadosList.size());
-
+            sendMessage.setText(mensaje);
         }
         if (registrollenadosList.size()==3) {
             LOGGER.info("Ingresa a registros llenos");
@@ -387,7 +356,7 @@ public class MensajesBL {
 //        mensaje += messageTextReceived;
 //        sendMessage.setText(mensaje);
 
-        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true){
+        if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true || messageTextReceived.equals("NO") && isCursoPublico==true){
             //FIXME al momento de crear nuevo curso, validar que la clave ingresada sea de mas de 3 caracteres
             isInMenuEC=false;
         }
@@ -426,17 +395,34 @@ public class MensajesBL {
             }else{
                 mensaje += "No se encontró ningún curso con el código ingresado.\nPor favor intente nuevamente";
                 sendMessage.setText(mensaje);
-                registrosllenos = false;
-                registrollenadosList.clear();
-                entra_a_registro_estudiante_curso = false;
-                //entra_a_registro_estudiante_curso(update, messageTextReceived);
             }
         } else{
             LOGGER.info("Entra a registro EC");
             if (isCursoPublico){
                 LOGGER.info("Entra registro curso publico");
-                mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
-                sendMessage.setText(mensaje);
+                if (messageTextReceived.equals("SI")){
+                    mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+                    sendMessage.setText(mensaje);
+                    registrosllenos = false;
+                    registrollenadosList.clear();
+                    entra_a_registro_estudiante_curso = false;
+                    isInMenuEC = true;
+                    isCursoPublico = false;
+                    isCursoPrivado = false;
+                    isRegisteringCursoPrivado = false;
+                }else {
+                    if (messageTextReceived.equals("NO")){
+                        mensaje = "Registro Cancelado";
+                        sendMessage.setText(mensaje);
+                        registrosllenos = false;
+                        registrollenadosList.clear();
+                        entra_a_registro_estudiante_curso = false;
+                        isInMenuEC = true;
+                        isCursoPublico = false;
+                        isCursoPrivado = false;
+                        isRegisteringCursoPrivado = false;
+                    }
+                }
             }
             if (isCursoPrivado){
                 if (isRegisteringCursoPrivado==false){
@@ -456,15 +442,32 @@ public class MensajesBL {
                         sendMessage.setText(mensaje);
                     }else{
                         isRegisteringCursoPrivado=false;
-                        mensaje += "Error! Clave incorrecta.\nIntente nuevamente";
+                        mensaje = "Error! Clave incorrecta.\nIntente nuevamente";
+                        sendMessage.setText(mensaje);
+                    }
+                }else {
+                    if (isRegisteringCursoPrivado==true && messageTextReceived.equals("SI")){
+                        mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
+                        sendMessage.setText(mensaje);
                         registrosllenos = false;
                         registrollenadosList.clear();
                         entra_a_registro_estudiante_curso = false;
-                    }
-                }else {
-                    if (isRegisteringCursoPrivado==true){
-                        mensaje = guardarListaRegistrosEstudianteCurso(registrollenadosList);
-                        sendMessage.setText(mensaje);
+                        isInMenuEC = true;
+                        isCursoPublico = false;
+                        isCursoPrivado = false;
+                        isRegisteringCursoPrivado = false;
+                    }else{
+                        if (messageTextReceived.equals("NO")){
+                            mensaje = "Registro Cancelado";
+                            sendMessage.setText(mensaje);
+                            registrosllenos = false;
+                            registrollenadosList.clear();
+                            entra_a_registro_estudiante_curso = false;
+                            isInMenuEC = true;
+                            isCursoPublico = false;
+                            isCursoPrivado = false;
+                            isRegisteringCursoPrivado = false;
+                        }
                     }
                 }
 
@@ -787,8 +790,39 @@ public class MensajesBL {
         MensajesBL.entra_a_listado_cursos = entra_a_listado_cursos;
     }
 
+    public static boolean isEntra_a_menu_student() {
+        return entra_a_menu_student;
+    }
 
-    /////////////////////////////////////// GUARDAR REGISTROS
+    public static void setEntra_a_menu_student(boolean entra_a_menu_student) {
+        MensajesBL.entra_a_menu_student = entra_a_menu_student;
+    }
+
+    public static boolean isEntra_a_menu_curse_student() {
+        return entra_a_menu_curse_student;
+    }
+
+    public static void setEntra_a_menu_curse_student(boolean entra_a_menu_curse_student) {
+        MensajesBL.entra_a_menu_curse_student = entra_a_menu_curse_student;
+    }
+
+    public static boolean isEntra_a_menu_docent() {
+        return entra_a_menu_docent;
+    }
+
+    public static void setEntra_a_menu_docent(boolean entra_a_menu_docent) {
+        MensajesBL.entra_a_menu_docent = entra_a_menu_docent;
+    }
+
+    public static boolean isEntra_a_menu_curse_docent() {
+        return entra_a_menu_curse_docent;
+    }
+
+    public static void setEntra_a_menu_curse_docent(boolean entra_a_menu_curse_docent) {
+        MensajesBL.entra_a_menu_curse_docent = entra_a_menu_curse_docent;
+    }
+
+/////////////////////////////////////// GUARDAR REGISTROS
 
     public  String guardarListaRegistros(List<String> listaderegistros){
         EstudianteEntity estudianteEntity=new EstudianteEntity();
@@ -1064,6 +1098,66 @@ public class MensajesBL {
             cont++;
         }
         sendMessage.setText(cad);
+    }
+
+
+    public void processMainDocent(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Crear nuevo curso");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Lista de cursos");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public void processMainDocentInACurse(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Crear nuevo test");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Listado de test");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Regresar a menu principal docente");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public void processMainStudent(SendMessage sendMessage){
+        sendMessage.setText("MENU ESTUDIANTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Buscar nuevo curso");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Lista de cursos inscrito");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public void processMainStudentInACurse(SendMessage sendMessage){
+        sendMessage.setText("MENU DOCENTE\nIngrese una de las opciones");
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        row.add("Listado de test en el curso");
+        keyboard.add(row);
+        row= new KeyboardRow();
+        row.add("Regresar a menu principal estudiante");
+        keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
 
