@@ -62,7 +62,7 @@ public class MensajesBL {
     private boolean isRegisteringCursoPrivado = false;
 
     private EstudianteRespository estudianteRespository;
-    private DocenteRespository docenteRespository;
+    private DocenteRespository  docenteRespository;
     private CursoRepository cursoRepository;
     private EstudianteCursoRepository estudianteCursoRepository;
     private KjEstudianteUserRepository kjEstudianteUserRepository;
@@ -275,7 +275,7 @@ public class MensajesBL {
 
 
     public String entraRegistroDocente(SendMessage sendMessage,String messageTextReceived){
-        LOGGER.info("Entra a el registro estudiante oficial");
+        LOGGER.info("Entra a el registro docente oficial");
         String mensaje="";
         if(registrollenadosList.size()<4)
         {
@@ -296,6 +296,8 @@ public class MensajesBL {
         }
         return mensaje;
     }
+
+
 
     public void entraRegistroCurso(SendMessage sendMessage,String messageTextReceived){
         LOGGER.info("Entra a el registro curso oficial");

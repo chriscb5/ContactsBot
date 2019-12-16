@@ -232,6 +232,7 @@ public class BotBl {
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
                             break;
+
                         case "Iniciar sesión":
                             sendMessage.setChatId(chatId)
                                     .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
