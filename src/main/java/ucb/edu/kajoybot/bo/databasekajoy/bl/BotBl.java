@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 
@@ -120,6 +121,7 @@ public class BotBl {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         sendMessage.setChatId(chatId);
         if(lastMenssage == null){
             sendMessage.setChatId(chatId)
@@ -131,6 +133,11 @@ public class BotBl {
                 setModulesMessages(update,sendMessage,messageTextReceived);
                 try {
                     switch(messageInput) {
+                        case "Teclado":
+                            sendMessage.setChatId(chatId)
+                                    .setText("Teclado removido");
+                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+                            break;
                         case "Men":
                             LOGGER.info("ENTRO A PRUEBA DE MULTIMENSAJE");
                             sendMessage.setChatId(chatId)
@@ -179,6 +186,12 @@ public class BotBl {
                             keyboardMarkup.setKeyboard(keyboard);
                             sendMessage.setReplyMarkup(keyboardMarkup);
 
+                            break;
+
+                        case "Agregar Contactos":
+                            //mensajesBL.setEntra_a_registro_estudiante_curso(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("*Agregar Contactos*\n").setParseMode("Markdown");
                             break;
 
                         case "Kajoy":
