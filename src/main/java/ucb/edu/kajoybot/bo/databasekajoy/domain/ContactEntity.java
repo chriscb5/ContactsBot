@@ -68,7 +68,7 @@ public class ContactEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "status")
     private int status;
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "userid")
     @ManyToOne(optional = false)
     private KjUserEntity userId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contactId")
