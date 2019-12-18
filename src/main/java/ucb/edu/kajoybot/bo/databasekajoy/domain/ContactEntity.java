@@ -72,7 +72,7 @@ public class ContactEntity implements Serializable {
     @ManyToOne(optional = false)
     private KjUserEntity userId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contactId")
-    private List<PhoneNumber> phoneNumberList;
+    private List<PhoneNumberEntity> phoneNumberList;
 
 
 
@@ -224,11 +224,11 @@ public class ContactEntity implements Serializable {
 
     }
 
-    public List<PhoneNumber> getPhoneNumberList() {
+    public List<PhoneNumberEntity> getPhoneNumberList() {
         return phoneNumberList;
     }
 
-    public void setPhoneNumberList(List<PhoneNumber> phoneNumberList) {
+    public void setPhoneNumberList(List<PhoneNumberEntity> phoneNumberList) {
         this.phoneNumberList = phoneNumberList;
 
     }
