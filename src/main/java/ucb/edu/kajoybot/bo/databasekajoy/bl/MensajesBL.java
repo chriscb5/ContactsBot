@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 @Service
 public class MensajesBL {
@@ -570,13 +571,39 @@ public class MensajesBL {
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
         if(registrollenadosList.size()<7) {
-            LOGGER.info("Entra al registros no llenos");
-            if(getNumero_de_pregunta()<6){
-                message = mensajeAgregarContactos();
+            LOGGER.info("Entra a registros no llenos");
+            if (getNumero_de_pregunta()==4){
+                if (isValidEmail(messageTextReceived)){
+                    LOGGER.info("Email válido");
+                    message = mensajeAgregarContactos();
+                    registrollenadosList.add(messageTextReceived);
+                    setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                }else {
+                    LOGGER.info("Email NO válido");
+                    message = "\nEmail NO válido\nPor favor, intente nuevamente\n";
+                    setNumero_de_pregunta(4);
+                }
+            }else{
+                if (getNumero_de_pregunta()==5){
+                    if (verifyDatebirth(messageTextReceived)==true){
+                        LOGGER.info("Fecha válida");
+                        message = mensajeAgregarContactos();
+                        registrollenadosList.add(messageTextReceived);
+                        setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                    }else {
+                        LOGGER.info("Fecha NO válida");
+                        message = "\nFecha NO válida\nPor favor, intente nuevamente\nFormato de la fecha (YYYY/MM/DD)\n";
+                        setNumero_de_pregunta(5);
+                    }
+                }else {
+                    message = mensajeAgregarContactos();
+                    registrollenadosList.add(messageTextReceived);
+                    setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                }
             }
-            setNumero_de_pregunta(getNumero_de_pregunta()+1);
+
             LOGGER.info("Numero de pregunta="+numero_de_pregunta);
-            registrollenadosList.add(messageTextReceived);
+
         }
         if (registrollenadosList.size()==7) {
             LOGGER.info("Ingresa a registros llenos");
@@ -1303,6 +1330,34 @@ public class MensajesBL {
         keyboard.add(row);
         keyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public static boolean isValidEmail(String email)
+    {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
+    }
+
+    public static boolean verifyDatebirth(String input) {
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd");
+        if (input != null) {
+            try {
+                Date ret = sdf.parse(input.trim());
+                if (sdf.format(ret).equals(input.trim())) {
+                    return true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
 }
