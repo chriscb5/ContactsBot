@@ -171,7 +171,7 @@ public class BotBl {
                             sendPhoto.setChatId(chatId)
                                     .setPhoto(imageFile);
                             sendMessage.setChatId(chatId)
-                                    .setText("Seleccione una opción:\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos");
+                                    .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
                             KeyboardRow keyboardRow = new KeyboardRow();
                             KeyboardRow keyboardRow2 = new KeyboardRow();
                             KeyboardRow keyboardRow3 = new KeyboardRow();
@@ -193,6 +193,14 @@ public class BotBl {
                             mensajesBL.setEntra_a_agregar_contactos(true);
                             sendMessage.setChatId(chatId)
                                     .setText("*Agregar Contactos*\nIngrese el primer nombre").setParseMode("Markdown");
+                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+
+                            break;
+
+                        case "Eliminar Contactos":
+                            mensajesBL.setEntra_a_eliminar_contactos(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("*Eliminar Contactos*\nIngrese el id del contacto a eliminar").setParseMode("Markdown");
                             sendMessage.setReplyMarkup(replyKeyboardRemove);
 
                             break;
@@ -502,6 +510,12 @@ public class BotBl {
         }
         if(mensajesBL.isEntra_a_agregar_contactos()){
             mensajesBL.entraAgregarContactos(messageTextReceived,sendMessage,update);
+        }
+        if(mensajesBL.isEntra_a_eliminar_contactos()){
+            mensajesBL.entraEliminarContactos(messageTextReceived,sendMessage,update);
+        }
+        if(mensajesBL.isEntra_a_agregar_phonenumbers()){
+            mensajesBL.entraAgregarPhoneNumbers(messageTextReceived,sendMessage,update);
         }
         if(mensajesBL.isEntra_a_registro_test()){
             mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);

@@ -107,7 +107,13 @@ public class PhoneNumberEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.clases.PhoneNumber[ phoneId=" + phoneId + " ]";
+//        return "proyectokajoy.ucb.edu.bo.clases.PhoneNumber[ phoneId=" + phoneId + " ]";
+        return "PhoneNumberEntity{" +
+                "phone_id=" + phoneId +
+                ", number='" + number + '\'' +
+                ", contact_id='" + contactId + '\'' +
+                ", status=" + status +
+                '}';
     }
 
 }

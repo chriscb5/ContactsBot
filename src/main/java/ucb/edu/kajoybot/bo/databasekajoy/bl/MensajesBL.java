@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -68,6 +69,13 @@ public class MensajesBL {
     private boolean isRegisteringCursoPrivado = false;
 
     private static boolean entra_a_agregar_contactos=false;
+    private static boolean entra_a_agregar_phonenumbers=false;
+    private static boolean entra_a_eliminar_contactos=false;
+
+    private int iNumbers=0;
+    private int numNumbers=0;
+    private static boolean registroContactoExitoso=false;
+    private ContactEntity contactEntity;
 
     private EstudianteRespository estudianteRespository;
     private DocenteRespository  docenteRespository;
@@ -572,6 +580,7 @@ public class MensajesBL {
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
+
         if(registrollenadosList.size()<7) {
             LOGGER.info("Entra a registros no llenos");
             if (getNumero_de_pregunta()==4){
@@ -603,7 +612,11 @@ public class MensajesBL {
                     setNumero_de_pregunta(getNumero_de_pregunta()+1);
                 }
             }
-
+            if (registroContactoExitoso==true){
+                entra_a_agregar_contactos = false;
+                entra_a_agregar_phonenumbers = true;
+                registrollenadosList.clear();
+            }
             LOGGER.info("Numero de pregunta="+numero_de_pregunta);
 
         }
@@ -612,10 +625,66 @@ public class MensajesBL {
             message = guardarListaAgregarContactos(registrollenadosList, update.getMessage().getFrom());
             registrosllenos = false;
             registrollenadosList.clear();
-            entra_a_agregar_contactos = false;
+            message += "\nIngrese la cantidad de números telefónicos a añadir";
+            registroContactoExitoso = true;
         }
         LOGGER.info("Tamaño de array "+registrollenadosList.size());
         sendMessage.setText(message);
+    }
+
+    public void entraEliminarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
+        LOGGER.info("Entra eliminar contactos");
+        String message = "";
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        sendMessage.setReplyMarkup(replyKeyboardRemove);
+        message = "Entra eliminar contactos";
+        sendMessage.setText(message);
+    }
+
+    public void entraAgregarPhoneNumbers(String messageTextReceived, SendMessage sendMessage, Update update){
+        LOGGER.info("Entra a agregar phone numbers");
+        String message = "";
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+
+        if (messageTextReceived.length()<3 && validateNumber(messageTextReceived)){
+            LOGGER.info("Entra if number");
+            numNumbers = Integer.parseInt(messageTextReceived);
+        }else {
+            if (messageTextReceived.length()<3){
+                message = "Error!\nIngrese la cantidad de números a registrar";
+            }
+        }
+        if (iNumbers<=numNumbers){
+            LOGGER.info("Entra if phone");
+            if (validatePhoneNumber(messageTextReceived)==true  && validateNumber(messageTextReceived)==false || registrollenadosList.size()==0 && validateNumber(messageTextReceived)==false){
+                LOGGER.info("Entra add num");
+                registrollenadosList.add(messageTextReceived);
+            }else {
+                if (validateNumber(messageTextReceived)==false){
+                    message = "Número de teléfono no válido.\nIntente nuevamente\n";
+                    iNumbers--;
+                }
+            }
+            LOGGER.info("i="+iNumbers+"; num="+numNumbers);
+            message += "Ingresar el número de teléfono N°"+(iNumbers+1)+" con el formato (XXXXXXXX)";
+        }
+        if (registrollenadosList.size()==numNumbers){
+            LOGGER.info("Ingresa a guardado numeros");
+            message = guardarListaAgregarPhoneNumbers(registrollenadosList);
+            registrosllenos = false;
+            registrollenadosList.clear();
+            entra_a_agregar_phonenumbers = false;
+        }
+        iNumbers++;
+        LOGGER.info("Tamaño de array "+registrollenadosList.size());
+        sendMessage.setText(message);
+
     }
 
     public String afirmacionAdicionarPregunta(){
@@ -946,6 +1015,22 @@ public class MensajesBL {
         MensajesBL.entra_a_agregar_contactos = entra_a_agregar_contactos;
     }
 
+    public static boolean isEntra_a_eliminar_contactos() {
+        return entra_a_eliminar_contactos;
+    }
+
+    public static void setEntra_a_eliminar_contactos(boolean entra_a_eliminar_contactos) {
+        MensajesBL.entra_a_eliminar_contactos = entra_a_eliminar_contactos;
+    }
+
+    public static boolean isEntra_a_agregar_phonenumbers() {
+        return  entra_a_agregar_phonenumbers;
+    }
+
+    public static void setEntra_a_agregar_phonenumbers(boolean entra_a_agregar_phonenumbers) {
+        MensajesBL.entra_a_agregar_phonenumbers = entra_a_agregar_phonenumbers;
+    }
+
     /////////////////////////////////////// GUARDAR REGISTROS
 
     public  String guardarListaRegistros(List<String> listaderegistros){
@@ -1049,6 +1134,27 @@ public class MensajesBL {
             e.printStackTrace();
             return "Registro fallido. Por favor, intente nuevamente";
         }
+    }
+
+    public String guardarListaAgregarPhoneNumbers(List<String> listaderegistros) {
+        LOGGER.info("Llega al metodo con : ");
+
+//        LOGGER.info("Tamanio = "+Integer.toString(listaderegistros.size()));
+        for (String lag : listaderegistros) {
+            LOGGER.info("Elemento : " + lag);
+        }
+
+        ContactEntity contactEntity = contactRepository.findByContactId(2);
+
+        for (int i=0;i<listaderegistros.size();i++){
+            PhoneNumberEntity phoneNumberEntity = new PhoneNumberEntity();
+            phoneNumberEntity.setNumber(listaderegistros.get(i));
+            phoneNumberEntity.setContactId(contactEntity);
+            phoneNumberEntity.setStatus(1);
+            LOGGER.info("Phone Number Entity: "+phoneNumberEntity.toString());
+            phoneNumberRepository.save(phoneNumberEntity);
+        }
+        return "¡Registro de números telefónicos completado exitosamente!";
     }
 
 
@@ -1350,7 +1456,7 @@ public class MensajesBL {
     }
 
     public static boolean verifyDatebirth(String input) {
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         if (input != null) {
             try {
                 Date ret = sdf.parse(input.trim());
@@ -1362,6 +1468,30 @@ public class MensajesBL {
             }
         }
         return false;
+    }
+
+    public static boolean validatePhoneNumber(String phone) {
+        Pattern pattern = Pattern.compile("\\d{8}");
+        Matcher matcher = pattern.matcher(phone);
+
+        if (matcher.matches()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean validateNumber(String num) {
+        Pattern pattern = Pattern.compile("\\d{1}");
+        Pattern pattern2 = Pattern.compile("\\d{2}");
+        Matcher matcher = pattern.matcher(num);
+        Matcher matcher2 = pattern2.matcher(num);
+
+        if (matcher.matches() || matcher2.matches()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
