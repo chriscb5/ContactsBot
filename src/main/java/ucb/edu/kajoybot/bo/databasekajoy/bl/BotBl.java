@@ -37,6 +37,7 @@ public class BotBl {
     private String nombreTest="";
     public  Boolean firstMessage = true;
     MensajesBL mensajesBL;
+    ContactsBL contactsBL;
 
     @Autowired
     public BotBl(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository,
@@ -189,9 +190,10 @@ public class BotBl {
                             break;
 
                         case "Agregar Contactos":
-                            //mensajesBL.setEntra_a_registro_estudiante_curso(true);
+                            mensajesBL.setEntra_a_agregar_contactos(true);
                             sendMessage.setChatId(chatId)
-                                    .setText("*Agregar Contactos*\n").setParseMode("Markdown");
+                                    .setText("*Agregar Contactos*\nIngrese el primer nombre").setParseMode("Markdown");
+
                             break;
 
                         case "Kajoy":
@@ -496,6 +498,9 @@ public class BotBl {
         }
         if(mensajesBL.isEntra_a_listado_cursos()){
             mensajesBL.entraListadoCursos(sendMessage);
+        }
+        if(mensajesBL.isEntra_a_agregar_contactos()){
+            mensajesBL.entraAgregarContactos(messageTextReceived,sendMessage);
         }
         if(mensajesBL.isEntra_a_registro_test()){
             mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);

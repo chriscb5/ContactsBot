@@ -61,6 +61,8 @@ public class MensajesBL {
     private boolean isCursoPrivado = false;
     private boolean isRegisteringCursoPrivado = false;
 
+    private static boolean entra_a_agregar_contactos=false;
+
     private EstudianteRespository estudianteRespository;
     private DocenteRespository  docenteRespository;
     private CursoRepository cursoRepository;
@@ -198,6 +200,33 @@ public class MensajesBL {
         }
         return cadena;
     }
+
+    public String mensajeAgregarContactos(){
+        String cadena=new String();
+        switch (numero_de_respuesta)
+        {
+            case 0:
+                cadena="Ingrese el segundo nombre";
+                break;
+            case 1:
+                cadena="Ingrese el primer apellido";
+                break;
+            case 2:
+                cadena="Ingrese la segundo apellido";
+                break;
+            case 3:
+                cadena="Ingrese el email";
+                break;
+            case 4:
+                cadena="Ingrese la fecha de nacimiento en el siguiente formato (YYYY/MM/DD)";
+                break;
+            case 5:
+                cadena="Suba una imagen para el perfil del contacto";
+                break;
+        }
+        return cadena;
+    }
+
 
     public static int getNumero_de_pregunta() {
         return numero_de_pregunta;
@@ -523,6 +552,17 @@ public class MensajesBL {
 //        return sendMessage;
     }
 
+    public void entraAgregarContactos(String messageTextReceived, SendMessage sendMessage){
+        LOGGER.info("Entra a agregar contactos");
+        String message = "";
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        message += "Ingrese el segundo nombre";
+        sendMessage.setText(message);
+    }
+
     public String afirmacionAdicionarPregunta(){
         //SI
         confirmation=true;
@@ -840,6 +880,15 @@ public class MensajesBL {
 
     public static void setEntra_a_menu_testcurse_docent(boolean entra_a_menu_testcurse_docent) {
         MensajesBL.entra_a_menu_testcurse_docent = entra_a_menu_testcurse_docent;
+    }
+
+    public static boolean isEntra_a_agregar_contactos() {
+        return entra_a_agregar_contactos;
+    }
+
+    public static void setEntra_a_agregar_contactos(boolean entra_a_agregar_contactos) {
+        LOGGER.info("Entra a Paso 2 "+ entra_a_agregar_contactos+" "+MensajesBL.entra_a_agregar_contactos);
+        MensajesBL.entra_a_agregar_contactos = entra_a_agregar_contactos;
     }
 
     /////////////////////////////////////// GUARDAR REGISTROS

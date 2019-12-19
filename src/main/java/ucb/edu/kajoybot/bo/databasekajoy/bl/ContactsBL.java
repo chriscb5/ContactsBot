@@ -3,6 +3,7 @@ package ucb.edu.kajoybot.bo.databasekajoy.bl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.ChatRepository;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.ContactRepository;
@@ -12,6 +13,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.dao.PhoneNumberRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ContactsBL {
 
     private static final Logger LOGGER= LoggerFactory.getLogger(ContactsBL.class);
@@ -48,7 +50,10 @@ public class ContactsBL {
     }
 
     public void entraAgregarContactos(String messageTextReceived, SendMessage sendMessage) {
-
+        LOGGER.info("Entra a Agregar Contactos");
+        String mensaje = "";
+        mensaje += messageTextReceived;
+        sendMessage.setText(mensaje);
     }
 
 
@@ -56,6 +61,7 @@ public class ContactsBL {
         return entra_a_agregar_contactos;
     }
     public static void setEntra_a_agregar_contactos(boolean entra_a_agregar_contactos) {
+        LOGGER.info("Entra set agregar contactos");
         ContactsBL.entra_a_agregar_contactos = entra_a_agregar_contactos;
     }
 

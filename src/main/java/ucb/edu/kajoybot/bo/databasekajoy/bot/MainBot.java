@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.BotBl;
+import ucb.edu.kajoybot.bo.databasekajoy.bl.ContactsBL;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.MensajesBL;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.PersonBL;
 
@@ -25,15 +26,17 @@ public class MainBot extends TelegramLongPollingBot {
     PersonBL personBL;
     BotBl botBl;
     MensajesBL mensajesBL;
+    ContactsBL contactsBL;
 
 
 
 
     @Autowired
-    public  MainBot(BotBl botBl,PersonBL personBL,MensajesBL mensajesBL){
+    public  MainBot(BotBl botBl, PersonBL personBL, MensajesBL mensajesBL, ContactsBL contactsBL){
         this.botBl=botBl;
         this.personBL=personBL;
         this.mensajesBL=mensajesBL;
+        this.contactsBL=contactsBL;
     }
 
 
