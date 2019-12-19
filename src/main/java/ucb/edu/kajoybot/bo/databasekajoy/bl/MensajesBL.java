@@ -81,10 +81,11 @@ public class MensajesBL {
     private EstudianteTestRepository estudianteTestRepository;
     private ContactRepository contactRepository;
     private PhoneNumberRepository phoneNumberRepository;
+    private KjUserRepository kjUserRepository;
     private PersonBL personBL;
 
     @Autowired
-    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository, EstudianteCursoRepository estudianteCursoRepository, ContactRepository contactRepository, PhoneNumberRepository phoneNumberRepository) {
+    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository, EstudianteCursoRepository estudianteCursoRepository, ContactRepository contactRepository, PhoneNumberRepository phoneNumberRepository, KjUserRepository kjUserRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
@@ -98,6 +99,7 @@ public class MensajesBL {
         this.estudianteCursoRepository = estudianteCursoRepository;
         this.contactRepository = contactRepository;
         this.phoneNumberRepository = phoneNumberRepository;
+        this.kjUserRepository = kjUserRepository;
     }
 
 
@@ -607,7 +609,7 @@ public class MensajesBL {
         }
         if (registrollenadosList.size()==7) {
             LOGGER.info("Ingresa a registros llenos");
-            //sendMessage.setText(guardarListaAgregarContactos(registrollenadosList, update.getMessage().getFrom()));
+            message = guardarListaAgregarContactos(registrollenadosList, update.getMessage().getFrom());
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_agregar_contactos = false;
@@ -1025,7 +1027,9 @@ public class MensajesBL {
             java.util.Date utilDate = format.parse(listaderegistros.get(5));
             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
             LOGGER.info("Fecha=" + sqlDate);
-            KjUserEntity kjUserEntity = new KjUserEntity(user.getId());
+            LOGGER.info("BotUserId=" + user.getId());
+            KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(Integer.toString(user.getId()));
+            LOGGER.info("UserId="+kjUserEntity.getUserid());
 
             ContactEntity contactEntity = new ContactEntity();
             contactEntity.setUserId(kjUserEntity);

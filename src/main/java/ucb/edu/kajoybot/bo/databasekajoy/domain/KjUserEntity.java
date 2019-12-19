@@ -64,6 +64,10 @@ public class KjUserEntity implements Serializable {
         this.userid = userid;
     }
 
+    public KjUserEntity(String botUserId) {
+        this.botUserId = botUserId;
+    }
+
     public KjUserEntity(Integer userid, String botUserId, String txHost, Date txDate) {
         this.userid = userid;
         this.botUserId = botUserId;
@@ -149,7 +153,7 @@ public class KjUserEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.clases.KjUser[ userid=" + userid + " ]";
+        return "proyectokajoy.ucb.edu.bo.clases.KjUser[ userid=" + userid + ", botuserid="+botUserId+" ]";
     }
 
 }

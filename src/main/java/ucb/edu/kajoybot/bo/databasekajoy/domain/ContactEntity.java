@@ -111,8 +111,6 @@ public class ContactEntity implements Serializable {
         this.firstName = firstName;
     }
 
-
-
     public String getSecondName() {
         return secondName;
     }
@@ -120,8 +118,6 @@ public class ContactEntity implements Serializable {
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
-
-
 
     public String getFirstSurname() {
         return firstSurname;
@@ -131,8 +127,6 @@ public class ContactEntity implements Serializable {
         this.firstSurname = firstSurname;
     }
 
-
-
     public String getSecondSurname() {
         return secondSurname;
     }
@@ -140,8 +134,6 @@ public class ContactEntity implements Serializable {
     public void setSecondSurname(String secondSurname) {
         this.secondSurname = secondSurname;
     }
-
-
 
     public String getEmail() {
         return email;
@@ -151,8 +143,6 @@ public class ContactEntity implements Serializable {
         this.email = email;
     }
 
-
-
     public Date getBirthdate() {
         return birthdate;
     }
@@ -160,8 +150,6 @@ public class ContactEntity implements Serializable {
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
-
-
 
     public String getImage() {
         return image;
@@ -171,50 +159,15 @@ public class ContactEntity implements Serializable {
         this.image = image;
     }
 
-
-
-
-
-
-
     public int getStatus() {
         return status;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void setStatus(int status) {
         this.status = status;
     }
 
     public KjUserEntity getUserId() {
-
-
-
-
-
-
-
-
-
-
         return userId;
     }
 
@@ -255,7 +208,19 @@ public class ContactEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "proyectokajoy.ucb.edu.bo.clases.Contact[ contactId=" + contactId + " ]";
+//        return "proyectokajoy.ucb.edu.bo.clases.Contact[ contactId=" + contactId + " ]";
+        return "ContactEntity{" +
+                "contact_id=" + contactId +
+                ", user_id='" + userId + '\'' +
+                ", first_name='" + firstName + '\'' +
+                ", second_name='" + secondName + '\'' +
+                ", first_surname='" + firstSurname + '\'' +
+                ", second_surname='" + secondSurname + '\'' +
+                ", email='" + email + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                ", image='" + image + '\'' +
+                ", status=" + status +
+                '}';
     }
 
 }
