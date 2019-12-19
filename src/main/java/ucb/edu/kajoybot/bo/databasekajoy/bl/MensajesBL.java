@@ -641,6 +641,9 @@ public class MensajesBL {
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
         message = "Entra eliminar contactos";
+        if (existsContactByIdContact(messageTextReceived)){
+
+        }
         sendMessage.setText(message);
     }
 
@@ -680,6 +683,8 @@ public class MensajesBL {
             registrosllenos = false;
             registrollenadosList.clear();
             entra_a_agregar_phonenumbers = false;
+            entra_a_agregar_contactos = false;
+            registroContactoExitoso = false;
         }
         iNumbers++;
         LOGGER.info("Tamaño de array "+registrollenadosList.size());
@@ -1492,6 +1497,19 @@ public class MensajesBL {
         } else {
             return false;
         }
+    }
+
+    public boolean existsContactByIdContact(String id){
+        boolean exists = false;
+        ContactEntity contactEntity = contactRepository.findByContactId(Integer.parseInt(id));
+        if (contactEntity==null){
+            LOGGER.info("Returns NULL");
+            exists = false;
+        }else {
+            LOGGER.info(contactEntity.getFirstName());
+            exists = true;
+        }
+        return exists;
     }
 
 }
