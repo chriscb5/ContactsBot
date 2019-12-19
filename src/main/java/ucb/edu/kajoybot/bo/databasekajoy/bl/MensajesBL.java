@@ -5,12 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,10 +78,12 @@ public class MensajesBL {
     private PreguntaRepository preguntaRepository;
     private ChatRepository chatRepository;
     private EstudianteTestRepository estudianteTestRepository;
+    private ContactRepository contactRepository;
+    private PhoneNumberRepository phoneNumberRepository;
     private PersonBL personBL;
 
     @Autowired
-    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository, EstudianteCursoRepository estudianteCursoRepository) {
+    public MensajesBL(EstudianteRespository estudianteRespository, DocenteRespository docenteRespository, CursoRepository cursoRepository, KjEstudianteUserRepository kjEstudianteUserRepository, TestRepository testRepository, RespuestaRepository respuestaRepository, PreguntaRepository preguntaRepository, ChatRepository chatRepository, PersonBL personBL,EstudianteTestRepository estudianteTestRepository, EstudianteCursoRepository estudianteCursoRepository, ContactRepository contactRepository, PhoneNumberRepository phoneNumberRepository) {
         this.estudianteRespository = estudianteRespository;
         this.docenteRespository = docenteRespository;
         this.cursoRepository = cursoRepository;
@@ -86,8 +93,10 @@ public class MensajesBL {
         this.preguntaRepository = preguntaRepository;
         this.chatRepository = chatRepository;
         this.personBL = personBL;
-        this.estudianteTestRepository=estudianteTestRepository;
-        this.estudianteCursoRepository=estudianteCursoRepository;
+        this.estudianteTestRepository = estudianteTestRepository;
+        this.estudianteCursoRepository = estudianteCursoRepository;
+        this.contactRepository = contactRepository;
+        this.phoneNumberRepository = phoneNumberRepository;
     }
 
 
@@ -203,7 +212,7 @@ public class MensajesBL {
 
     public String mensajeAgregarContactos(){
         String cadena=new String();
-        switch (numero_de_respuesta)
+        switch (numero_de_pregunta)
         {
             case 0:
                 cadena="Ingrese el segundo nombre";
@@ -552,14 +561,31 @@ public class MensajesBL {
 //        return sendMessage;
     }
 
-    public void entraAgregarContactos(String messageTextReceived, SendMessage sendMessage){
+    public void entraAgregarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
         LOGGER.info("Entra a agregar contactos");
         String message = "";
         KeyboardRow row= new KeyboardRow();
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
-        message += "Ingrese el segundo nombre";
+        sendMessage.setReplyMarkup(replyKeyboardRemove);
+        if(registrollenadosList.size()<7) {
+            LOGGER.info("Entra al registros no llenos");
+            if(getNumero_de_pregunta()<6){
+                message = mensajeAgregarContactos();
+            }
+            setNumero_de_pregunta(getNumero_de_pregunta()+1);
+            LOGGER.info("Numero de pregunta="+numero_de_pregunta);
+            registrollenadosList.add(messageTextReceived);
+        }
+        if (registrollenadosList.size()==7) {
+            LOGGER.info("Ingresa a registros llenos");
+            //sendMessage.setText(guardarListaAgregarContactos(registrollenadosList, update.getMessage().getFrom()));
+            registrosllenos = false;
+            registrollenadosList.clear();
+            entra_a_agregar_contactos = false;
+        }
+        LOGGER.info("Tamaño de array "+registrollenadosList.size());
         sendMessage.setText(message);
     }
 
@@ -958,6 +984,42 @@ public class MensajesBL {
         cursoRepository.save(cursoEntity);
         return "¡Registro completado exitosamente¡";
     }
+
+    public String guardarListaAgregarContactos(List<String> listaderegistros, User user) {
+        LOGGER.info("Llega al metodo con : ");
+
+        for (String lag : listaderegistros) {
+            LOGGER.info("Elemento : " + lag);
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+
+        try {
+            java.util.Date utilDate = format.parse(listaderegistros.get(5));
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            LOGGER.info("Fecha=" + sqlDate);
+            KjUserEntity kjUserEntity = new KjUserEntity(user.getId());
+
+            ContactEntity contactEntity = new ContactEntity();
+            contactEntity.setUserId(kjUserEntity);
+            contactEntity.setFirstName(listaderegistros.get(0));
+            contactEntity.setSecondName(listaderegistros.get(1));
+            contactEntity.setFirstSurname(listaderegistros.get(2));
+            contactEntity.setSecondSurname(listaderegistros.get(3));
+            contactEntity.setEmail(listaderegistros.get(4));
+            contactEntity.setBirthdate(sqlDate);
+            contactEntity.setImage(listaderegistros.get(6));
+            contactEntity.setStatus(1);
+            LOGGER.info("Contact Entity: "+contactEntity.toString());
+            contactRepository.save(contactEntity);
+            return "¡Registro completado exitosamente!";
+        } catch (ParseException e) {
+            LOGGER.info("Conversion de fecha failed");
+            e.printStackTrace();
+            return "Registro fallido. Por favor, intente nuevamente";
+        }
+    }
+
 
 //*********************************************
 //*********************************************

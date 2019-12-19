@@ -193,6 +193,7 @@ public class BotBl {
                             mensajesBL.setEntra_a_agregar_contactos(true);
                             sendMessage.setChatId(chatId)
                                     .setText("*Agregar Contactos*\nIngrese el primer nombre").setParseMode("Markdown");
+                            sendMessage.setReplyMarkup(replyKeyboardRemove);
 
                             break;
 
@@ -500,7 +501,7 @@ public class BotBl {
             mensajesBL.entraListadoCursos(sendMessage);
         }
         if(mensajesBL.isEntra_a_agregar_contactos()){
-            mensajesBL.entraAgregarContactos(messageTextReceived,sendMessage);
+            mensajesBL.entraAgregarContactos(messageTextReceived,sendMessage,update);
         }
         if(mensajesBL.isEntra_a_registro_test()){
             mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);
