@@ -618,7 +618,6 @@ public class MensajesBL {
                 registrollenadosList.clear();
             }
             LOGGER.info("Numero de pregunta="+numero_de_pregunta);
-
         }
         if (registrollenadosList.size()==7) {
             LOGGER.info("Ingresa a registros llenos");
