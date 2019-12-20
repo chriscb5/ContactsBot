@@ -1149,7 +1149,7 @@ public class MensajesBL {
         }
 
         ContactEntity contactEntity = contactRepository.findByContactId(2);
-
+        //FIXME Obtener ContactID del contacto recien creado
         for (int i=0;i<listaderegistros.size();i++){
             PhoneNumberEntity phoneNumberEntity = new PhoneNumberEntity();
             phoneNumberEntity.setNumber(listaderegistros.get(i));
