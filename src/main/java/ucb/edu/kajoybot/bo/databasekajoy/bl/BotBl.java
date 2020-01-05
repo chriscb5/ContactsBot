@@ -205,6 +205,14 @@ public class BotBl {
 
                             break;
 
+                        case "Buscar Contactos":
+                            mensajesBL.setEntra_a_eliminar_contactos(true);
+                            sendMessage.setChatId(chatId)
+                                    .setText("*Buscar Contactos*\nIngrese el nombre o apellido del contacto").setParseMode("Markdown");
+                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+
+                            break;
+
                         case "Kajoy":
                             imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
                             sendPhoto.setChatId(chatId)

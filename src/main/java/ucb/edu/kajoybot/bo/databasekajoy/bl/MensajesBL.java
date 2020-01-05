@@ -613,9 +613,19 @@ public class MensajesBL {
                 }
             }
             if (registroContactoExitoso==true){
-                entra_a_agregar_contactos = false;
-                entra_a_agregar_phonenumbers = true;
-                registrollenadosList.clear();
+                LOGGER.info("Entra a registro de contacto exitoso");
+
+                if (messageTextReceived.length()<3 && validateNumber(messageTextReceived)){
+                    LOGGER.info("Es numero");
+                    numNumbers = Integer.parseInt(messageTextReceived);
+                    entra_a_agregar_contactos = false;
+                    entra_a_agregar_phonenumbers = true;
+                    registrollenadosList.clear();
+                }else {
+                    LOGGER.info("No es numero");
+                    message = "Error!\nIngrese la cantidad de números a registrar (1-99)";
+                }
+
             }
             LOGGER.info("Numero de pregunta="+numero_de_pregunta);
         }
@@ -632,6 +642,7 @@ public class MensajesBL {
     }
 
     public void entraEliminarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
+        //FIXME Completar eliminar contactos
         LOGGER.info("Entra eliminar contactos");
         String message = "";
         KeyboardRow row= new KeyboardRow();
@@ -639,9 +650,8 @@ public class MensajesBL {
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
-        message = "Entra eliminar contactos";
         if (existsContactByIdContact(messageTextReceived)){
-
+            message = "Id existente";
         }
         sendMessage.setText(message);
     }
@@ -654,14 +664,6 @@ public class MensajesBL {
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
 
-        if (messageTextReceived.length()<3 && validateNumber(messageTextReceived)){
-            LOGGER.info("Entra if number");
-            numNumbers = Integer.parseInt(messageTextReceived);
-        }else {
-            if (messageTextReceived.length()<3){
-                message = "Error!\nIngrese la cantidad de números a registrar";
-            }
-        }
         if (iNumbers<=numNumbers){
             LOGGER.info("Entra if phone");
             if (validatePhoneNumber(messageTextReceived)==true  && validateNumber(messageTextReceived)==false || registrollenadosList.size()==0 && validateNumber(messageTextReceived)==false){
@@ -1034,6 +1036,8 @@ public class MensajesBL {
     public static void setEntra_a_agregar_phonenumbers(boolean entra_a_agregar_phonenumbers) {
         MensajesBL.entra_a_agregar_phonenumbers = entra_a_agregar_phonenumbers;
     }
+
+
 
     /////////////////////////////////////// GUARDAR REGISTROS
 
