@@ -5,21 +5,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -572,7 +572,7 @@ public class MensajesBL {
 //        return sendMessage;
     }
 
-    public void entraAgregarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
+    public void entraAgregarContactos(String messageTextReceived, List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
         LOGGER.info("Entra a agregar contactos");
         String message = "";
         KeyboardRow row= new KeyboardRow();
@@ -607,9 +607,14 @@ public class MensajesBL {
                         setNumero_de_pregunta(5);
                     }
                 }else {
-                    message = mensajeAgregarContactos();
-                    registrollenadosList.add(messageTextReceived);
-                    setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                    if (getNumero_de_pregunta()==6){
+                        LOGGER.info("Entra a registro de photo");
+                        receivePhotoContact(update,photoReceived,sendMessage,sendPhoto);
+                    }else {
+                        message = mensajeAgregarContactos();
+                        registrollenadosList.add(messageTextReceived);
+                        setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                    }
                 }
             }
             if (registroContactoExitoso==true){
@@ -1472,7 +1477,7 @@ public class MensajesBL {
                     return true;
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
+                LOGGER.info("Fecha inválida");
             }
         }
         return false;
@@ -1513,6 +1518,62 @@ public class MensajesBL {
             exists = true;
         }
         return exists;
+    }
+
+    public void receivePhotoContact(Update update, List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto){
+        String message = "";
+        if (isEntra_a_agregar_contactos() == true && numero_de_pregunta == 6){
+            LOGGER.info("Num preg 6 y esta agregando contactos");
+            if (update.getMessage().hasPhoto()) {
+                LOGGER.info("Imagen recibida");
+                // Message contains photo
+                // Set variables
+//                            long chat_id = update.getMessage().getChatId();
+
+                // Array with photo objects with different sizes
+                // We will get the biggest photo from that array
+//                            List<PhotoSize> photos = update.getMessage().getPhoto();
+                // Know file_id
+                String f_id = photoReceived.stream()
+                        .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+                        .findFirst()
+                        .orElse(null).getFileId();
+                // Know photo width
+                int f_width = photoReceived.stream()
+                        .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+                        .findFirst()
+                        .orElse(null).getWidth();
+                // Know photo height
+                int f_height = photoReceived.stream()
+                        .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+                        .findFirst()
+                        .orElse(null).getHeight();
+                // Set photo caption
+                String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
+                message = "\nImagen recibida\n";
+                sendPhoto.setPhoto(f_id)
+                        .setCaption(caption);
+                sendMessage.setText(message);
+                setNumero_de_pregunta(getNumero_de_pregunta()+1);
+            }else {
+                if (update.getMessage().hasText()){
+                    //FIXME Arreglar el sendText para cuando el usuario escribe texto cuando deberia mandar imagen
+                    LOGGER.info("Imagen NO válida");
+                    message = "\nImagen NO válida\nPor favor, intente nuevamente\n";
+//                    String imageFile = "http://www.i2clipart.com/cliparts/9/0/f/a/clipart-x-icon-256x256-90fa.png";
+//                    sendPhoto.setPhoto(imageFile);
+                    sendMessage.setText(message);
+                    setNumero_de_pregunta(6);
+                }
+
+
+            }
+        }else {
+            LOGGER.info("No esta en preg 6 y no esta agregando contactos");
+            message = "No puede subir imagenes en este momento";
+            sendMessage.setText(message);
+        }
+
     }
 
 }

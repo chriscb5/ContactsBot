@@ -29,7 +29,7 @@ public class MainBot extends TelegramLongPollingBot {
     ContactsBL contactsBL;
 
 
-
+    private static final Logger LOGGER= LoggerFactory.getLogger(MainBot.class);
 
     @Autowired
     public  MainBot(BotBl botBl, PersonBL personBL, MensajesBL mensajesBL, ContactsBL contactsBL){
@@ -66,7 +66,7 @@ public class MainBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         System.out.println(update);
         update.getMessage().getFrom().getId();
-        if (update.hasMessage() && update.getMessage().hasText()) {
+        if (update.hasMessage() && update.getMessage().hasText() || update.hasMessage() && update.getMessage().hasPhoto()) {
               SendMessage message=new SendMessage();
               SendPhoto photo = new SendPhoto();
               /*message =*/ botBl.processUpdateMesage(update,message,photo);
@@ -76,12 +76,16 @@ public class MainBot extends TelegramLongPollingBot {
      */
             try {
                 if(message == null){
-
                     message.setText("No entiendo lo que me quieres decir");
                     this.execute(message);
-                }else if(photo.getPhoto() == null && message!=null){
+                }else if(photo.getPhoto() == null && message != null){
+                    LOGGER.info("SENDING MESSAGE");
                     this.execute(message);
-                }else if (message != null && photo.getPhoto() != null){
+                }else if (photo.getPhoto() != null && message == null){
+                    LOGGER.info("SENDING PHOTO");
+                    this.execute(photo);
+                } else if (message != null && photo.getPhoto() != null){
+                    LOGGER.info("SENDING MESSAGE AND PHOTO");
                     this.execute(message);
                     this.execute(photo);
                 }
@@ -93,41 +97,41 @@ public class MainBot extends TelegramLongPollingBot {
                 System.out.print("NullPointerException caught");
             }
         }
-        else if (update.hasMessage() && update.getMessage().hasPhoto()) {
-            // Message contains photo
-            // Set variables
-            long chat_id = update.getMessage().getChatId();
-
-            // Array with photo objects with different sizes
-            // We will get the biggest photo from that array
-            List<PhotoSize> photos = update.getMessage().getPhoto();
-            // Know file_id
-            String f_id = photos.stream()
-                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
-                    .findFirst()
-                    .orElse(null).getFileId();
-            // Know photo width
-            int f_width = photos.stream()
-                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
-                    .findFirst()
-                    .orElse(null).getWidth();
-            // Know photo height
-            int f_height = photos.stream()
-                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
-                    .findFirst()
-                    .orElse(null).getHeight();
-            // Set photo caption
-            String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
-            SendPhoto msg = new SendPhoto()
-                    .setChatId(chat_id)
-                    .setPhoto(f_id)
-                    .setCaption(caption);
-            try {
-                this.execute(msg); // Call method to send the photo with caption
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
+//        else if (update.hasMessage() && update.getMessage().hasPhoto()) {
+//            // Message contains photo
+//            // Set variables
+//            long chat_id = update.getMessage().getChatId();
+//
+//            // Array with photo objects with different sizes
+//            // We will get the biggest photo from that array
+//            List<PhotoSize> photos = update.getMessage().getPhoto();
+//            // Know file_id
+//            String f_id = photos.stream()
+//                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+//                    .findFirst()
+//                    .orElse(null).getFileId();
+//            // Know photo width
+//            int f_width = photos.stream()
+//                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+//                    .findFirst()
+//                    .orElse(null).getWidth();
+//            // Know photo height
+//            int f_height = photos.stream()
+//                    .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+//                    .findFirst()
+//                    .orElse(null).getHeight();
+//            // Set photo caption
+//            String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
+//            SendPhoto msg = new SendPhoto()
+//                    .setChatId(chat_id)
+//                    .setPhoto(f_id)
+//                    .setCaption(caption);
+//            try {
+//                this.execute(msg); // Call method to send the photo with caption
+//            } catch (TelegramApiException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     //@Override

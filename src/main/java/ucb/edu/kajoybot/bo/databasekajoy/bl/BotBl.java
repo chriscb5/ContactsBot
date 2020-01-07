@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -99,7 +100,7 @@ public class BotBl {
     //    }
 
 
-    public void processUpdateMesage(Update update,SendMessage message, SendPhoto photo){
+    public void processUpdateMesage(Update update, SendMessage message, SendPhoto photo){
         MensajeDto mensajeDto;
         LOGGER.info("RECIBIENDO UPDATE en SEND MESSAGE",update);
 //        KjEstudianteUserEntity kjEstudianteUserEntity = initUser(update.getMessage().getFrom());
@@ -117,6 +118,7 @@ public class BotBl {
         String messageInput = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
         String messageTextReceived = update.getMessage().getText();
+        List<PhotoSize> photoReceived = update.getMessage().getPhoto();
         LOGGER.info("Ultimo mensaje "+update.getMessage().getText());
         String imageFile = null;
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
@@ -124,261 +126,263 @@ public class BotBl {
         KeyboardRow row = new KeyboardRow();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         sendMessage.setChatId(chatId);
-        if(lastMenssage == null){
-            sendMessage.setChatId(chatId)
-                    .setText("DEFAULT por null");
-        }
-        else {
-            if (messageInput.equals("/start") || firstMessage==false){
-                firstMessage = false;
-                setModulesMessages(update,sendMessage,messageTextReceived);
-                try {
-                    switch(messageInput) {
-                        case "Teclado":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Teclado removido");
-                            sendMessage.setReplyMarkup(replyKeyboardRemove);
-                            break;
-                        case "Men":
-                            LOGGER.info("ENTRO A PRUEBA DE MULTIMENSAJE");
-                            sendMessage.setChatId(chatId)
-                                    .setText("MULTIMENSAJE");
-                            row.add("Comenzar");
-                            row.add("Información");
-                            keyboard.add(row);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
+        sendPhoto.setChatId(chatId);
+        if (update.hasMessage() && update.getMessage().hasText() && !update.getMessage().hasPhoto()){
+            if(lastMenssage == null){
+                sendMessage.setChatId(chatId)
+                        .setText("DEFAULT por null");
+            }else {
 
-                            imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
-                            sendPhoto.setChatId(chatId)
-                                    .setPhoto(imageFile);
+                if (messageInput.equals("/start") || firstMessage==false){
+                    firstMessage = false;
+                    setModulesMessages(update,sendMessage,sendPhoto,messageTextReceived,photoReceived);
+                    try {
+                        switch(messageInput) {
+                            case "Teclado":
+                                sendMessage.setChatId(chatId)
+                                        .setText("Teclado removido");
+                                sendMessage.setReplyMarkup(replyKeyboardRemove);
+                                break;
+                            case "Men":
+                                LOGGER.info("ENTRO A PRUEBA DE MULTIMENSAJE");
+                                sendMessage.setChatId(chatId)
+                                        .setText("MULTIMENSAJE");
+                                row.add("Comenzar");
+                                row.add("Información");
+                                keyboard.add(row);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
 
-                            break;
+                                imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
+                                sendPhoto.setChatId(chatId)
+                                        .setPhoto(imageFile);
 
-                        case "/start":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Elija el una de la siguientes opciones:\nContacts\nKajoy");
-                            row.add("Contacts");
-                            row.add("Kajoy");
-                            keyboard.add(row);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
+                                break;
 
-                            break;
+                            case "/start":
+                                sendMessage.setChatId(chatId)
+                                        .setText("Elija el una de la siguientes opciones:\nContacts\nKajoy");
+                                row.add("Contacts");
+                                row.add("Kajoy");
+                                keyboard.add(row);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
 
-                        case "Contacts":
-                            imageFile = "https://image.shutterstock.com/image-vector/welcome-poster-spectrum-brush-strokes-260nw-1146069941.jpg";
-                            sendPhoto.setChatId(chatId)
-                                    .setPhoto(imageFile);
-                            sendMessage.setChatId(chatId)
-                                    .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
-                            KeyboardRow keyboardRow = new KeyboardRow();
-                            KeyboardRow keyboardRow2 = new KeyboardRow();
-                            KeyboardRow keyboardRow3 = new KeyboardRow();
-                            KeyboardRow keyboardRow4 = new KeyboardRow();
-                            keyboardRow.add("Buscar Contactos");
-                            keyboardRow2.add("Agregar Contactos");
-                            keyboardRow3.add("Modificar Contactos");
-                            keyboardRow4.add("Eliminar Contactos");
-                            keyboard.add(keyboardRow);
-                            keyboard.add(keyboardRow2);
-                            keyboard.add(keyboardRow3);
-                            keyboard.add(keyboardRow4);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
+                                break;
 
-                            break;
+                            case "Contacts":
+                                imageFile = "https://image.shutterstock.com/image-vector/welcome-poster-spectrum-brush-strokes-260nw-1146069941.jpg";
+                                sendPhoto.setChatId(chatId)
+                                        .setPhoto(imageFile);
+                                sendMessage.setChatId(chatId)
+                                        .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
+                                KeyboardRow keyboardRow = new KeyboardRow();
+                                KeyboardRow keyboardRow2 = new KeyboardRow();
+                                KeyboardRow keyboardRow3 = new KeyboardRow();
+                                KeyboardRow keyboardRow4 = new KeyboardRow();
+                                keyboardRow.add("Buscar Contactos");
+                                keyboardRow2.add("Agregar Contactos");
+                                keyboardRow3.add("Modificar Contactos");
+                                keyboardRow4.add("Eliminar Contactos");
+                                keyboard.add(keyboardRow);
+                                keyboard.add(keyboardRow2);
+                                keyboard.add(keyboardRow3);
+                                keyboard.add(keyboardRow4);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
 
-                        case "Agregar Contactos":
-                            mensajesBL.setEntra_a_agregar_contactos(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("*Agregar Contactos*\nIngrese el primer nombre").setParseMode("Markdown");
-                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+                                break;
 
-                            break;
+                            case "Agregar Contactos":
+                                mensajesBL.setEntra_a_agregar_contactos(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("*Agregar Contactos*\nIngrese el primer nombre").setParseMode("Markdown");
+                                sendMessage.setReplyMarkup(replyKeyboardRemove);
 
-                        case "Eliminar Contactos":
-                            mensajesBL.setEntra_a_eliminar_contactos(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("*Eliminar Contactos*\nIngrese el id del contacto a eliminar").setParseMode("Markdown");
-                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+                                break;
 
-                            break;
+                            case "Eliminar Contactos":
+                                mensajesBL.setEntra_a_eliminar_contactos(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("*Eliminar Contactos*\nIngrese el id del contacto a eliminar").setParseMode("Markdown");
+                                sendMessage.setReplyMarkup(replyKeyboardRemove);
 
-                        case "Buscar Contactos":
-                            mensajesBL.setEntra_a_eliminar_contactos(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("*Buscar Contactos*\nIngrese el nombre o apellido del contacto").setParseMode("Markdown");
-                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+                                break;
 
-                            break;
+                            case "Buscar Contactos":
+                                mensajesBL.setEntra_a_eliminar_contactos(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("*Buscar Contactos*\nIngrese el nombre o apellido del contacto").setParseMode("Markdown");
+                                sendMessage.setReplyMarkup(replyKeyboardRemove);
 
-                        case "Kajoy":
-                            imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
-                            sendPhoto.setChatId(chatId)
-                                    .setPhoto(imageFile);
-                            sendMessage.setChatId(chatId)
-                                    .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-                            row.add("Comenzar");
-                            row.add("Información");
-                            keyboard.add(row);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
+                                break;
 
-                            break;
+                            case "Kajoy":
+                                imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
+                                sendPhoto.setChatId(chatId)
+                                        .setPhoto(imageFile);
+                                sendMessage.setChatId(chatId)
+                                        .setText("Seleccione una opción por favor\nComenzar\nInformacion");
+                                row.add("Comenzar");
+                                row.add("Información");
+                                keyboard.add(row);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
 
-                        case "Información":
-                            imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
-                            sendPhoto.setChatId(chatId)
-                                    .setPhoto(imageFile);
-                            sendMessage.setChatId(chatId)
-                                    .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
-                            break;
-                        case "Comenzar":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Bienvenido!!\nEres Docente o Estudiante");
-                            row.add("Soy Docente");
-                            row.add("Soy Estudiante");
-                            keyboard.add(row);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
-                            break;
+                                break;
 
-                        case "Soy Estudiante":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
+                            case "Información":
+                                imageFile = "https://pngimage.net/wp-content/uploads/2018/06/informaci%C3%B3n-png-1.png";
+                                sendPhoto.setChatId(chatId)
+                                        .setPhoto(imageFile);
+                                sendMessage.setChatId(chatId)
+                                        .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
+                                break;
+                            case "Comenzar":
+                                sendMessage.setChatId(chatId)
+                                        .setText("Bienvenido!!\nEres Docente o Estudiante");
+                                row.add("Soy Docente");
+                                row.add("Soy Estudiante");
+                                keyboard.add(row);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
+                                break;
 
-                            mensajesBL.setEntra_a_verificacion_estudiante(true);
+                            case "Soy Estudiante":
+                                sendMessage.setChatId(chatId)
+                                        .setText("Iniciar como Estudiante\nEl curso es privado, ingrese la clave correspodiente");
 
-
-                            //Identificar si el usuario existe
-                            //si es nuevo pedir registro
-                            //si es antiguo mostrar el listado de sus cursos
-                            //.setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
-
-                            mensajesBL.setEntra_a_iniciar_estudiante(true);
-                            break;
+                                mensajesBL.setEntra_a_verificacion_estudiante(true);
 
 
+                                //Identificar si el usuario existe
+                                //si es nuevo pedir registro
+                                //si es antiguo mostrar el listado de sus cursos
+                                //.setText("Eres nuevo por aqui?\nPuedes Iniciar Sesión ó Registrarte!\n\nIniciar Sesion\nRegistro");
 
-                        case "Soy Docente":
-                            mensajesBL.setEntra_a_iniciar_docente(true);;
-                            sendMessage.setChatId(chatId).
-                                    setText("Iniciar como Docente\nLISTADO DE CURSOS\n");
-                            //Identificar si el usuario existe
-                            //si es nuevo pedir registro
-                            //si es antiguo mostrar el listado de sus cursos
-                            break;
+                                mensajesBL.setEntra_a_iniciar_estudiante(true);
+                                break;
 
 
-                        case "Listado Estudiantes":
-                            mensajesBL.setEntra_a_listado_estudiantes(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
-                            break;
 
-                        case "Listado Cursos":
-                            mensajesBL.setEntra_a_listado_cursos(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
-                            break;
-
-                        case "Listado Docentes":
-                            mensajesBL.setEntra_a_listado_docentes(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
-                            break;
+                            case "Soy Docente":
+                                mensajesBL.setEntra_a_iniciar_docente(true);;
+                                sendMessage.setChatId(chatId).
+                                        setText("Iniciar como Docente\nLISTADO DE CURSOS\n");
+                                //Identificar si el usuario existe
+                                //si es nuevo pedir registro
+                                //si es antiguo mostrar el listado de sus cursos
+                                break;
 
 
-                        case "Registro":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Seleccione una opción por favor\nRegistro Docente\nRegistro Estudiante");
-                            row.add("Registro Docente");
-                            row.add("Registro Estudiante");
-                            keyboard.add(row);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
-                            break;
+                            case "Listado Estudiantes":
+                                mensajesBL.setEntra_a_listado_estudiantes(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("LISTADO DE ESTUDIANTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                                break;
 
-                        case "Iniciar sesión":
-                            sendMessage.setChatId(chatId)
-                                    .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
-                            row.add("Soy Docente");
-                            row.add("Soy Estudiante");
-                            keyboard.add(row);
-                            keyboardMarkup.setKeyboard(keyboard);
-                            sendMessage.setReplyMarkup(keyboardMarkup);
-                            break;
+                            case "Listado Cursos":
+                                mensajesBL.setEntra_a_listado_cursos(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("LISTADO DE CURSOS REGISTRADOS\nIngrese cualquier tecla para continuar");
+                                break;
 
-                        case "Registro Estudiante":
-                            mensajesBL.setEntra_a_registro_estudiante(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                            break;
-                        case "Registro Docente":
-                            mensajesBL.setEntra_a_registro_docente(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
-                            break;
-                        case "Crear nuevo test":
-                            mensajesBL.setEntra_a_registro_test(true);
-                            mensajesBL.setConfirmation(false);
-                            mensajesBL.setAniade_pregunta_nueva(true);
-                            mensajesBL.setEntra_a_menu_curse_docent(false);
-                            sendMessage.setChatId(chatId)
-                                    .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
-                            break;
-                        case "Crear Nuevo Curso":
-                            mensajesBL.setEntra_a_registro_curso(true);
-                            mensajesBL.setEntra_a_menu_docent(false);
-                            sendMessage.setChatId(chatId)
-                                    .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
-                            break;
-                        case "Registro Estudiante Curso":
-                            mensajesBL.setEntra_a_registro_estudiante_curso(true);
-                            sendMessage.setChatId(chatId)
-                                    .setText("**Unirse a un curso**\nIngrese el codigo del curso");
-                            break;
-                        case "Responder test":
-                            mensajesBL.setEntra_a_menu_testcurse_student(false);
-                            mensajesBL.setEntra_a_menu_curse_docent(false);
-                            mensajesBL.setEntra_a_responder_test(true);
-                            mensajesBL.setEntra_a_menu_curse_student(false);
-                            sendMessage.setChatId(chatId)
-                                    .setText("RESPONDER TEST\nIngrese el nombre del Test");
-                            break;
-                        case "Listado de test en el curso":
+                            case "Listado Docentes":
+                                mensajesBL.setEntra_a_listado_docentes(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("LISTADO DE DOCENTES REGISTRADOS\nIngrese cualquier tecla para continuar");
+                                break;
+
+
+                            case "Registro":
+                                sendMessage.setChatId(chatId)
+                                        .setText("Seleccione una opción por favor\nRegistro Docente\nRegistro Estudiante");
+                                row.add("Registro Docente");
+                                row.add("Registro Estudiante");
+                                keyboard.add(row);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
+                                break;
+
+                            case "Iniciar sesión":
+                                sendMessage.setChatId(chatId)
+                                        .setText("Genial! eres Docente o Estudiante?\nSoy Docente\nSoy Estudiante");
+                                row.add("Soy Docente");
+                                row.add("Soy Estudiante");
+                                keyboard.add(row);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
+                                break;
+
+                            case "Registro Estudiante":
+                                mensajesBL.setEntra_a_registro_estudiante(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("REGISTRO DE ESTUDIANTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                                break;
+                            case "Registro Docente":
+                                mensajesBL.setEntra_a_registro_docente(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("REGISTRO DE DOCENTE\nPor favor ingrese sus datos personales\nIngrese su nombre");
+                                break;
+                            case "Crear nuevo test":
+                                mensajesBL.setEntra_a_registro_test(true);
+                                mensajesBL.setConfirmation(false);
+                                mensajesBL.setAniade_pregunta_nueva(true);
+                                mensajesBL.setEntra_a_menu_curse_docent(false);
+                                sendMessage.setChatId(chatId)
+                                        .setText("INGRESO DE NUEVO TEST\nPor favor ingrese los datos correspondientes\nIngrese la primera pregunta");
+                                break;
+                            case "Crear Nuevo Curso":
+                                mensajesBL.setEntra_a_registro_curso(true);
+                                mensajesBL.setEntra_a_menu_docent(false);
+                                sendMessage.setChatId(chatId)
+                                        .setText("REGISTRO DE CURSO\nPor favor ingrese los datos del curso\nIngrese el nombre del curso");
+                                break;
+                            case "Registro Estudiante Curso":
+                                mensajesBL.setEntra_a_registro_estudiante_curso(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("**Unirse a un curso**\nIngrese el codigo del curso");
+                                break;
+                            case "Responder test":
+                                mensajesBL.setEntra_a_menu_testcurse_student(false);
+                                mensajesBL.setEntra_a_menu_curse_docent(false);
+                                mensajesBL.setEntra_a_responder_test(true);
+                                mensajesBL.setEntra_a_menu_curse_student(false);
+                                sendMessage.setChatId(chatId)
+                                        .setText("RESPONDER TEST\nIngrese el nombre del Test");
+                                break;
+                            case "Listado de test en el curso":
 //                            mensajesBL.ListadoDeTest(sendMessage,update.getMessage().getChat().getFirstName(),update.getMessage().getChat().getLastName());
-                            mensajesBL.ListadoDeTest(sendMessage,"kevin","Cosner");
-                            mensajesBL.setEntra_a_menu_curse_student(false);
-                            break;
-                        case "Menu estudiante":
-                            mensajesBL.setEntra_a_menu_student(true);
-                            break;
-                        case "Lista de cursos inscrito":
-                            mensajesBL.setEntra_a_menu_curse_student(true);
-                            mensajesBL.setEntra_a_menu_student(false);
-                            break;
-                        case "Menu de docente":
-                            mensajesBL.setEntra_a_menu_docent(true);
-                            mensajesBL.processMainDocent(sendMessage);
-                            break;
-                        case "Lista de cursos":
-                            mensajesBL.setEntra_a_menu_curse_docent(true);
-                            mensajesBL.setEntra_a_menu_docent(false);
-                            break;
-                        case "Menu estudiante 2":
-                            mensajesBL.setEntra_a_menu_curse_student(true);
-                            mensajesBL.processMainStudentInACurse(sendMessage);
-                            break;
-                        case "Menu docente 2":
-                            mensajesBL.setEntra_a_menu_curse_docent(true);
-                            mensajesBL.processMainDocentInACurse(sendMessage);
-                            break;
-                        case "Menu estudiante 3":
-                            mensajesBL.setEntra_a_menu_testcurse_student(true);
-                            mensajesBL.processMainStudentInATestCurse(sendMessage);
-                            break;
+                                mensajesBL.ListadoDeTest(sendMessage,"kevin","Cosner");
+                                mensajesBL.setEntra_a_menu_curse_student(false);
+                                break;
+                            case "Menu estudiante":
+                                mensajesBL.setEntra_a_menu_student(true);
+                                break;
+                            case "Lista de cursos inscrito":
+                                mensajesBL.setEntra_a_menu_curse_student(true);
+                                mensajesBL.setEntra_a_menu_student(false);
+                                break;
+                            case "Menu de docente":
+                                mensajesBL.setEntra_a_menu_docent(true);
+                                mensajesBL.processMainDocent(sendMessage);
+                                break;
+                            case "Lista de cursos":
+                                mensajesBL.setEntra_a_menu_curse_docent(true);
+                                mensajesBL.setEntra_a_menu_docent(false);
+                                break;
+                            case "Menu estudiante 2":
+                                mensajesBL.setEntra_a_menu_curse_student(true);
+                                mensajesBL.processMainStudentInACurse(sendMessage);
+                                break;
+                            case "Menu docente 2":
+                                mensajesBL.setEntra_a_menu_curse_docent(true);
+                                mensajesBL.processMainDocentInACurse(sendMessage);
+                                break;
+                            case "Menu estudiante 3":
+                                mensajesBL.setEntra_a_menu_testcurse_student(true);
+                                mensajesBL.processMainStudentInATestCurse(sendMessage);
+                                break;
                             //                        default:
 
 /*                        if(sendMessage.setChatId(chatId).getText()==""){
@@ -388,29 +392,40 @@ public class BotBl {
 //                        responseMessage.setChatId(chatId)
 //                                .setText("TNo logro entender lo que me pides");
 //                        message = responseMessage;
+                        }
+                    } catch (NumberFormatException nfe){
+                        sendMessage.setChatId(chatId)
+                                .setText("DEFAULT");
                     }
-                } catch (NumberFormatException nfe){
+                }else {
                     sendMessage.setChatId(chatId)
-                            .setText("DEFAULT");
+                            .setText("Hola, para empezar el bot por favor escribe /start");
+                }
+
+            }
+            KjChatEntity kjChatEntity = new KjChatEntity();
+//        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
+            kjChatEntity.setKjuserid(kjUserEntity);
+            kjChatEntity.setInMessage(update.getMessage().getText());
+            kjChatEntity.setOutMessage("texto");
+            kjChatEntity.setMsgDate(new Date());
+            kjChatEntity.setTxDate(new Date());
+//        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
+            kjChatEntity.setTxUser(kjUserEntity.getUserid().toString());
+            kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
+            chatRepository.save(kjChatEntity);
+        }else {
+            if (update.hasMessage() && !update.getMessage().hasText() && update.getMessage().hasPhoto()){
+                if (mensajesBL.isEntra_a_agregar_contactos()==true){
+                    LOGGER.info("Entra a agregar contactos and it's a photo");
+                    mensajesBL.receivePhotoContact(update,photoReceived,sendMessage,sendPhoto);
+                }else {
+                    LOGGER.info("No esta en preg 6 y no esta agregando contactos");
+                    sendMessage.setText( "No puede subir imagenes en este momento");
                 }
             }
-            else {
-                sendMessage.setChatId(chatId)
-                        .setText("Hola, para empezar el bot por favor escribe /start");
-            }
-
         }
-        KjChatEntity kjChatEntity = new KjChatEntity();
-//        kjChatEntity.setKjuserid(kjEstudianteUserEntity);
-        kjChatEntity.setKjuserid(kjUserEntity);
-        kjChatEntity.setInMessage(update.getMessage().getText());
-        kjChatEntity.setOutMessage("texto");
-        kjChatEntity.setMsgDate(new Date());//FIXME arreglar la fecha del campo
-        kjChatEntity.setTxDate(new Date());
-//        kjChatEntity.setTxUser(kjEstudianteUserEntity.getUserid().toString());
-        kjChatEntity.setTxUser(kjUserEntity.getUserid().toString());
-        kjChatEntity.setTxHost(update.getMessage().getChatId().toString());
-        chatRepository.save(kjChatEntity);
+
     }
 /*
     private KjEstudianteUserEntity initUser(User user) {
@@ -479,7 +494,7 @@ public class BotBl {
     }
 
 
-    private void setModulesMessages(Update update,SendMessage sendMessage,String messageTextReceived){
+    private void setModulesMessages(Update update,SendMessage sendMessage,SendPhoto sendPhoto,String messageTextReceived, List<PhotoSize> photoReceived){
         if(messageTextReceived.equals("Si")){
             sendMessage.setText(mensajesBL.afirmacionAdicionarPregunta());
         }
@@ -517,7 +532,7 @@ public class BotBl {
             mensajesBL.entraListadoCursos(sendMessage);
         }
         if(mensajesBL.isEntra_a_agregar_contactos()){
-            mensajesBL.entraAgregarContactos(messageTextReceived,sendMessage,update);
+            mensajesBL.entraAgregarContactos(messageTextReceived,photoReceived,sendMessage,sendPhoto,update);
         }
         if(mensajesBL.isEntra_a_eliminar_contactos()){
             mensajesBL.entraEliminarContactos(messageTextReceived,sendMessage,update);
