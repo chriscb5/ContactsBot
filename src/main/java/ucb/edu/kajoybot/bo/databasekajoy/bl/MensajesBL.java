@@ -691,6 +691,7 @@ public class MensajesBL {
             entra_a_agregar_phonenumbers = false;
             entra_a_agregar_contactos = false;
             registroContactoExitoso = false;
+            mostrarMenu(sendMessage,update.getMessage().getChatId());
         }
         iNumbers++;
         LOGGER.info("Tamaño de array "+registrollenadosList.size());
@@ -1574,6 +1575,29 @@ public class MensajesBL {
             sendMessage.setText(message);
         }
 
+    }
+
+    public void mostrarMenu(SendMessage sendMessage, long chatId) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        sendMessage.setChatId(chatId)
+                .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        KeyboardRow keyboardRow3 = new KeyboardRow();
+        KeyboardRow keyboardRow4 = new KeyboardRow();
+        keyboardRow.add("Buscar Contactos");
+        keyboardRow2.add("Agregar Contactos");
+        keyboardRow3.add("Modificar Contactos");
+        keyboardRow4.add("Eliminar Contactos");
+        keyboard.add(keyboardRow);
+        keyboard.add(keyboardRow2);
+        keyboard.add(keyboardRow3);
+        keyboard.add(keyboardRow4);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
 }

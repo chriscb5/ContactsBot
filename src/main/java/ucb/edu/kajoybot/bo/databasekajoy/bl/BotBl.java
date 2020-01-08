@@ -174,23 +174,7 @@ public class BotBl {
                                 imageFile = "https://image.shutterstock.com/image-vector/welcome-poster-spectrum-brush-strokes-260nw-1146069941.jpg";
                                 sendPhoto.setChatId(chatId)
                                         .setPhoto(imageFile);
-                                sendMessage.setChatId(chatId)
-                                        .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
-                                KeyboardRow keyboardRow = new KeyboardRow();
-                                KeyboardRow keyboardRow2 = new KeyboardRow();
-                                KeyboardRow keyboardRow3 = new KeyboardRow();
-                                KeyboardRow keyboardRow4 = new KeyboardRow();
-                                keyboardRow.add("Buscar Contactos");
-                                keyboardRow2.add("Agregar Contactos");
-                                keyboardRow3.add("Modificar Contactos");
-                                keyboardRow4.add("Eliminar Contactos");
-                                keyboard.add(keyboardRow);
-                                keyboard.add(keyboardRow2);
-                                keyboard.add(keyboardRow3);
-                                keyboard.add(keyboardRow4);
-                                keyboardMarkup.setKeyboard(keyboard);
-                                sendMessage.setReplyMarkup(keyboardMarkup);
-
+                                mostrarMenu(sendMessage,keyboardMarkup,keyboard,chatId);
                                 break;
 
                             case "Agregar Contactos":
@@ -469,28 +453,23 @@ public class BotBl {
         return kjUserEntity;
     }
 
-    private boolean existsCursoByIdCurso(String id){
-        Boolean exists = false;
-        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
-        if (cursoEntity==null){
-            LOGGER.info("Returns NULL");
-            exists = false;
-        }else {
-            LOGGER.info(cursoEntity.getNombre());
-            exists = true;
-        }
-        return exists;
-    }
-
-
-    private String getNombreCurso(String id){
-        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
-        return cursoEntity.getNombre();
-    }
-
-    private String getTipoCurso(String id){
-        CursoEntity cursoEntity = cursoRepository.findByIdCurso(Integer.parseInt(id));
-        return cursoEntity.getTipoCurso();
+    public void mostrarMenu(SendMessage sendMessage, ReplyKeyboardMarkup keyboardMarkup, List<KeyboardRow> keyboard, long chatId) {
+        sendMessage.setChatId(chatId)
+                .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        KeyboardRow keyboardRow3 = new KeyboardRow();
+        KeyboardRow keyboardRow4 = new KeyboardRow();
+        keyboardRow.add("Buscar Contactos");
+        keyboardRow2.add("Agregar Contactos");
+        keyboardRow3.add("Modificar Contactos");
+        keyboardRow4.add("Eliminar Contactos");
+        keyboard.add(keyboardRow);
+        keyboard.add(keyboardRow2);
+        keyboard.add(keyboardRow3);
+        keyboard.add(keyboardRow4);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
 
