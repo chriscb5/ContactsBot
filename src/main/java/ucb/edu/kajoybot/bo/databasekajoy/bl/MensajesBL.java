@@ -625,6 +625,7 @@ public class MensajesBL {
                         }else {
                             if (update.getMessage().getText().equals("NO")){
                                 LOGGER.info("NO, volver a pedir imagen");
+                                message = "\nVuelva a subir una imagen\n";
                                 setNumero_de_pregunta(6);
                             }
                         }
@@ -1584,7 +1585,7 @@ public class MensajesBL {
                         .orElse(null).getHeight();
                 // Set photo caption
                 String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
-                message = "\n*_Imagen recibida_*\n";
+                message = "\n**Imagen recibida**\n";
 
 //                File file = (File) photoReceived;
 
