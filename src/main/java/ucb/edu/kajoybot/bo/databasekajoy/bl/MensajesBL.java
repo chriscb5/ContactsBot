@@ -646,6 +646,7 @@ public class MensajesBL {
                     entra_a_agregar_contactos = false;
                     entra_a_agregar_phonenumbers = true;
                     registrollenadosList.clear();
+                    setNumero_de_pregunta(0);
                 }else {
                     LOGGER.info("No es numero");
                     message = "Error!\nIngrese la cantidad de números a registrar (1-99)";
@@ -688,7 +689,7 @@ public class MensajesBL {
         ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         List<KeyboardRow> keyboard= new ArrayList<>();
-
+        LOGGER.info("INumbers>>"+iNumbers);
         if (iNumbers<=numNumbers){
             LOGGER.info("Entra if phone");
             if (validatePhoneNumber(messageTextReceived)==true  && validateNumber(messageTextReceived)==false || registrollenadosList.size()==0 && validateNumber(messageTextReceived)==false){
@@ -711,9 +712,12 @@ public class MensajesBL {
             entra_a_agregar_phonenumbers = false;
             entra_a_agregar_contactos = false;
             registroContactoExitoso = false;
+            iNumbers = 0;
+            numNumbers = 0;
             mostrarMenu(sendMessage,update.getMessage().getChatId());
+        }else {
+            iNumbers++;
         }
-        iNumbers++;
         LOGGER.info("Tamaño de array "+registrollenadosList.size());
         sendMessage.setText(message);
 
@@ -1491,15 +1495,18 @@ public class MensajesBL {
     }
 
     public static boolean verifyDatebirth(String input) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        if (input != null) {
-            try {
-                Date ret = sdf.parse(input.trim());
-                if (sdf.format(ret).equals(input.trim())) {
-                    return true;
+        LOGGER.info("Longitud de la fecha >> "+input.length());
+        if (input.length() == 10){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            if (input != null) {
+                try {
+                    Date ret = sdf.parse(input.trim());
+                    if (sdf.format(ret).equals(input.trim())) {
+                        return true;
+                    }
+                } catch (ParseException e) {
+                    LOGGER.info("Fecha inválida");
                 }
-            } catch (ParseException e) {
-                LOGGER.info("Fecha inválida");
             }
         }
         return false;
