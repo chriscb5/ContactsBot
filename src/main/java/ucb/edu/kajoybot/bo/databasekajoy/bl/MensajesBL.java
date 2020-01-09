@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
@@ -17,6 +18,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -59,6 +61,7 @@ public class MensajesBL {
     private static boolean entra_a_menu_curse_docent=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
+    private List<PhotoSize> photo = null;
 
     private boolean rcIsPublico = false;
     private boolean rcIsPrivado = false;
@@ -75,7 +78,7 @@ public class MensajesBL {
     private int iNumbers=0;
     private int numNumbers=0;
     private static boolean registroContactoExitoso=false;
-    private ContactEntity contactEntity;
+    private ContactEntity recentlyAddedContact = new ContactEntity();
 
     private EstudianteRespository estudianteRespository;
     private DocenteRespository  docenteRespository;
@@ -581,6 +584,10 @@ public class MensajesBL {
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
 
+        if (update.getMessage().hasPhoto()){
+            photo = photoReceived;
+        }
+
         if(registrollenadosList.size()<7) {
             LOGGER.info("Entra a registros no llenos");
             if (getNumero_de_pregunta()==4){
@@ -610,6 +617,19 @@ public class MensajesBL {
                     if (getNumero_de_pregunta()==6){
                         LOGGER.info("Entra a registro de photo");
                         receivePhotoContact(update,photoReceived,sendMessage,sendPhoto);
+
+                        if (update.getMessage().getText().equals("SI")){
+                            LOGGER.info("SI, imagen elegida");
+                            setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                            registrollenadosList.add("photo");
+                        }else {
+                            if (update.getMessage().getText().equals("NO")){
+                                LOGGER.info("NO, volver a pedir imagen");
+                                setNumero_de_pregunta(6);
+                            }
+                        }
+                        sendMessage.setReplyMarkup(replyKeyboardRemove);
+
                     }else {
                         message = mensajeAgregarContactos();
                         registrollenadosList.add(messageTextReceived);
@@ -1142,6 +1162,7 @@ public class MensajesBL {
             contactEntity.setStatus(1);
             LOGGER.info("Contact Entity: "+contactEntity.toString());
             contactRepository.save(contactEntity);
+            recentlyAddedContact = contactEntity;
             return "¡Registro completado exitosamente!";
         } catch (ParseException e) {
             LOGGER.info("Conversion de fecha failed");
@@ -1157,9 +1178,9 @@ public class MensajesBL {
         for (String lag : listaderegistros) {
             LOGGER.info("Elemento : " + lag);
         }
-
-        ContactEntity contactEntity = contactRepository.findByContactId(2);
-        //FIXME Obtener ContactID del contacto recien creado
+        ContactEntity contactEntity = contactRepository.findByUserIdAndFirstNameAndSecondNameAndFirstSurnameAndSecondSurnameAndEmailAndBirthdate(recentlyAddedContact.getUserId(),recentlyAddedContact.getFirstName(),recentlyAddedContact.getSecondName(),recentlyAddedContact.getFirstSurname(),recentlyAddedContact.getSecondSurname(),recentlyAddedContact.getEmail(),recentlyAddedContact.getBirthdate());
+        LOGGER.info("Found Contact Entity: "+contactEntity.toString());
+//        ContactEntity contactEntity = contactRepository.findByContactId(2);
         for (int i=0;i<listaderegistros.size();i++){
             PhoneNumberEntity phoneNumberEntity = new PhoneNumberEntity();
             phoneNumberEntity.setNumber(listaderegistros.get(i));
@@ -1523,6 +1544,11 @@ public class MensajesBL {
 
     public void receivePhotoContact(Update update, List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto){
         String message = "";
+        KeyboardRow row = new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        LOGGER.info("Tamaño del array antes: "+registrollenadosList.size());
         if (isEntra_a_agregar_contactos() == true && numero_de_pregunta == 6){
             LOGGER.info("Num preg 6 y esta agregando contactos");
             if (update.getMessage().hasPhoto()) {
@@ -1551,11 +1577,27 @@ public class MensajesBL {
                         .orElse(null).getHeight();
                 // Set photo caption
                 String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
-                message = "\nImagen recibida\n";
+                message = "\n*_Imagen recibida_*\n";
+
+//                File file = (File) photoReceived;
+
+//                String uploadedFileId = f_id;
+//                GetFile uploadedFile = new GetFile();
+//                uploadedFile.setFileId(uploadedFileId);
+
+
+
+                message += "*Confimación*\nQuiere utilizar esta imagen para el contacto?";
+                row.add("SI");
+                row.add("NO");
+                keyboard.add(row);
+                keyboardMarkup.setKeyboard(keyboard);
                 sendPhoto.setPhoto(f_id)
                         .setCaption(caption);
-                sendMessage.setText(message);
-                setNumero_de_pregunta(getNumero_de_pregunta()+1);
+                sendMessage.setText(message).setParseMode("Markdown");
+                sendMessage.setReplyMarkup(keyboardMarkup);
+
+//                registrollenadosList.add("Photo");
             }else {
                 if (update.getMessage().hasText()){
                     //FIXME Arreglar el sendText para cuando el usuario escribe texto cuando deberia mandar imagen
@@ -1575,12 +1617,13 @@ public class MensajesBL {
             sendMessage.setText(message);
         }
 
+        LOGGER.info("Tamaño del array después: "+registrollenadosList.size());
+
     }
 
     public void mostrarMenu(SendMessage sendMessage, long chatId) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         sendMessage.setChatId(chatId)
                 .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
