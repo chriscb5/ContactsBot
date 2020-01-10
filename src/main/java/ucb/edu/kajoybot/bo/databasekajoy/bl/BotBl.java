@@ -159,6 +159,8 @@ public class BotBl {
 
                                 break;
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
                             case "/start":
                                 sendMessage.setChatId(chatId)
                                         .setText("Elija el una de la siguientes opciones:\nContacts\nKajoy");
@@ -185,18 +187,27 @@ public class BotBl {
 
                                 break;
 
-                            case "Eliminar Contactos":
-                                mensajesBL.setEntra_a_eliminar_contactos(true);
+                            case "Buscar Contactos":
+                                mensajesBL.setEntra_a_buscar_contactos(true);
                                 sendMessage.setChatId(chatId)
-                                        .setText("*Eliminar Contactos*\nIngrese el id del contacto a eliminar").setParseMode("Markdown");
+                                        .setText("*Buscar Contactos*\nIngrese el nombre o apellido del contacto que desea *buscar*").setParseMode("Markdown");
                                 sendMessage.setReplyMarkup(replyKeyboardRemove);
 
                                 break;
 
-                            case "Buscar Contactos":
+                            case "Modificar Contactos":
+                                //FIXME Crear getters y setters para modificar contactos
+                                mensajesBL.setEntra_a_buscar_contactos(true);
+                                sendMessage.setChatId(chatId)
+                                        .setText("*Modificar Contactos*\nIngrese el nombre o apellido del contacto que desea *modificar*").setParseMode("Markdown");
+                                sendMessage.setReplyMarkup(replyKeyboardRemove);
+
+                                break;
+
+                            case "Eliminar Contactos":
                                 mensajesBL.setEntra_a_eliminar_contactos(true);
                                 sendMessage.setChatId(chatId)
-                                        .setText("*Buscar Contactos*\nIngrese el nombre o apellido del contacto").setParseMode("Markdown");
+                                        .setText("*Eliminar Contactos*\nIngrese el nombre o apellido del contacto que desea *eliminar*").setParseMode("Markdown");
                                 sendMessage.setReplyMarkup(replyKeyboardRemove);
 
                                 break;
@@ -222,6 +233,9 @@ public class BotBl {
                                 sendMessage.setChatId(chatId)
                                         .setText("Somos una plataforma para crear test interactivos! \nLos docentes pueden crear test para enviarlos a sus alumnos y ver la puntuación de cada alumno \n ");
                                 break;
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
                             case "Comenzar":
                                 sendMessage.setChatId(chatId)
                                         .setText("Bienvenido!!\nEres Docente o Estudiante");
@@ -510,15 +524,25 @@ public class BotBl {
         if(mensajesBL.isEntra_a_listado_cursos()){
             mensajesBL.entraListadoCursos(sendMessage);
         }
+
+//--------------------------------------------------------------------------
+
         if(mensajesBL.isEntra_a_agregar_contactos()){
             mensajesBL.entraAgregarContactos(messageTextReceived,photoReceived,sendMessage,sendPhoto,update);
-        }
-        if(mensajesBL.isEntra_a_eliminar_contactos()){
-            mensajesBL.entraEliminarContactos(messageTextReceived,sendMessage,update);
         }
         if(mensajesBL.isEntra_a_agregar_phonenumbers()){
             mensajesBL.entraAgregarPhoneNumbers(messageTextReceived,sendMessage,update);
         }
+        if(mensajesBL.isEntra_a_buscar_contactos()){
+            mensajesBL.entraBuscarContactos(messageTextReceived,sendMessage,sendPhoto,update);
+        }
+        if(mensajesBL.isEntra_a_eliminar_contactos()){
+            mensajesBL.entraEliminarContactos(messageTextReceived,sendMessage,update);
+        }
+
+
+//--------------------------------------------------------------------------
+
         if(mensajesBL.isEntra_a_registro_test()){
             mensajesBL.entraARegistroTest(sendMessage,messageTextReceived);
         }

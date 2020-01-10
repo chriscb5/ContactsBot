@@ -86,6 +86,7 @@ public class MensajesBL {
 
     private static boolean entra_a_agregar_contactos=false;
     private static boolean entra_a_agregar_phonenumbers=false;
+    private static boolean entra_a_buscar_contactos=false;
     private static boolean entra_a_eliminar_contactos=false;
 
     private int iNumbers=0;
@@ -588,6 +589,8 @@ public class MensajesBL {
 //        return sendMessage;
     }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+
     public void entraAgregarContactos(String messageTextReceived, List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
         LOGGER.info("Entra a agregar contactos");
         String message = "";
@@ -724,21 +727,6 @@ public class MensajesBL {
         sendMessage.setText(message);
     }
 
-    public void entraEliminarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
-        //FIXME Completar eliminar contactos
-        LOGGER.info("Entra eliminar contactos");
-        String message = "";
-        KeyboardRow row= new KeyboardRow();
-        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
-        List<KeyboardRow> keyboard= new ArrayList<>();
-        sendMessage.setReplyMarkup(replyKeyboardRemove);
-        if (existsContactByIdContact(messageTextReceived)){
-            message = "Id existente";
-        }
-        sendMessage.setText(message);
-    }
-
     public void entraAgregarPhoneNumbers(String messageTextReceived, SendMessage sendMessage, Update update){
         LOGGER.info("Entra a agregar phone numbers");
         String message = "";
@@ -779,6 +767,30 @@ public class MensajesBL {
         sendMessage.setText(message);
 
     }
+
+    public void entraBuscarContactos(String messageTextReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
+        LOGGER.info("Entra a buscar contactos");
+        String message = "";
+        message = "Entra a buscar contactos";
+        sendMessage.setText(message);
+    }
+
+    public void entraEliminarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
+        //FIXME Completar eliminar contactos
+        LOGGER.info("Entra a eliminar contactos");
+        String message = "";
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        sendMessage.setReplyMarkup(replyKeyboardRemove);
+        if (existsContactByIdContact(messageTextReceived)){
+            message = "Id existente";
+        }
+        sendMessage.setText(message);
+    }
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public String afirmacionAdicionarPregunta(){
         //SI
@@ -1099,6 +1111,8 @@ public class MensajesBL {
         MensajesBL.entra_a_menu_testcurse_docent = entra_a_menu_testcurse_docent;
     }
 
+//----------------------------------------------------------------------------------------------------------------
+
     public static boolean isEntra_a_agregar_contactos() {
         return entra_a_agregar_contactos;
     }
@@ -1106,6 +1120,22 @@ public class MensajesBL {
     public static void setEntra_a_agregar_contactos(boolean entra_a_agregar_contactos) {
         LOGGER.info("Entra a Paso 2 "+ entra_a_agregar_contactos+" "+MensajesBL.entra_a_agregar_contactos);
         MensajesBL.entra_a_agregar_contactos = entra_a_agregar_contactos;
+    }
+
+    public static boolean isEntra_a_agregar_phonenumbers() {
+        return  entra_a_agregar_phonenumbers;
+    }
+
+    public static void setEntra_a_agregar_phonenumbers(boolean entra_a_agregar_phonenumbers) {
+        MensajesBL.entra_a_agregar_phonenumbers = entra_a_agregar_phonenumbers;
+    }
+
+    public static boolean isEntra_a_buscar_contactos() {
+        return entra_a_buscar_contactos;
+    }
+
+    public static void setEntra_a_buscar_contactos(boolean entra_a_buscar_contactos) {
+        MensajesBL.entra_a_buscar_contactos = entra_a_buscar_contactos;
     }
 
     public static boolean isEntra_a_eliminar_contactos() {
@@ -1116,13 +1146,8 @@ public class MensajesBL {
         MensajesBL.entra_a_eliminar_contactos = entra_a_eliminar_contactos;
     }
 
-    public static boolean isEntra_a_agregar_phonenumbers() {
-        return  entra_a_agregar_phonenumbers;
-    }
 
-    public static void setEntra_a_agregar_phonenumbers(boolean entra_a_agregar_phonenumbers) {
-        MensajesBL.entra_a_agregar_phonenumbers = entra_a_agregar_phonenumbers;
-    }
+
 
 
 
