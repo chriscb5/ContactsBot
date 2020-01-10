@@ -22,8 +22,10 @@ import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,8 +70,11 @@ public class MensajesBL {
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
 
+    private static String dirName = "S:\\Photos";
     private List<PhotoSize> photo = null;
     private String fileID = "";
+    private String filePath = "";
+    private String photoURL = "";
 
     private boolean rcIsPublico = false;
     private boolean rcIsPrivado = false;
@@ -629,8 +634,8 @@ public class MensajesBL {
                         if (update.getMessage().getText().equals("SI")){
                             LOGGER.info("SI, imagen elegida");
                             setNumero_de_pregunta(getNumero_de_pregunta()+1);
-                            registrollenadosList.add("photo");
-
+//                            registrollenadosList.add("photo");
+                            String fileDir = "";
                             try {
                                 String url = "https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID;
                                 URL obj = new URL(url);
@@ -646,22 +651,30 @@ public class MensajesBL {
                                     response.append(inputLine);
                                 }
                                 in.close();
+
 //                                LOGGER.info("Received code: "+response.toString());
 
                                 JSONObject jsonObject = new JSONObject(response.toString());
                                 LOGGER.info("Received JSON: "+jsonObject);
-                                LOGGER.info("File Path: "+jsonObject.getJSONObject("result").getString("file_path"));
-//                                JSONObject jsonObject = new JSONObject("https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID);
-//                                LOGGER.info("JSONObject: "+jsonObject.toString());
-//                                URL url = new URL("https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID);
-//                                LOGGER.info(url.toString());
-//                  File archivo = new File("https://api.telegram.org/"+"1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k"+"/"+jsonObject.getString("file_path"));
-//                                URL url = new URL("https://api.telegram.org/"+"1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k"+"/"+file.getFilePath());
-//                                FileUtils.copyURLToFile(url,archivo);
-//                                LOGGER.info("JSON Response >> "+jsonObject.toString());
-//                                LOGGER.info("File path:: "+archivo.getPath());
+                                filePath = jsonObject.getJSONObject("result").getString("file_path");
+                                photoURL = "https://api.telegram.org/file/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/"+filePath;
+                                LOGGER.info("File Path: "+filePath);
+                                LOGGER.info("Photo URL: "+photoURL);
+                                fileDir = dirName+"\\"+fileID+".jpg";
+
                             }catch (Exception e){
-                                LOGGER.info("Error al guardar imagen");
+                                LOGGER.info("Error al encontrar la direccion de la imagen");
+                                e.printStackTrace();
+                            }
+
+                            try {
+                                saveFileFromUrlWithCommonsIO(fileDir, photoURL);
+                                registrollenadosList.add(fileDir);
+                            }catch (MalformedURLException e){
+                                LOGGER.info("Error al dirreccionar la URL");
+                                e.printStackTrace();
+                            }catch (IOException e){
+                                LOGGER.info("Error al guardar la imagen");
                                 e.printStackTrace();
                             }
 
@@ -1695,6 +1708,10 @@ public class MensajesBL {
         keyboard.add(keyboardRow4);
         keyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    public static void saveFileFromUrlWithCommonsIO(String fileName, String fileUrl) throws MalformedURLException, IOException {
+        FileUtils.copyURLToFile(new URL(fileUrl), new File(fileName));
     }
 
 }
