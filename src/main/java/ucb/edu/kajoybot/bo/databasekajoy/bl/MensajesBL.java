@@ -1,5 +1,7 @@
 package ucb.edu.kajoybot.bo.databasekajoy.bl;
 
+import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,11 @@ import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -61,7 +67,9 @@ public class MensajesBL {
     private static boolean entra_a_menu_curse_docent=false;
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
+
     private List<PhotoSize> photo = null;
+    private String fileID = "";
 
     private boolean rcIsPublico = false;
     private boolean rcIsPrivado = false;
@@ -622,6 +630,41 @@ public class MensajesBL {
                             LOGGER.info("SI, imagen elegida");
                             setNumero_de_pregunta(getNumero_de_pregunta()+1);
                             registrollenadosList.add("photo");
+
+                            try {
+                                String url = "https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID;
+                                URL obj = new URL(url);
+                                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                                int responseCode = con.getResponseCode();
+                                LOGGER.info("Sending GET request to URL: "+url);
+                                LOGGER.info("Response Code: "+responseCode);
+                                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                                String inputLine;
+                                StringBuffer response = new StringBuffer();
+                                while ((inputLine = in.readLine()) != null) {
+                                    response.append(inputLine);
+                                }
+                                in.close();
+//                                LOGGER.info("Received code: "+response.toString());
+
+                                JSONObject jsonObject = new JSONObject(response.toString());
+                                LOGGER.info("Received JSON: "+jsonObject);
+                                LOGGER.info("File Path: "+jsonObject.getJSONObject("result").getString("file_path"));
+//                                JSONObject jsonObject = new JSONObject("https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID);
+//                                LOGGER.info("JSONObject: "+jsonObject.toString());
+//                                URL url = new URL("https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID);
+//                                LOGGER.info(url.toString());
+//                  File archivo = new File("https://api.telegram.org/"+"1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k"+"/"+jsonObject.getString("file_path"));
+//                                URL url = new URL("https://api.telegram.org/"+"1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k"+"/"+file.getFilePath());
+//                                FileUtils.copyURLToFile(url,archivo);
+//                                LOGGER.info("JSON Response >> "+jsonObject.toString());
+//                                LOGGER.info("File path:: "+archivo.getPath());
+                            }catch (Exception e){
+                                LOGGER.info("Error al guardar imagen");
+                                e.printStackTrace();
+                            }
+
                         }else {
                             if (update.getMessage().getText().equals("NO")){
                                 LOGGER.info("NO, volver a pedir imagen");
@@ -1585,7 +1628,7 @@ public class MensajesBL {
                         .orElse(null).getHeight();
                 // Set photo caption
                 String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
-                message = "\n**Imagen recibida**\n";
+                message = "\n*_Imagen recibida_*\n";
 
 //                File file = (File) photoReceived;
 
@@ -1593,6 +1636,9 @@ public class MensajesBL {
 //                GetFile uploadedFile = new GetFile();
 //                uploadedFile.setFileId(uploadedFileId);
 
+
+
+                fileID = f_id;
 
 
                 message += "*Confimación*\nQuiere utilizar esta imagen para el contacto?";
