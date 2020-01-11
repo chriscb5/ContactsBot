@@ -20,10 +20,7 @@ import ucb.edu.kajoybot.bo.databasekajoy.dao.*;
 import ucb.edu.kajoybot.bo.databasekajoy.domain.*;
 import ucb.edu.kajoybot.bo.databasekajoy.dto.Status;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -894,6 +891,9 @@ public class MensajesBL {
                     LOGGER.info("Contact found");
                     message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
                     sendMessage.setText(message).setParseMode("Markdown");
+                    sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(i).getImage()));
+                    isOpeningContact = false;
+                    setEntra_a_buscar_contactos(false);
                 }
             }
         }
