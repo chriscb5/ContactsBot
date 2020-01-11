@@ -1189,13 +1189,6 @@ public class MensajesBL {
         MensajesBL.entra_a_buscar_contactos = entra_a_buscar_contactos;
     }
 
-    public static boolean isEntra_a_eliminar_contactos() {
-        return entra_a_eliminar_contactos;
-    }
-
-    public static void setEntra_a_eliminar_contactos(boolean entra_a_eliminar_contactos) {
-        MensajesBL.entra_a_eliminar_contactos = entra_a_eliminar_contactos;
-    }
 
 
 
@@ -1666,7 +1659,11 @@ public class MensajesBL {
         Matcher matcher2 = pattern2.matcher(num);
 
         if (matcher.matches() || matcher2.matches()) {
-            return true;
+            if (Integer.parseInt(num) != 0){
+                return true;
+            }else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -1775,16 +1772,10 @@ public class MensajesBL {
                 .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        KeyboardRow keyboardRow3 = new KeyboardRow();
-        KeyboardRow keyboardRow4 = new KeyboardRow();
         keyboardRow.add("Buscar Contactos");
         keyboardRow2.add("Agregar Contactos");
-        keyboardRow3.add("Modificar Contactos");
-        keyboardRow4.add("Eliminar Contactos");
         keyboard.add(keyboardRow);
         keyboard.add(keyboardRow2);
-        keyboard.add(keyboardRow3);
-        keyboard.add(keyboardRow4);
         keyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(keyboardMarkup);
     }

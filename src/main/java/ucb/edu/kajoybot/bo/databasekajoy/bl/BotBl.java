@@ -195,30 +195,12 @@ public class BotBl {
 
                                 break;
 
-                            case "Modificar Contactos":
-                                //FIXME Crear getters y setters para modificar contactos
-                                mensajesBL.setEntra_a_buscar_contactos(true);
-                                sendMessage.setChatId(chatId)
-                                        .setText("*Modificar Contactos*\nIngrese el nombre o apellido del contacto que desea *modificar*").setParseMode("Markdown");
-                                sendMessage.setReplyMarkup(replyKeyboardRemove);
-
-                                break;
-
-                            case "Eliminar Contactos":
-                                mensajesBL.setEntra_a_eliminar_contactos(true);
-                                sendMessage.setChatId(chatId)
-                                        .setText("*Eliminar Contactos*\nIngrese el nombre o apellido del contacto que desea *eliminar*").setParseMode("Markdown");
-                                sendMessage.setReplyMarkup(replyKeyboardRemove);
-
-                                break;
-
                             case "Kajoy":
                                 imageFile = "https://image.shutterstock.com/z/stock-vector-bienvenido-welcome-spanish-text-lettering-vector-illustration-1050015260.jpg";
                                 sendPhoto.setChatId(chatId)
                                         .setPhoto(imageFile);
                                 sendMessage.setChatId(chatId)
-                                        .setText("Seleccione una opción por favor\nComenzar\nInformacion");
-                                row.add("Comenzar");
+                                        .setText("Seleccione una opción por favor\nInformacion");
                                 row.add("Información");
                                 keyboard.add(row);
                                 keyboardMarkup.setKeyboard(keyboard);
@@ -472,16 +454,10 @@ public class BotBl {
                 .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        KeyboardRow keyboardRow3 = new KeyboardRow();
-        KeyboardRow keyboardRow4 = new KeyboardRow();
         keyboardRow.add("Buscar Contactos");
         keyboardRow2.add("Agregar Contactos");
-        keyboardRow3.add("Modificar Contactos");
-        keyboardRow4.add("Eliminar Contactos");
         keyboard.add(keyboardRow);
         keyboard.add(keyboardRow2);
-        keyboard.add(keyboardRow3);
-        keyboard.add(keyboardRow4);
         keyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(keyboardMarkup);
     }
@@ -535,9 +511,6 @@ public class BotBl {
         }
         if(mensajesBL.isEntra_a_buscar_contactos()){
             mensajesBL.entraBuscarContactos(messageTextReceived,sendMessage,sendPhoto,update);
-        }
-        if(mensajesBL.isEntra_a_eliminar_contactos()){
-            mensajesBL.entraEliminarContactos(messageTextReceived,sendMessage,update);
         }
 
 
