@@ -416,7 +416,7 @@ public class MensajesBL {
     }
 
     public void entraRegistroEstudianteCurso(String messageTextReceived, SendMessage sendMessage){
-        //FIXME agregar registro en la tabla EstudianteCurso
+
         LOGGER.info("Entra a el registro de estudiante en curso");
         String mensaje="";
         KeyboardRow row= new KeyboardRow();
@@ -428,7 +428,7 @@ public class MensajesBL {
 //        sendMessage.setText(mensaje);
 
         if (messageTextReceived.equals("SI") && isCursoPublico==true || messageTextReceived.length()>2 && isCursoPrivado==true || messageTextReceived.equals("NO") && isCursoPublico==true){
-            //FIXME al momento de crear nuevo curso, validar que la clave ingresada sea de mas de 3 caracteres
+
             isInMenuEC=false;
         }
 
@@ -873,6 +873,7 @@ public class MensajesBL {
             }else {
                 message = "*Contactos Encontrados*\n\n";
                 for (int i=0;i<contactEntities.size();i++){
+                    //FIXME Agregar condicionales para status y userId
                     message += "\n*Contacto "+(i+1)+"-.*\n*Nombres:* "+contactEntities.get(i).getFirstName()+" "+contactEntities.get(i).getSecondName()+"\n*Apellidos:* "+contactEntities.get(i).getFirstSurname()+" "+contactEntities.get(i).getSecondSurname()+"\n\n";
                     KeyboardRow keyboardRow = new KeyboardRow();
                     keyboardRow.add("Contacto "+(i+1));
@@ -886,16 +887,26 @@ public class MensajesBL {
             sendMessage.setReplyMarkup(keyboardMarkup);
         }else {
             LOGGER.info("Open Contact");
-            for (int i=0;i<contactEntities.size();i++){
-                if (messageTextReceived.equals("Contacto "+(i+1))){
-                    LOGGER.info("Contact found");
-                    message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
-                    sendMessage.setText(message).setParseMode("Markdown");
-                    sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(i).getImage()));
-                    isOpeningContact = false;
-                    setEntra_a_buscar_contactos(false);
-                }
-            }
+            int index = messageTextReceived.indexOf(" ");
+            int i = Integer.parseInt(messageTextReceived.substring(index+1))-1;
+            LOGGER.info(">>>>>>>>>>> "+(i+1));
+            message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
+            KeyboardRow keyboardRow = new KeyboardRow();
+            KeyboardRow keyboardRow2 = new KeyboardRow();
+            KeyboardRow keyboardRow3 = new KeyboardRow();
+            keyboardRow.add("Salir al Menú Principal");
+            keyboardRow2.add("Modificar Contacto");
+            keyboardRow3.add("Eliminar Contacto");
+            keyboard.add(keyboardRow);
+            keyboard.add(keyboardRow2);
+            keyboard.add(keyboardRow3);
+            sendMessage.setText(message).setParseMode("Markdown");
+            sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(i).getImage()));
+            keyboardMarkup.setKeyboard(keyboard);
+            sendMessage.setReplyMarkup(keyboardMarkup);
+
+//                    isOpeningContact = false;
+//                    setEntra_a_buscar_contactos(false);
         }
 //        sendMessage.setText(message).setParseMode("Markdown");
 //        sendMessage.setReplyMarkup(keyboardMarkup);
@@ -1330,7 +1341,7 @@ public class MensajesBL {
         saveAllStudentsInTheTest("FrutaTest");
 
         return "REGISTRO DE TEST COMPLETADO";
-        // FIXME COMPLETAR EL REGISTRO DEL TEST A TODOS LOS ESTUDIANTES PERTENECIENTES A EL CURSO
+
     }
 
     private void saveTest(){
