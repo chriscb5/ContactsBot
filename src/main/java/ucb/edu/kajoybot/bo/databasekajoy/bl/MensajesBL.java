@@ -70,12 +70,6 @@ public class MensajesBL {
     private static List<String> registrollenadosList= new ArrayList<>();
     private static List<String> registrorespuestalist=new ArrayList<>();
 
-    private static String dirName = "S:\\Photos";
-    private List<PhotoSize> photo = null;
-    private String fileID = "";
-    private String filePath = "";
-    private String photoURL = "";
-
     private boolean rcIsPublico = false;
     private boolean rcIsPrivado = false;
 
@@ -84,6 +78,14 @@ public class MensajesBL {
     private boolean isCursoPrivado = false;
     private boolean isRegisteringCursoPrivado = false;
 
+
+
+    private static String dirName = "S:\\Photos";
+    private List<PhotoSize> photo = null;
+    private String fileID = "";
+    private String filePath = "";
+    private String photoURL = "";
+
     private static boolean entra_a_agregar_contactos=false;
     private static boolean entra_a_agregar_phonenumbers=false;
     private static boolean entra_a_buscar_contactos=false;
@@ -91,8 +93,10 @@ public class MensajesBL {
 
     private int iNumbers=0;
     private int numNumbers=0;
+    private boolean isOpeningContact = false;
     private static boolean registroContactoExitoso=false;
     private ContactEntity recentlyAddedContact = new ContactEntity();
+    List<ContactEntity> contactEntities = new ArrayList<>();
 
     private EstudianteRespository estudianteRespository;
     private DocenteRespository  docenteRespository;
@@ -589,6 +593,94 @@ public class MensajesBL {
 //        return sendMessage;
     }
 
+    public String afirmacionAdicionarPregunta(){
+        //SI
+        confirmation=true;
+        aniade_pregunta_nueva=true;
+        entra_a_registro_test=true;
+        entra_a_registro_respuesta=false;
+        return "Añada nuevamente su pregunta";
+
+    }
+
+    public String afirmacionTerminarRegistroTest(){
+        //NO
+        String registrertest=  saveCompleteTest(registrollenadosList,registrorespuestalist);
+        registrollenadosList.clear();
+        registrorespuestalist.clear();
+        entra_a_registro_test=false;
+        return registrertest;
+    }
+
+
+    public void entraARegistroTest(SendMessage sendMessage,String messageTextReceived){
+        String mensaje="";
+        if (entra_a_registro_test){
+            if(entra_a_registro_respuesta){
+                if(getNumero_de_respuesta()==4) {
+                    registrorespuestalist.add(messageTextReceived);
+                    LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
+                    LOGGER.info("ENTRO AL SI CON ARRAY "+registrorespuestalist.size());
+                    int i=0;
+                    int contresppropregunta=4;
+                    String cade="CUESTIONARIO - TEST\n";
+                    for(String preg:registrollenadosList){
+                        cade+=preg+"\n";
+                        int numero=1;
+                        while(i<contresppropregunta){
+                            cade+=numero+". "+registrorespuestalist.get(i)+"\n";
+                            numero++;
+                            i++;
+                        }
+                        contresppropregunta+=4;
+                    }
+                    setNumero_de_respuesta(0);
+                    mensaje+=cade;
+                    KeyboardRow row= new KeyboardRow();
+                    ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+                    List<KeyboardRow> keyboard= new ArrayList<>();
+                    mensaje+="\nDesea añadir una nueva pregunta?";
+                    sendMessage.setText(mensaje);
+                    row.add("Si");
+                    row.add("No");
+                    keyboard.add(row);
+                    keyboardMarkup.setKeyboard(keyboard);
+                    sendMessage.setReplyMarkup(keyboardMarkup);
+                    entra_a_registro_respuesta=false;
+                    aniade_respuesta_nueva=true;
+                    aniade_pregunta_nueva=false;
+
+                }//Terminate NUMERO DE RESPUESTAS= 4
+
+                if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
+                    //INGRESANDO A REGISTROS NO COMPLETOS
+                    sendMessage.setText(mensajeRegistroRespuesta());
+                    setNumero_de_respuesta(getNumero_de_respuesta()+1);
+                    if(aniade_pregunta_nueva==false){
+                        registrorespuestalist.add(messageTextReceived);
+                    }
+                    aniade_respuesta_nueva=false;
+                }
+            }
+
+            if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
+                sendMessage.setText(mensajeRegistroTest());
+                setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
+                entra_a_registro_respuesta=true;
+            }
+            if(aniade_pregunta_nueva && confirmation==false){
+                registrollenadosList.add(messageTextReceived);
+                aniade_pregunta_nueva=false;
+            }
+            if(confirmation==true){
+                entra_a_registro_respuesta=true;
+                confirmation=false;
+            }
+
+        }// TERMINA REGISTRO TEST
+
+    }
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public void entraAgregarContactos(String messageTextReceived, List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
@@ -771,8 +863,42 @@ public class MensajesBL {
     public void entraBuscarContactos(String messageTextReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
         LOGGER.info("Entra a buscar contactos");
         String message = "";
-        message = "Entra a buscar contactos";
-        sendMessage.setText(message);
+        KeyboardRow row= new KeyboardRow();
+        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        List<KeyboardRow> keyboard= new ArrayList<>();
+        sendMessage.setReplyMarkup(replyKeyboardRemove);
+        if (!isOpeningContact) {
+            contactEntities = getContactsThatInclude(messageTextReceived);
+            LOGGER.info("Contacts Found >> "+contactEntities.toString());
+            if (contactEntities.isEmpty()){
+                message = "No se encontraron contactos con esa descripción";
+            }else {
+                message = "*Contactos Encontrados*\n\n";
+                for (int i=0;i<contactEntities.size();i++){
+                    message += "\n*Contacto "+(i+1)+"-.*\n*Nombres:* "+contactEntities.get(i).getFirstName()+" "+contactEntities.get(i).getSecondName()+"\n*Apellidos:* "+contactEntities.get(i).getFirstSurname()+" "+contactEntities.get(i).getSecondSurname()+"\n\n";
+                    KeyboardRow keyboardRow = new KeyboardRow();
+                    keyboardRow.add("Contacto "+(i+1));
+                    keyboard.add(keyboardRow);
+                }
+                message += "\n\nSeleccione un contacto";
+                keyboardMarkup.setKeyboard(keyboard);
+            }
+            isOpeningContact = true;
+            sendMessage.setText(message).setParseMode("Markdown");
+            sendMessage.setReplyMarkup(keyboardMarkup);
+        }else {
+            LOGGER.info("Open Contact");
+            for (int i=0;i<contactEntities.size();i++){
+                if (messageTextReceived.equals("Contacto "+(i+1))){
+                    LOGGER.info("Contact found");
+                    message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
+                    sendMessage.setText(message).setParseMode("Markdown");
+                }
+            }
+        }
+//        sendMessage.setText(message).setParseMode("Markdown");
+//        sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
     public void entraEliminarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
@@ -792,93 +918,7 @@ public class MensajesBL {
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    public String afirmacionAdicionarPregunta(){
-        //SI
-        confirmation=true;
-        aniade_pregunta_nueva=true;
-        entra_a_registro_test=true;
-        entra_a_registro_respuesta=false;
-        return "Añada nuevamente su pregunta";
 
-    }
-
-    public String afirmacionTerminarRegistroTest(){
-        //NO
-        String registrertest=  saveCompleteTest(registrollenadosList,registrorespuestalist);
-        registrollenadosList.clear();
-        registrorespuestalist.clear();
-        entra_a_registro_test=false;
-        return registrertest;
-    }
-
-
-    public void entraARegistroTest(SendMessage sendMessage,String messageTextReceived){
-        String mensaje="";
-        if (entra_a_registro_test){
-            if(entra_a_registro_respuesta){
-                if(getNumero_de_respuesta()==4) {
-                    registrorespuestalist.add(messageTextReceived);
-                    LOGGER.info("SIIIIIIII ENTRA A REGISTRO RESPUESTA TERMINADO");
-                    LOGGER.info("ENTRO AL SI CON ARRAY "+registrorespuestalist.size());
-                    int i=0;
-                    int contresppropregunta=4;
-                    String cade="CUESTIONARIO - TEST\n";
-                    for(String preg:registrollenadosList){
-                        cade+=preg+"\n";
-                        int numero=1;
-                        while(i<contresppropregunta){
-                            cade+=numero+". "+registrorespuestalist.get(i)+"\n";
-                            numero++;
-                            i++;
-                        }
-                        contresppropregunta+=4;
-                    }
-                    setNumero_de_respuesta(0);
-                    mensaje+=cade;
-                    KeyboardRow row= new KeyboardRow();
-                    ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-                    List<KeyboardRow> keyboard= new ArrayList<>();
-                    mensaje+="\nDesea añadir una nueva pregunta?";
-                    sendMessage.setText(mensaje);
-                    row.add("Si");
-                    row.add("No");
-                    keyboard.add(row);
-                    keyboardMarkup.setKeyboard(keyboard);
-                    sendMessage.setReplyMarkup(keyboardMarkup);
-                    entra_a_registro_respuesta=false;
-                    aniade_respuesta_nueva=true;
-                    aniade_pregunta_nueva=false;
-
-                }//Terminate NUMERO DE RESPUESTAS= 4
-
-                if(getNumero_de_respuesta()<4 && entra_a_registro_respuesta) {
-                    //INGRESANDO A REGISTROS NO COMPLETOS
-                    sendMessage.setText(mensajeRegistroRespuesta());
-                    setNumero_de_respuesta(getNumero_de_respuesta()+1);
-                    if(aniade_pregunta_nueva==false){
-                        registrorespuestalist.add(messageTextReceived);
-                    }
-                    aniade_respuesta_nueva=false;
-                }
-            }
-
-            if(entra_a_registro_respuesta==false && aniade_pregunta_nueva) {
-                sendMessage.setText(mensajeRegistroTest());
-                setNumero_de_pregunta(/*mensajesBL.getNumero_de_pregunta()+1*/0);
-                entra_a_registro_respuesta=true;
-            }
-            if(aniade_pregunta_nueva && confirmation==false){
-                registrollenadosList.add(messageTextReceived);
-                aniade_pregunta_nueva=false;
-            }
-            if(confirmation==true){
-                entra_a_registro_respuesta=true;
-                confirmation=false;
-            }
-
-        }// TERMINA REGISTRO TEST
-
-    }
 
     public static boolean isRegistrosllenos() {
         return registrosllenos;
@@ -1219,6 +1259,8 @@ public class MensajesBL {
         return "¡Registro completado exitosamente¡";
     }
 
+//---------------------------------------------------------------------------------------------------------
+
     public String guardarListaAgregarContactos(List<String> listaderegistros, User user) {
         LOGGER.info("Llega al metodo con : ");
 
@@ -1350,8 +1392,7 @@ public class MensajesBL {
         respuestaEntity.setNumeroRespuesta(numberResponse);
         respuestaRepository.save(respuestaEntity);
     }
-//*********************************************
-//*********************************************
+
 
     public void entraResponderTest(String nombreTest,String nombreStudent,SendMessage sendMessage){
         TestEntity testEntity=findTestByTestNombre(nombreTest);
@@ -1563,6 +1604,8 @@ public class MensajesBL {
         sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
+//--------------------------------------------------------------------------------------------------------------------------
+
     public static boolean isValidEmail(String email)
     {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
@@ -1737,6 +1780,11 @@ public class MensajesBL {
 
     public static void saveFileFromUrlWithCommonsIO(String fileName, String fileUrl) throws MalformedURLException, IOException {
         FileUtils.copyURLToFile(new URL(fileUrl), new File(fileName));
+    }
+
+    public List<ContactEntity> getContactsThatInclude(String input) {
+        List<ContactEntity> result = contactRepository.findByFirstNameContainingOrSecondNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(input,input,input,input);
+        return result;
     }
 
 }
