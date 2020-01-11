@@ -886,25 +886,38 @@ public class MensajesBL {
             sendMessage.setText(message).setParseMode("Markdown");
             sendMessage.setReplyMarkup(keyboardMarkup);
         }else {
-            LOGGER.info("Open Contact");
-            int index = messageTextReceived.indexOf(" ");
-            int i = Integer.parseInt(messageTextReceived.substring(index+1))-1;
-            LOGGER.info(">>>>>>>>>>> "+(i+1));
-            message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
-            KeyboardRow keyboardRow = new KeyboardRow();
-            KeyboardRow keyboardRow2 = new KeyboardRow();
-            KeyboardRow keyboardRow3 = new KeyboardRow();
-            keyboardRow.add("Salir al Menú Principal");
-            keyboardRow2.add("Modificar Contacto");
-            keyboardRow3.add("Eliminar Contacto");
-            keyboard.add(keyboardRow);
-            keyboard.add(keyboardRow2);
-            keyboard.add(keyboardRow3);
-            sendMessage.setText(message).setParseMode("Markdown");
-            sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(i).getImage()));
-            keyboardMarkup.setKeyboard(keyboard);
-            sendMessage.setReplyMarkup(keyboardMarkup);
+            if (messageTextReceived.equals("Salir al Menú Principal")){
+                isOpeningContact = false;
+                setEntra_a_buscar_contactos(false);
+                mostrarMenu(sendMessage,update.getMessage().getChatId());
+            }else {
+                if (messageTextReceived.equals("Modificar Contacto")){
 
+                }else {
+                    if (messageTextReceived.equals("Eliminar Contacto")){
+
+                    }else {
+                        LOGGER.info("Open Contact");
+                        int index = messageTextReceived.indexOf(" ");
+                        int i = Integer.parseInt(messageTextReceived.substring(index+1))-1;
+                        LOGGER.info(">>>>>>>>>>> "+(i+1));
+                        message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
+                        KeyboardRow keyboardRow = new KeyboardRow();
+                        KeyboardRow keyboardRow2 = new KeyboardRow();
+                        KeyboardRow keyboardRow3 = new KeyboardRow();
+                        keyboardRow.add("Salir al Menú Principal");
+                        keyboardRow2.add("Modificar Contacto");
+                        keyboardRow3.add("Eliminar Contacto");
+                        keyboard.add(keyboardRow);
+                        keyboard.add(keyboardRow2);
+                        keyboard.add(keyboardRow3);
+                        sendMessage.setText(message).setParseMode("Markdown");
+                        sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(i).getImage()));
+                        keyboardMarkup.setKeyboard(keyboard);
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+                    }
+                }
+            }
 //                    isOpeningContact = false;
 //                    setEntra_a_buscar_contactos(false);
         }
