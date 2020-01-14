@@ -77,7 +77,7 @@ public class MensajesBL {
 
 
 
-    private static String dirName = "S:\\Photos";
+    private static final String dirName = "S:\\Photos";
     private List<PhotoSize> photo = null;
     private String fileID = "";
     private String filePath = "";
@@ -86,14 +86,21 @@ public class MensajesBL {
     private static boolean entra_a_agregar_contactos=false;
     private static boolean entra_a_agregar_phonenumbers=false;
     private static boolean entra_a_buscar_contactos=false;
-    private static boolean entra_a_eliminar_contactos=false;
+    private static boolean entra_a_modificar_contactos=false;
 
     private int iNumbers=0;
     private int numNumbers=0;
     private boolean isOpeningContact = false;
+    private boolean isChoosingField = true;
+    private boolean isModifyingPhoneNumber = false;
+    private boolean modFirstName = false, modSecondName = false, modFirstSurname = false, modSecondSurname = false, modEmail = false, modBirthDate = false, modImage = false, modPhoneNumbers = false;
     private static boolean registroContactoExitoso=false;
     private ContactEntity recentlyAddedContact = new ContactEntity();
-    List<ContactEntity> contactEntities = new ArrayList<>();
+    private List<ContactEntity> contactEntities = new ArrayList<>();
+    private List<PhoneNumberEntity> phoneNumberEntities = new ArrayList<>();
+    private int id = 0;
+    private int pId = 0;
+
 
     private EstudianteRespository estudianteRespository;
     private DocenteRespository  docenteRespository;
@@ -830,7 +837,7 @@ public class MensajesBL {
                 LOGGER.info("Entra add num");
                 registrollenadosList.add(messageTextReceived);
             }else {
-                if (validateNumber(messageTextReceived)==false){
+                if (!validateNumber(messageTextReceived)){
                     message = "Número de teléfono no válido.\nIntente nuevamente\n";
                     iNumbers--;
                 }
@@ -857,7 +864,7 @@ public class MensajesBL {
 
     }
 
-    public void entraBuscarContactos(String messageTextReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
+    public void entraBuscarContactos(String messageTextReceived,List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto, Update update){
         LOGGER.info("Entra a buscar contactos");
         String message = "";
         KeyboardRow row= new KeyboardRow();
@@ -870,10 +877,12 @@ public class MensajesBL {
             LOGGER.info("Contacts Found >> "+contactEntities.toString());
             if (contactEntities.isEmpty()){
                 message = "No se encontraron contactos con esa descripción";
+                isOpeningContact = false;
             }else {
                 message = "*Contactos Encontrados*\n\n";
                 for (int i=0;i<contactEntities.size();i++){
                     //FIXME Agregar condicionales para status y userId
+                    LOGGER.info("ID Contacto "+(i+1)+": "+contactEntities.get(i).getContactId());
                     message += "\n*Contacto "+(i+1)+"-.*\n*Nombres:* "+contactEntities.get(i).getFirstName()+" "+contactEntities.get(i).getSecondName()+"\n*Apellidos:* "+contactEntities.get(i).getFirstSurname()+" "+contactEntities.get(i).getSecondSurname()+"\n\n";
                     KeyboardRow keyboardRow = new KeyboardRow();
                     keyboardRow.add("Contacto "+(i+1));
@@ -891,7 +900,228 @@ public class MensajesBL {
                 setEntra_a_buscar_contactos(false);
                 mostrarMenu(sendMessage,update.getMessage().getChatId());
             }else {
-                if (messageTextReceived.equals("Modificar Contacto")){
+                if (messageTextReceived.equals("Modificar Contacto") || entra_a_modificar_contactos){
+                    LOGGER.info("Entra a modificar contactos");
+                    entra_a_modificar_contactos = true;
+                    if (isChoosingField){
+                        switch (messageTextReceived){
+                            case "Primer Nombre":
+                                message = "Ingrese el primer nombre";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modFirstName = true;
+                                isChoosingField = false;
+                                break;
+                            case "Segundo Nombre":
+                                message = "Ingrese el segundo nombre";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modSecondName = true;
+                                isChoosingField = false;
+                                break;
+                            case "Primer Apellido":
+                                message = "Ingrese el primer apellido";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modFirstSurname = true;
+                                isChoosingField = false;
+                                break;
+                            case "Segundo Apellido":
+                                message = "Ingrese el segundo apellido";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modSecondSurname = true;
+                                isChoosingField = false;
+                                break;
+                            case "Email":
+                                message = "Ingrese el email";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modEmail = true;
+                                isChoosingField = false;
+                                break;
+                            case "Fecha de Nacimiento":
+                                message = "Ingrese la fecha de nacimiento en el siguiente formato (YYYY/MM/DD)";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modBirthDate = true;
+                                isChoosingField = false;
+                                break;
+                            case "Imagen":
+                                message = "Suba una imagen para el perfil del contacto";
+                                sendMessage.setText(message).setParseMode("Markdown");
+                                modImage = true;
+                                isChoosingField = false;
+                                break;
+                            case "Números de Teléfono":
+                                message = "Seleccione un número de teléfono a modificar";
+                                for (int k=0;k<phoneNumberEntities.size();k++){
+                                    KeyboardRow keyboardRow = new KeyboardRow();
+                                    keyboardRow.add("Número "+(k+1));
+                                    keyboard.add(keyboardRow);
+                                }
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setText(message).setParseMode("Markdown").setReplyMarkup(keyboardMarkup);
+                                modPhoneNumbers = true;
+                                isChoosingField = false;
+                                break;
+                            default:
+                                message = "Seleccione un campo a modificar";
+                                KeyboardRow first_name = new KeyboardRow();
+                                KeyboardRow second_name = new KeyboardRow();
+                                KeyboardRow first_surname = new KeyboardRow();
+                                KeyboardRow second_surname = new KeyboardRow();
+                                KeyboardRow email = new KeyboardRow();
+                                KeyboardRow birth_date = new KeyboardRow();
+                                KeyboardRow image = new KeyboardRow();
+                                KeyboardRow phone_numbers = new KeyboardRow();
+                                first_name.add("Primer Nombre");
+                                second_name.add("Segundo Nombre");
+                                first_surname.add("Primer Apellido");
+                                second_surname.add("Segundo Apellido");
+                                email.add("Email");
+                                birth_date.add("Fecha de Nacimiento");
+                                image.add("Imagen");
+                                phone_numbers.add("Números de Teléfono");
+                                keyboard.add(first_name);
+                                keyboard.add(second_name);
+                                keyboard.add(first_surname);
+                                keyboard.add(second_surname);
+                                keyboard.add(email);
+                                keyboard.add(birth_date);
+                                keyboard.add(image);
+                                keyboard.add(phone_numbers);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setText(message).setParseMode("Markdown").setReplyMarkup(keyboardMarkup);
+                                break;
+                        }
+                    }else {
+                        if (modFirstName){
+                            saveFirstName(contactEntities.get(id).getContactId(),messageTextReceived);
+                            message = "Primer nombre actualizado\nSeleccione una opción:";
+                            mostrarOpcionesDespuesModificar(sendMessage);
+                            modFirstName = false;
+                        }
+                        if (modSecondName){
+                            saveSecondName(contactEntities.get(id).getContactId(),messageTextReceived);
+                            message = "Segundo nombre actualizado\nSeleccione una opción:";
+                            mostrarOpcionesDespuesModificar(sendMessage);
+                            modSecondName = false;
+                        }
+                        if (modFirstSurname){
+                            saveFirstSurname(contactEntities.get(id).getContactId(),messageTextReceived);
+                            message = "Primer apellido actualizado\nSeleccione una opción:";
+                            mostrarOpcionesDespuesModificar(sendMessage);
+                            modFirstSurname = false;
+                        }
+                        if (modSecondSurname){
+                            saveSecondSurname(contactEntities.get(id).getContactId(),messageTextReceived);
+                            message = "Segundo apellido actualizado\nSeleccione una opción:";
+                            mostrarOpcionesDespuesModificar(sendMessage);
+                            modSecondSurname = false;
+                        }
+                        if (modEmail){
+                            if (isValidEmail(messageTextReceived)){
+                                LOGGER.info("Email válido");
+                                message = saveEmail(contactEntities.get(id).getContactId(),messageTextReceived);
+                                mostrarOpcionesDespuesModificar(sendMessage);
+                                modEmail = false;
+                            }else {
+                                LOGGER.info("Email NO válido");
+                                message = "\nEmail NO válido\nPor favor, intente nuevamente\n";
+                            }
+                        }
+                        if (modBirthDate){
+                            if (verifyDatebirth(messageTextReceived)){
+                                LOGGER.info("Fecha válida");
+                                saveBirthDate(contactEntities.get(id).getContactId(),messageTextReceived);
+                                message = "Fecha de Nacimiento actualizada\nSeleccione una opción:";
+                                mostrarOpcionesDespuesModificar(sendMessage);
+                                modBirthDate = false;
+                            }else {
+                                LOGGER.info("Fecha NO válida");
+                                message = "\nFecha NO válida\nPor favor, intente nuevamente\nFormato de la fecha (YYYY/MM/DD)\n";
+                            }
+                        }
+                        if (modImage){
+                            LOGGER.info("Entra a registro de photo");
+                            receivePhotoContact(update,photoReceived,sendMessage,sendPhoto);
+
+                            if (update.getMessage().getText().equals("SI")){
+                                LOGGER.info("SI, imagen elegida");
+                                String fileDir = "";
+                                try {
+                                    String url = "https://api.telegram.org/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/getFile?file_id="+fileID;
+                                    URL obj = new URL(url);
+                                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                                    int responseCode = con.getResponseCode();
+                                    LOGGER.info("Sending GET request to URL: "+url);
+                                    LOGGER.info("Response Code: "+responseCode);
+                                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                                    String inputLine;
+                                    StringBuffer response = new StringBuffer();
+                                    while ((inputLine = in.readLine()) != null) {
+                                        response.append(inputLine);
+                                    }
+                                    in.close();
+
+//                                LOGGER.info("Received code: "+response.toString());
+
+                                    JSONObject jsonObject = new JSONObject(response.toString());
+                                    LOGGER.info("Received JSON: "+jsonObject);
+                                    filePath = jsonObject.getJSONObject("result").getString("file_path");
+                                    photoURL = "https://api.telegram.org/file/bot1062478290:AAG3C68x6eCwe0VSC2uyb4OR74_c15lWY4k/"+filePath;
+                                    LOGGER.info("File Path: "+filePath);
+                                    LOGGER.info("Photo URL: "+photoURL);
+                                    fileDir = dirName+"\\"+fileID+".jpg";
+
+                                }catch (Exception e){
+                                    LOGGER.info("Error al encontrar la direccion de la imagen");
+                                    e.printStackTrace();
+                                }
+
+                                try {
+                                    saveFileFromUrlWithCommonsIO(fileDir, photoURL);
+                                    saveImage(contactEntities.get(id).getContactId(),fileDir);
+                                    message = "Imagen actualizada\nSeleccione una opción:";
+                                    mostrarOpcionesDespuesModificar(sendMessage);
+                                    modImage = false;
+                                }catch (MalformedURLException e){
+                                    LOGGER.info("Error al dirreccionar la URL");
+                                    e.printStackTrace();
+                                }catch (IOException e){
+                                    LOGGER.info("Error al guardar la imagen");
+                                    e.printStackTrace();
+                                }
+
+                            }else {
+                                if (update.getMessage().getText().equals("NO")){
+                                    LOGGER.info("NO, volver a pedir imagen");
+                                    message = "\nVuelva a subir una imagen\n";
+                                }
+                            }
+//                            sendMessage.setReplyMarkup(replyKeyboardRemove);
+                        }
+                        if (modPhoneNumbers){
+                            if (!isModifyingPhoneNumber){
+                                int index = messageTextReceived.indexOf(" ");
+                                pId = Integer.parseInt(messageTextReceived.substring(index+1))-1;
+                                LOGGER.info("Phone Number ID>>>>"+pId+" ; PhoneNumberEntity>>>>"+phoneNumberEntities.get(pId).getPhoneId());
+                                message = "Ingresar el número de teléfono N°"+(iNumbers+1)+" con el formato (XXXXXXXX)";
+                                isModifyingPhoneNumber = true;
+                            }else {
+                                if (validatePhoneNumber(messageTextReceived)){
+                                    savePhoneNumber(phoneNumberEntities.get(pId).getPhoneId(),messageTextReceived);
+                                    message = "Número de teléfono actualizado\nSeleccione una opción:";
+                                    mostrarOpcionesDespuesModificar(sendMessage);
+                                    isModifyingPhoneNumber = false;
+                                    modPhoneNumbers = false;
+                                }else {
+                                    if (!validatePhoneNumber(messageTextReceived)){
+                                        message = "Número de teléfono no válido.\nIntente nuevamente\n";;
+                                    }
+                                }
+                            }
+
+                        }
+                        sendMessage.setText(message).setParseMode("Markdown");
+                    }
+
 
                 }else {
                     if (messageTextReceived.equals("Eliminar Contacto")){
@@ -899,9 +1129,15 @@ public class MensajesBL {
                     }else {
                         LOGGER.info("Open Contact");
                         int index = messageTextReceived.indexOf(" ");
-                        int i = Integer.parseInt(messageTextReceived.substring(index+1))-1;
-                        LOGGER.info(">>>>>>>>>>> "+(i+1));
-                        message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(i).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(i).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(i).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(i).getSecondSurname()+"\n*Email:* "+contactEntities.get(i).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(i).getBirthdate()+"\n*Imagen: *";
+                        id = Integer.parseInt(messageTextReceived.substring(index+1))-1;
+                        LOGGER.info(">>>>>>>>>>> "+(id+1));
+                        phoneNumberEntities = phoneNumberRepository.findByContactId(contactEntities.get(id));
+                        message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(id).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(id).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(id).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(id).getSecondSurname()+"\n*Email:* "+contactEntities.get(id).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(id).getBirthdate();
+                        message += "\n\n*_Números de teléfono_*";
+                        for (int j=0;j<phoneNumberEntities.size();j++){
+                            message += "\n*Número "+(j+1)+": *"+phoneNumberEntities.get(j).getNumber();
+                        }
+                        message += "\n\n*Imagen: *";
                         KeyboardRow keyboardRow = new KeyboardRow();
                         KeyboardRow keyboardRow2 = new KeyboardRow();
                         KeyboardRow keyboardRow3 = new KeyboardRow();
@@ -912,7 +1148,7 @@ public class MensajesBL {
                         keyboard.add(keyboardRow2);
                         keyboard.add(keyboardRow3);
                         sendMessage.setText(message).setParseMode("Markdown");
-                        sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(i).getImage()));
+                        sendPhoto.setPhoto(FileUtils.getFile(contactEntities.get(id).getImage()));
                         keyboardMarkup.setKeyboard(keyboard);
                         sendMessage.setReplyMarkup(keyboardMarkup);
                     }
@@ -1276,7 +1512,7 @@ public class MensajesBL {
         return "¡Registro completado exitosamente¡";
     }
 
-//---------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------
 
     public String guardarListaAgregarContactos(List<String> listaderegistros, User user) {
         LOGGER.info("Llega al metodo con : ");
@@ -1337,7 +1573,71 @@ public class MensajesBL {
         return "¡Registro de números telefónicos completado exitosamente!";
     }
 
+    public void saveFirstName(int contactId, String message){
+        ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+        contactEntity.setFirstName(message);
+        contactRepository.save(contactEntity);
+    }
 
+    public void saveSecondName(int contactId, String message){
+        ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+        contactEntity.setSecondName(message);
+        contactRepository.save(contactEntity);
+    }
+
+    public void saveFirstSurname(int contactId, String message){
+        ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+        contactEntity.setFirstName(message);
+        contactRepository.save(contactEntity);
+    }
+
+    public void saveSecondSurname(int contactId, String message){
+        ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+        contactEntity.setSecondSurname(message);
+        contactRepository.save(contactEntity);
+    }
+
+    public String saveEmail(int contactId, String message){
+        if (isValidEmail(message)){
+            LOGGER.info("Email válido");
+            ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+            contactEntity.setEmail(message);
+            contactRepository.save(contactEntity);
+            return "Email actualizado\nSeleccione una opción:";
+        }else {
+            LOGGER.info("Email NO válido");
+            message = "\nEmail NO válido\nPor favor, intente nuevamente\n";
+            return message;
+        }
+    }
+
+    public void saveBirthDate(int contactId, String message){
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+            java.util.Date utilDate = format.parse(message);
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+            contactEntity.setBirthdate(sqlDate);
+            contactRepository.save(contactEntity);
+        }catch (ParseException e){
+            LOGGER.info("Error, formato de fecha no valida");
+            e.printStackTrace();
+        }
+    }
+
+    public void saveImage(int contactId, String message){
+        ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+        contactEntity.setImage(message);
+        contactRepository.save(contactEntity);
+    }
+
+    public void savePhoneNumber(int phoneNumberId, String message){
+        PhoneNumberEntity phoneNumberEntity = phoneNumberRepository.findByPhoneId(phoneNumberId);
+        phoneNumberEntity.setNumber(message);
+        phoneNumberRepository.save(phoneNumberEntity);
+    }
+
+//-------------------------------------------------------------------------------------------------------------------------
 //*********************************************
 //*********************************************
     public String saveCompleteTest(List<String> questionsList,List<String> responseList ){
@@ -1702,7 +2002,7 @@ public class MensajesBL {
         List<KeyboardRow> keyboard = new ArrayList<>();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         LOGGER.info("Tamaño del array antes: "+registrollenadosList.size());
-        if (isEntra_a_agregar_contactos() == true && numero_de_pregunta == 6){
+        if (isEntra_a_agregar_contactos() == true && numero_de_pregunta == 6 || isEntra_a_buscar_contactos() && modImage == true){
             LOGGER.info("Num preg 6 y esta agregando contactos");
             if (update.getMessage().hasPhoto()) {
                 LOGGER.info("Imagen recibida");
@@ -1782,11 +2082,25 @@ public class MensajesBL {
         List<KeyboardRow> keyboard = new ArrayList<>();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
         sendMessage.setChatId(chatId)
-                .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
+                .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos").setParseMode("Markdown");
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
         keyboardRow.add("Buscar Contactos");
         keyboardRow2.add("Agregar Contactos");
+        keyboard.add(keyboardRow);
+        keyboard.add(keyboardRow2);
+        keyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(keyboardMarkup);
+    }
+
+    private void mostrarOpcionesDespuesModificar(SendMessage sendMessage) {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        keyboardRow.add("Mostrar el Contacto Actualizado");
+        keyboardRow2.add("Salir al Menú Principal");
         keyboard.add(keyboardRow);
         keyboard.add(keyboardRow2);
         keyboardMarkup.setKeyboard(keyboard);

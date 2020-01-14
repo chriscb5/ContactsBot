@@ -36,7 +36,7 @@ public class BotBl {
     private PreguntaRepository preguntaRepository;
     private ChatRepository chatRepository;
     private String nombreTest="";
-    public  Boolean firstMessage = true;
+    public Boolean firstMessage = true;
     MensajesBL mensajesBL;
     ContactsBL contactsBL;
 
@@ -396,7 +396,7 @@ public class BotBl {
             chatRepository.save(kjChatEntity);
         }else {
             if (update.hasMessage() && !update.getMessage().hasText() && update.getMessage().hasPhoto()){
-                if (mensajesBL.isEntra_a_agregar_contactos()==true){
+                if (mensajesBL.isEntra_a_agregar_contactos()==true || mensajesBL.isEntra_a_buscar_contactos()==true){
                     LOGGER.info("Entra a agregar contactos and it's a photo");
                     mensajesBL.receivePhotoContact(update,photoReceived,sendMessage,sendPhoto);
                 }else {
@@ -451,7 +451,7 @@ public class BotBl {
 
     public void mostrarMenu(SendMessage sendMessage, ReplyKeyboardMarkup keyboardMarkup, List<KeyboardRow> keyboard, long chatId) {
         sendMessage.setChatId(chatId)
-                .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos\nModificar Contactos\nEliminar Contactos").setParseMode("Markdown");
+                .setText("*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos").setParseMode("Markdown");
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
         keyboardRow.add("Buscar Contactos");
@@ -510,7 +510,7 @@ public class BotBl {
             mensajesBL.entraAgregarPhoneNumbers(messageTextReceived,sendMessage,update);
         }
         if(mensajesBL.isEntra_a_buscar_contactos()){
-            mensajesBL.entraBuscarContactos(messageTextReceived,sendMessage,sendPhoto,update);
+            mensajesBL.entraBuscarContactos(messageTextReceived,photoReceived,sendMessage,sendPhoto,update);
         }
 
 
