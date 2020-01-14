@@ -877,7 +877,7 @@ public class MensajesBL {
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
         if (!isOpeningContact) {
-            contactEntities = getContactsThatInclude(messageTextReceived);
+            contactEntities = getContactsThatInclude(messageTextReceived,update.getMessage().getFrom());
             LOGGER.info("Contacts Found >> "+contactEntities.toString());
             if (contactEntities.isEmpty()){
                 //FIXME Arreglar esta seccion
@@ -2198,8 +2198,15 @@ public class MensajesBL {
         FileUtils.copyURLToFile(new URL(fileUrl), new File(fileName));
     }
 
-    public List<ContactEntity> getContactsThatInclude(String input) {
+    public List<ContactEntity> getContactsThatInclude(String input, User user) {
+        KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(Integer.toString(user.getId()));
+        LOGGER.info("User ID: "+kjUserEntity.getUserid());
         List<ContactEntity> result = contactRepository.findByFirstNameContainingOrSecondNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(input,input,input,input);
+        for (int i = 0; i<result.size(); i++){
+            if (result.get(i).getStatus() == 0 || result.get(i).getUserId().getUserid() != kjUserEntity.getUserid()){
+                result.remove(i);
+            }
+        }
         return result;
     }
 
