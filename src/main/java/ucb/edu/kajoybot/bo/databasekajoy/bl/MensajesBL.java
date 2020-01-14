@@ -1190,6 +1190,7 @@ public class MensajesBL {
                                             mostrarOpcionesDespuesModificar(sendMessage);
                                             isAddingPhoneNumber = false;
                                             isCreatingNewPhoneNumber = false;
+                                            modPhoneNumbers = false;
                                         }else {
                                             if (!validatePhoneNumber(messageTextReceived)){
                                                 message = "Número de teléfono no válido.\nIntente nuevamente\n";;
@@ -2284,7 +2285,15 @@ public class MensajesBL {
             if (contactEntity.getStatus() == 0 || contactEntity.getUserId().getUserid() != kjUserEntity.getUserid() || receivedPhoneNumbers.get(i).getStatus() == 0){
                 receivedPhoneNumbers.remove(i);
             }else {
-                result.add(contactEntity);
+                boolean alreadyExists = false;
+                for (int k = 0; k<result.size(); k++){
+                    if (result.get(k).getContactId() == contactEntity.getContactId()){
+                        alreadyExists = true;
+                    }
+                }
+                if (alreadyExists == false){
+                    result.add(contactEntity);
+                }
             }
         }
         return result;
