@@ -11,4 +11,6 @@ public interface PhoneNumberRepository extends JpaRepository<PhoneNumberEntity, 
     PhoneNumberEntity findByPhoneId(int phoneID);
 
     List<PhoneNumberEntity> findByContactId(ContactEntity contactID);
+
+    List<PhoneNumberEntity> findByNumberContaining(String number);
 }

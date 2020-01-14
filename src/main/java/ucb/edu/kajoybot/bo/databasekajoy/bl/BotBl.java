@@ -190,8 +190,15 @@ public class BotBl {
                             case "Buscar Contactos":
                                 mensajesBL.setEntra_a_buscar_contactos(true);
                                 sendMessage.setChatId(chatId)
-                                        .setText("*Buscar Contactos*\nIngrese el nombre o apellido del contacto que desea *buscar*").setParseMode("Markdown");
-                                sendMessage.setReplyMarkup(replyKeyboardRemove);
+                                        .setText("*Buscar Contactos*\nSeleccione una opción").setParseMode("Markdown");
+                                KeyboardRow keyboardRow = new KeyboardRow();
+                                KeyboardRow keyboardRow1 = new KeyboardRow();
+                                keyboardRow.add("Buscar por Nombre o Apellido");
+                                keyboardRow1.add("Buscar por Número de Teléfono");
+                                keyboard.add(keyboardRow);
+                                keyboard.add(keyboardRow1);
+                                keyboardMarkup.setKeyboard(keyboard);
+                                sendMessage.setReplyMarkup(keyboardMarkup);
 
                                 break;
 

@@ -91,6 +91,11 @@ public class MensajesBL {
     private int iNumbers=0;
     private int numNumbers=0;
     private boolean isOpeningContact = false;
+
+    private boolean isSearchingByName = false;
+    private boolean isSearchingByPhone = false;
+    private boolean searchInputReceived = false;
+
     private boolean isChoosingField = true;
     private boolean isDeletingContact = false;
     private boolean isModifyingPhoneNumber = false;
@@ -102,6 +107,7 @@ public class MensajesBL {
     private ContactEntity recentlyAddedContact = new ContactEntity();
     private List<ContactEntity> contactEntities = new ArrayList<>();
     private List<PhoneNumberEntity> phoneNumberEntities = new ArrayList<>();
+    private List<PhoneNumberEntity> receivedPhoneNumbers = new ArrayList<>();
     private int id = 0;
     private int pId = 0;
 
@@ -878,34 +884,86 @@ public class MensajesBL {
         sendMessage.setReplyMarkup(replyKeyboardRemove);
         if (!isOpeningContact) {
             LOGGER.info("Entra a isOpneningContact = false");
-            contactEntities = getContactsThatInclude(messageTextReceived,update.getMessage().getFrom());
-            LOGGER.info("Contacts Found >> "+contactEntities.toString());
-            if (contactEntities.isEmpty()){
-                //FIXME Arreglar esta seccion
-                message = "No se encontraron contactos con esa descripción\nIntente nuevamente";
-                isOpeningContact = false;
-            }else {
-                message = "*Contactos Encontrados*\n\n";
-                for (int i=0;i<contactEntities.size();i++){
-                    //FIXME Agregar condicionales para status y userId
-                    LOGGER.info("ID Contacto "+(i+1)+": "+contactEntities.get(i).getContactId());
-                    message += "\n*Contacto "+(i+1)+"-.*\n*Nombres:* "+contactEntities.get(i).getFirstName()+" "+contactEntities.get(i).getSecondName()+"\n*Apellidos:* "+contactEntities.get(i).getFirstSurname()+" "+contactEntities.get(i).getSecondSurname()+"\n\n";
-                    KeyboardRow keyboardRow = new KeyboardRow();
-                    keyboardRow.add("Contacto "+(i+1));
-                    keyboard.add(keyboardRow);
+            if (messageTextReceived.equals("Buscar por Nombre o Apellido") || isSearchingByName){
+                isSearchingByName = true;
+                if (searchInputReceived){
+                    contactEntities = getContactsThatInclude(messageTextReceived,update.getMessage().getFrom());
+                    LOGGER.info("Contacts Found >> "+contactEntities.toString());
+                    if (contactEntities.isEmpty()){
+                        //FIXME Arreglar esta seccion
+                        message = "No se encontraron contactos con esa descripción\nIntente nuevamente";
+                        isOpeningContact = false;
+                    }else {
+                        message = "*Contactos Encontrados*\n\n";
+                        for (int i=0;i<contactEntities.size();i++){
+                            //FIXME Agregar condicionales para status y userId
+                            LOGGER.info("ID Contacto "+(i+1)+": "+contactEntities.get(i).getContactId());
+                            message += "\n*Contacto "+(i+1)+"-.*\n*Nombres:* "+contactEntities.get(i).getFirstName()+" "+contactEntities.get(i).getSecondName()+"\n*Apellidos:* "+contactEntities.get(i).getFirstSurname()+" "+contactEntities.get(i).getSecondSurname()+"\n\n";
+                            KeyboardRow keyboardRow = new KeyboardRow();
+                            keyboardRow.add("Contacto "+(i+1));
+                            keyboard.add(keyboardRow);
+                        }
+                        message += "\n\nSeleccione un contacto";
+                        keyboardMarkup.setKeyboard(keyboard);
+                        isOpeningContact = true;
+                        sendMessage.setReplyMarkup(keyboardMarkup);
+                    }
+                }else {
+                    message = "Ingrese el *nombre* o *apellido* del contacto que desea *buscar*";
+                    searchInputReceived = true;
                 }
-                message += "\n\nSeleccione un contacto";
-                keyboardMarkup.setKeyboard(keyboard);
-                isOpeningContact = true;
+            }else {
+                if (messageTextReceived.equals("Buscar por Número de Teléfono") || isSearchingByPhone){
+                    isSearchingByPhone = true;
+                    if (searchInputReceived){
+                        contactEntities = getContactsByPhoneNumber(messageTextReceived,update.getMessage().getFrom());
+                        LOGGER.info("Contacts Found >> "+contactEntities.toString());
+                        if (contactEntities.isEmpty()){
+                            //FIXME Arreglar esta seccion
+                            message = "No se encontraron contactos con esa descripción\nIntente nuevamente";
+                            isOpeningContact = false;
+                        }else {
+//                            phoneNumberEntities = phoneNumberRepository.findByContactId(contactEntities.get(id));
+//                            receivedPhoneNumbers = phoneNumberRepository.findByContactId()
+                            message = "*Contactos Encontrados*\n\n";
+                            for (int i=0;i<contactEntities.size();i++){
+                                //FIXME Agregar condicionales para status y userId
+                                LOGGER.info("ID Contacto "+(i+1)+": "+contactEntities.get(i).getContactId());
+                                message += "\n*Contacto "+(i+1)+"-.*\n*Nombre Completo:* "+contactEntities.get(i).getFirstName()+" "+contactEntities.get(i).getSecondName()+" "+contactEntities.get(i).getFirstSurname()+" "+contactEntities.get(i).getSecondSurname()+"\n";
+                                message += "*Números de teléfono coincidentes:*\n";
+                                int cont = 1;
+                                for (int j=0;j<receivedPhoneNumbers.size();j++){
+                                    if (contactEntities.get(i).getContactId() == receivedPhoneNumbers.get(j).getContactId().getContactId()){
+                                        message += "*Número "+cont+":* "+receivedPhoneNumbers.get(j).getNumber()+"\n";
+                                        cont++;
+                                    }
+                                }
+                                KeyboardRow keyboardRow = new KeyboardRow();
+                                keyboardRow.add("Contacto "+(i+1));
+                                keyboard.add(keyboardRow);
+                            }
+                            message += "\n\nSeleccione un contacto";
+                            keyboardMarkup.setKeyboard(keyboard);
+                            isOpeningContact = true;
+                            sendMessage.setReplyMarkup(keyboardMarkup);
+                        }
+                    }else {
+                        message = "Ingrese el *número de teléfono* del contacto que desea *buscar*";
+                        searchInputReceived = true;
+                    }
+                }
             }
+
             sendMessage.setText(message).setParseMode("Markdown");
-            sendMessage.setReplyMarkup(keyboardMarkup);
         }else {
             if (messageTextReceived.equals("Salir al Menú Principal")){
                 LOGGER.info("Entra a salir al menu principal");
                 isOpeningContact = false;
                 isChoosingField = true;
                 entra_a_modificar_contactos = false;
+                isSearchingByName = false;
+                isSearchingByPhone = false;
+                searchInputReceived = false;
                 setEntra_a_buscar_contactos(false);
                 mostrarMenu(sendMessage,update.getMessage().getChatId());
             }else {
@@ -2211,6 +2269,22 @@ public class MensajesBL {
         for (int i = 0; i<result.size(); i++){
             if (result.get(i).getStatus() == 0 || result.get(i).getUserId().getUserid() != kjUserEntity.getUserid()){
                 result.remove(i);
+            }
+        }
+        return result;
+    }
+
+    public List<ContactEntity> getContactsByPhoneNumber(String phone, User user) {
+        KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(Integer.toString(user.getId()));
+        LOGGER.info("User ID: "+kjUserEntity.getUserid());
+        receivedPhoneNumbers = phoneNumberRepository.findByNumberContaining(phone);
+        List<ContactEntity> result = new ArrayList<>();
+        for (int i = 0; i<receivedPhoneNumbers.size(); i++){
+            ContactEntity contactEntity = contactRepository.findByContactId(receivedPhoneNumbers.get(i).getContactId().getContactId());
+            if (contactEntity.getStatus() == 0 || contactEntity.getUserId().getUserid() != kjUserEntity.getUserid() || receivedPhoneNumbers.get(i).getStatus() == 0){
+                receivedPhoneNumbers.remove(i);
+            }else {
+                result.add(contactEntity);
             }
         }
         return result;
