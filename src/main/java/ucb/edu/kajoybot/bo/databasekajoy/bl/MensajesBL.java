@@ -880,7 +880,7 @@ public class MensajesBL {
             LOGGER.info("Contacts Found >> "+contactEntities.toString());
             if (contactEntities.isEmpty()){
                 //FIXME Arreglar esta seccion
-                message = "No se encontraron contactos con esa descripción";
+                message = "No se encontraron contactos con esa descripción\nIntente nuevamente";
                 isOpeningContact = false;
             }else {
                 message = "*Contactos Encontrados*\n\n";
@@ -894,8 +894,8 @@ public class MensajesBL {
                 }
                 message += "\n\nSeleccione un contacto";
                 keyboardMarkup.setKeyboard(keyboard);
+                isOpeningContact = true;
             }
-            isOpeningContact = true;
             sendMessage.setText(message).setParseMode("Markdown");
             sendMessage.setReplyMarkup(keyboardMarkup);
         }else {
@@ -903,6 +903,7 @@ public class MensajesBL {
                 LOGGER.info("Entra a salir al menu principal");
                 isOpeningContact = false;
                 isChoosingField = true;
+                entra_a_modificar_contactos = false;
                 setEntra_a_buscar_contactos(false);
                 mostrarMenu(sendMessage,update.getMessage().getChatId());
             }else {
@@ -910,6 +911,7 @@ public class MensajesBL {
                     LOGGER.info("Entra a mostrar el contacto actualizado");
                     isShowingContactAfterList = false;
                     isChoosingField = true;
+                    entra_a_modificar_contactos = false;
                     mostrarContacto(messageTextReceived,message,sendMessage,sendPhoto,keyboard,keyboardMarkup);
                 }else {
                     if (messageTextReceived.equals("Modificar Contacto") || entra_a_modificar_contactos){
@@ -1134,7 +1136,6 @@ public class MensajesBL {
                                             }
                                         }
                                     }
-
                                 }else {
                                     if (!isModifyingPhoneNumber){
                                         int index = messageTextReceived.indexOf(" ");
