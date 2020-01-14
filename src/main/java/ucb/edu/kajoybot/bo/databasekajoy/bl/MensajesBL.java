@@ -837,7 +837,7 @@ public class MensajesBL {
         LOGGER.info("INumbers>>"+iNumbers);
         if (iNumbers<=numNumbers){
             LOGGER.info("Entra if phone");
-            if (validatePhoneNumber(messageTextReceived)==true  && validateNumber(messageTextReceived)==false || registrollenadosList.size()==0 && validateNumber(messageTextReceived)==false){
+            if (validatePhoneNumber(messageTextReceived)){
                 LOGGER.info("Entra add num");
                 registrollenadosList.add(messageTextReceived);
             }else {
@@ -877,6 +877,7 @@ public class MensajesBL {
         List<KeyboardRow> keyboard= new ArrayList<>();
         sendMessage.setReplyMarkup(replyKeyboardRemove);
         if (!isOpeningContact) {
+            LOGGER.info("Entra a isOpneningContact = false");
             contactEntities = getContactsThatInclude(messageTextReceived,update.getMessage().getFrom());
             LOGGER.info("Contacts Found >> "+contactEntities.toString());
             if (contactEntities.isEmpty()){
@@ -1191,6 +1192,7 @@ public class MensajesBL {
                             }
                             sendMessage.setText(message).setParseMode("Markdown");
                         }else {
+                            LOGGER.info("Entra a mostrar contacto");
                             isShowingContactAfterList = true;
                             mostrarContacto(messageTextReceived,message,sendMessage,sendPhoto,keyboard,keyboardMarkup);
                         }
@@ -2003,11 +2005,13 @@ public class MensajesBL {
         Pattern pattern = Pattern.compile("\\d{8}");
         Matcher matcher = pattern.matcher(phone);
 
-        if (matcher.matches()) {
-            return true;
-        } else {
-            return false;
+        if (phone.length() == 8){
+            if (matcher.matches()) {
+                return true;
+            }
         }
+        return false;
+
     }
 
     public static boolean validateNumber(String num) {
@@ -2142,12 +2146,14 @@ public class MensajesBL {
         LOGGER.info("Open Contact");
         ContactEntity contactEntity = new ContactEntity();
         if (isShowingContactAfterList){
+            LOGGER.info("Is showing after list");
             int index = messageTextReceived.indexOf(" ");
             id = Integer.parseInt(messageTextReceived.substring(index+1))-1;
             LOGGER.info(">>>>>>>>>>> "+(id+1));
             phoneNumberEntities = phoneNumberRepository.findByContactId(contactEntities.get(id));
             message = "*"+messageTextReceived+"*\n\n*Primer Nombre:* "+contactEntities.get(id).getFirstName()+"\n*Segundo Nombre:* "+contactEntities.get(id).getSecondName()+"\n*Primer Apellido:* "+contactEntities.get(id).getFirstSurname()+"\n*Segundo Apellido:* "+contactEntities.get(id).getSecondSurname()+"\n*Email:* "+contactEntities.get(id).getEmail()+"\n*Fecha de Nacimiento:* "+contactEntities.get(id).getBirthdate();
         }else {
+            LOGGER.info("Is showing after modify");
             int newId = contactEntities.get(id).getContactId();
             contactEntity = contactRepository.findByContactId(newId);
             LOGGER.info(">>>>>>>>>>> "+(id+1));
