@@ -93,6 +93,8 @@ public class MensajesBL {
     private boolean isOpeningContact = false;
     private boolean isChoosingField = true;
     private boolean isModifyingPhoneNumber = false;
+    private boolean isAddingPhoneNumber = false;
+    private boolean isCreatingNewPhoneNumber = false;
     private boolean isShowingContactAfterList = false;
     private boolean modFirstName = false, modSecondName = false, modFirstSurname = false, modSecondSurname = false, modEmail = false, modBirthDate = false, modImage = false, modPhoneNumbers = false;
     private static boolean registroContactoExitoso = false;
@@ -877,6 +879,7 @@ public class MensajesBL {
             contactEntities = getContactsThatInclude(messageTextReceived);
             LOGGER.info("Contacts Found >> "+contactEntities.toString());
             if (contactEntities.isEmpty()){
+                //FIXME Arreglar esta seccion
                 message = "No se encontraron contactos con esa descripción";
                 isOpeningContact = false;
             }else {
@@ -963,6 +966,9 @@ public class MensajesBL {
                                         keyboardRow.add("Número "+(k+1));
                                         keyboard.add(keyboardRow);
                                     }
+                                    KeyboardRow agregar = new KeyboardRow();
+                                    agregar.add("Agregar Nuevo Número de Teléfono");
+                                    keyboard.add(agregar);
                                     keyboardMarkup.setKeyboard(keyboard);
                                     sendMessage.setText(message).setParseMode("Markdown").setReplyMarkup(keyboardMarkup);
                                     modPhoneNumbers = true;
@@ -1107,22 +1113,46 @@ public class MensajesBL {
 //                            sendMessage.setReplyMarkup(replyKeyboardRemove);
                             }
                             if (modPhoneNumbers){
-                                if (!isModifyingPhoneNumber){
-                                    int index = messageTextReceived.indexOf(" ");
-                                    pId = Integer.parseInt(messageTextReceived.substring(index+1))-1;
-                                    LOGGER.info("Phone Number ID>>>>"+pId+" ; PhoneNumberEntity>>>>"+phoneNumberEntities.get(pId).getPhoneId());
-                                    message = "Ingresar el número de teléfono N°"+(iNumbers+1)+" con el formato (XXXXXXXX)";
-                                    isModifyingPhoneNumber = true;
-                                }else {
-                                    if (validatePhoneNumber(messageTextReceived)){
-                                        savePhoneNumber(phoneNumberEntities.get(pId).getPhoneId(),messageTextReceived);
-                                        message = "Número de teléfono actualizado\nSeleccione una opción:";
-                                        mostrarOpcionesDespuesModificar(sendMessage);
-                                        isModifyingPhoneNumber = false;
-                                        modPhoneNumbers = false;
+                                LOGGER.info("Entra modPhoneNumbers");
+                                if (messageTextReceived.equals("Agregar Nuevo Número de Teléfono") || isAddingPhoneNumber){
+                                    LOGGER.info("Entra agregar nuevo num telefono");
+                                    isAddingPhoneNumber = true;
+                                    if (!isCreatingNewPhoneNumber){
+                                        LOGGER.info("Entra isCreatingPhoneNumber");
+                                        message = "Ingresar el nuevo número de teléfono con el formato (XXXXXXXX)";
+                                        isCreatingNewPhoneNumber = true;
                                     }else {
-                                        if (!validatePhoneNumber(messageTextReceived)){
-                                            message = "Número de teléfono no válido.\nIntente nuevamente\n";;
+                                        if (validatePhoneNumber(messageTextReceived)){
+                                            guardarAgregarPhoneNumber(messageTextReceived,contactEntities.get(id));
+                                            message = "Número de teléfono registrado\nSeleccione una opción:";
+                                            mostrarOpcionesDespuesModificar(sendMessage);
+                                            isAddingPhoneNumber = false;
+                                            isCreatingNewPhoneNumber = false;
+                                        }else {
+                                            if (!validatePhoneNumber(messageTextReceived)){
+                                                message = "Número de teléfono no válido.\nIntente nuevamente\n";;
+                                            }
+                                        }
+                                    }
+
+                                }else {
+                                    if (!isModifyingPhoneNumber){
+                                        int index = messageTextReceived.indexOf(" ");
+                                        pId = Integer.parseInt(messageTextReceived.substring(index+1))-1;
+                                        LOGGER.info("Phone Number ID>>>>"+pId+" ; PhoneNumberEntity>>>>"+phoneNumberEntities.get(pId).getPhoneId());
+                                        message = "Ingresar el número de teléfono con el formato (XXXXXXXX)";
+                                        isModifyingPhoneNumber = true;
+                                    }else {
+                                        if (validatePhoneNumber(messageTextReceived)){
+                                            savePhoneNumber(phoneNumberEntities.get(pId).getPhoneId(),messageTextReceived);
+                                            message = "Número de teléfono actualizado\nSeleccione una opción:";
+                                            mostrarOpcionesDespuesModificar(sendMessage);
+                                            isModifyingPhoneNumber = false;
+                                            modPhoneNumbers = false;
+                                        }else {
+                                            if (!validatePhoneNumber(messageTextReceived)){
+                                                message = "Número de teléfono no válido.\nIntente nuevamente\n";;
+                                            }
                                         }
                                     }
                                 }
@@ -1560,6 +1590,16 @@ public class MensajesBL {
             phoneNumberRepository.save(phoneNumberEntity);
         }
         return "¡Registro de números telefónicos completado exitosamente!";
+    }
+
+    public String guardarAgregarPhoneNumber(String number, ContactEntity contactEntity) {
+        PhoneNumberEntity phoneNumberEntity = new PhoneNumberEntity();
+        phoneNumberEntity.setNumber(number);
+        phoneNumberEntity.setContactId(contactEntity);
+        phoneNumberEntity.setStatus(1);
+        LOGGER.info("Phone Number Entity: "+phoneNumberEntity.toString());
+        phoneNumberRepository.save(phoneNumberEntity);
+        return "¡Número de teléfono registrado exitosamente!";
     }
 
     public void saveFirstName(int contactId, String message){
