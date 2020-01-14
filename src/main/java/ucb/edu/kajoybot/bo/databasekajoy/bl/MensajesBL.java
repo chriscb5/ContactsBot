@@ -92,6 +92,7 @@ public class MensajesBL {
     private int numNumbers=0;
     private boolean isOpeningContact = false;
     private boolean isChoosingField = true;
+    private boolean isDeletingContact = false;
     private boolean isModifyingPhoneNumber = false;
     private boolean isAddingPhoneNumber = false;
     private boolean isCreatingNewPhoneNumber = false;
@@ -1164,8 +1165,31 @@ public class MensajesBL {
 
 
                     }else {
-                        if (messageTextReceived.equals("Eliminar Contacto")){
-
+                        if (messageTextReceived.equals("Eliminar Contacto") || isDeletingContact){
+                            isDeletingContact = true;
+                            if (messageTextReceived.equals("SI")){
+                                deleteContact(contactEntities.get(id).getContactId());
+                                message = "¡Contacto Eliminado Exitosamente!\n\n*Seleccione una opción:*\nBuscar Contactos\nAgregar Contactos";
+                                isDeletingContact = false;
+                                isOpeningContact = false;
+                                isChoosingField = true;
+                                setEntra_a_buscar_contactos(false);
+                                mostrarMenu(sendMessage,update.getMessage().getChatId());
+                            }else {
+                                if (messageTextReceived.equals("NO")){
+                                    message = "Contacto *NO* eliminado\nSeleccione una opción";
+                                    mostrarOpcionesDespuesModificar(sendMessage);
+                                }else {
+                                    message = "¿Está seguro que quiere eliminar este contacto?";
+                                    KeyboardRow keyboardRow = new KeyboardRow();
+                                    keyboardRow.add("SI");
+                                    keyboardRow.add("NO");
+                                    keyboard.add(keyboardRow);
+                                    keyboardMarkup.setKeyboard(keyboard);
+                                    sendMessage.setReplyMarkup(keyboardMarkup);
+                                }
+                            }
+                            sendMessage.setText(message).setParseMode("Markdown");
                         }else {
                             isShowingContactAfterList = true;
                             mostrarContacto(messageTextReceived,message,sendMessage,sendPhoto,keyboard,keyboardMarkup);
@@ -1179,21 +1203,6 @@ public class MensajesBL {
         }
 //        sendMessage.setText(message).setParseMode("Markdown");
 //        sendMessage.setReplyMarkup(keyboardMarkup);
-    }
-
-    public void entraEliminarContactos(String messageTextReceived, SendMessage sendMessage, Update update){
-        //FIXME Completar eliminar contactos
-        LOGGER.info("Entra a eliminar contactos");
-        String message = "";
-        KeyboardRow row= new KeyboardRow();
-        ReplyKeyboardMarkup keyboardMarkup=new ReplyKeyboardMarkup();
-        ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
-        List<KeyboardRow> keyboard= new ArrayList<>();
-        sendMessage.setReplyMarkup(replyKeyboardRemove);
-        if (existsContactByIdContact(messageTextReceived)){
-            message = "Id existente";
-        }
-        sendMessage.setText(message);
     }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -1601,6 +1610,12 @@ public class MensajesBL {
         LOGGER.info("Phone Number Entity: "+phoneNumberEntity.toString());
         phoneNumberRepository.save(phoneNumberEntity);
         return "¡Número de teléfono registrado exitosamente!";
+    }
+
+    public void deleteContact(int contactId){
+        ContactEntity contactEntity = contactRepository.findByContactId(contactId);
+        contactEntity.setStatus(0);
+        contactRepository.save(contactEntity);
     }
 
     public void saveFirstName(int contactId, String message){
