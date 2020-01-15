@@ -965,6 +965,9 @@ public class MensajesBL {
                 isSearchingByPhone = false;
                 searchInputReceived = false;
                 setEntra_a_buscar_contactos(false);
+                contactEntities.clear();
+                phoneNumberEntities.clear();
+                receivedPhoneNumbers.clear();
                 mostrarMenu(sendMessage,update.getMessage().getChatId());
             }else {
                 if (messageTextReceived.equals("Mostrar el Contacto Actualizado")){
@@ -1233,7 +1236,14 @@ public class MensajesBL {
                                 isDeletingContact = false;
                                 isOpeningContact = false;
                                 isChoosingField = true;
+                                entra_a_modificar_contactos = false;
+                                isSearchingByName = false;
+                                isSearchingByPhone = false;
+                                searchInputReceived = false;
                                 setEntra_a_buscar_contactos(false);
+                                contactEntities.clear();
+                                phoneNumberEntities.clear();
+                                receivedPhoneNumbers.clear();
                                 mostrarMenu(sendMessage,update.getMessage().getChatId());
                             }else {
                                 if (messageTextReceived.equals("NO")){
@@ -2266,12 +2276,21 @@ public class MensajesBL {
     public List<ContactEntity> getContactsThatInclude(String input, User user) {
         KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(Integer.toString(user.getId()));
         LOGGER.info("User ID: "+kjUserEntity.getUserid());
-        List<ContactEntity> result = contactRepository.findByFirstNameContainingOrSecondNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(input,input,input,input);
-        for (int i = 0; i<result.size(); i++){
-            if (result.get(i).getStatus() == 0 || result.get(i).getUserId().getUserid() != kjUserEntity.getUserid()){
-                result.remove(i);
+        List<ContactEntity> receivedContactEntities = contactRepository.findByFirstNameContainingOrSecondNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(input,input,input,input);
+        List<ContactEntity> result = new ArrayList<>();
+        LOGGER.info("Before >> "+receivedContactEntities.toString());
+        for (int i = 0; i<receivedContactEntities.size(); i++){
+            ContactEntity contactEntity = receivedContactEntities.get(i);
+            LOGGER.info("Contacto "+(i+1)+">> "+contactEntity.toString());
+            if (contactEntity.getStatus() == 0 || contactEntity.getUserId().getUserid() != kjUserEntity.getUserid()){
+                LOGGER.info("Contacto "+(i+1)+" NO pasó");
+            }else {
+                LOGGER.info("Contacto "+(i+1)+" Pasó");
+                result.add(contactEntity);
             }
+            LOGGER.info("Status "+contactEntity.getStatus()+" (0)");
         }
+        LOGGER.info("After >> "+result.toString());
         return result;
     }
 
@@ -2283,7 +2302,7 @@ public class MensajesBL {
         for (int i = 0; i<receivedPhoneNumbers.size(); i++){
             ContactEntity contactEntity = contactRepository.findByContactId(receivedPhoneNumbers.get(i).getContactId().getContactId());
             if (contactEntity.getStatus() == 0 || contactEntity.getUserId().getUserid() != kjUserEntity.getUserid() || receivedPhoneNumbers.get(i).getStatus() == 0){
-                receivedPhoneNumbers.remove(i);
+                LOGGER.info("Contacto "+(i+1)+" NO pasó");
             }else {
                 boolean alreadyExists = false;
                 for (int k = 0; k<result.size(); k++){
