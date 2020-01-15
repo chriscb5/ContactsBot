@@ -6,7 +6,6 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ucb.edu.kajoybot.bo.databasekajoy.bl.*;
-import ucb.edu.kajoybot.bo.databasekajoy.dao.EstudianteRespository;
 
 import javax.annotation.PostConstruct;
 
@@ -14,20 +13,12 @@ import javax.annotation.PostConstruct;
 public class BotInitializator {
 
     BotBl botBl;
-    PersonBL personBL;
-    MensajesBL mensajesBL;
     ContactsBL contactsBL;
 
-//    @Autowired
- //   public BotInitializator(PersonBL personBL) {
-   //     this.personBL = personBL;
-    //}
     @Autowired
-    public BotInitializator(BotBl botBl,PersonBL personBL, MensajesBL mensajesBL, ContactsBL contactsBL){
+    public BotInitializator(BotBl botBl, ContactsBL contactsBL){
         this.botBl=botBl;
-        this.personBL=personBL;
-        this.mensajesBL=mensajesBL;
-        this.contactsBL=contactsBL;
+        this.contactsBL = contactsBL;
     }
 
     public BotInitializator() {
@@ -38,7 +29,7 @@ public class BotInitializator {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(new MainBot(botBl,personBL,mensajesBL,contactsBL));
+            telegramBotsApi.registerBot(new MainBot(botBl, contactsBL));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
