@@ -1145,4 +1145,50 @@ public class ContactsBL {
         return result;
     }
 
+    public void restart(){
+        numero_de_pregunta=0;
+        registrosllenos=false;
+        registrollenadosList= new ArrayList<>();
+
+
+        fileID = "";
+        filePath = "";
+        photoURL = "";
+
+        entra_a_agregar_contactos=false;
+        entra_a_agregar_phonenumbers=false;
+        entra_a_buscar_contactos=false;
+        entra_a_modificar_contactos=false;
+
+        iNumbers=0;
+        numNumbers=0;
+        isOpeningContact = false;
+
+        isSearchingByName = false;
+        isSearchingByPhone = false;
+        searchInputReceived = false;
+
+        isChoosingField = true;
+        isDeletingContact = false;
+        isModifyingPhoneNumber = false;
+        isAddingPhoneNumber = false;
+        isCreatingNewPhoneNumber = false;
+        isShowingContactAfterList = false;
+        modFirstName = false;
+        modSecondName = false;
+        modFirstSurname = false;
+        modSecondSurname = false;
+        modEmail = false;
+        modBirthDate = false;
+        modImage = false;
+        modPhoneNumbers = false;
+        registroContactoExitoso = false;
+        recentlyAddedContact = new ContactEntity();
+        contactEntities = new ArrayList<>();
+        phoneNumberEntities = new ArrayList<>();
+        receivedPhoneNumbers = new ArrayList<>();
+        id = 0;
+        pId = 0;
+    }
+
 }

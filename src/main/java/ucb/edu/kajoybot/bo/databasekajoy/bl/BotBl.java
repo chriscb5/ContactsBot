@@ -37,6 +37,10 @@ public class BotBl {
         this.kjUserRepository=kjUserRepository;
     }
 
+    public BotBl(ContactsBL contactsBL) {
+        this.contactsBL = contactsBL;
+    }
+
 
     //intento Multi Usuario
     //    public List<String> processUpdate(Update update) {
@@ -103,6 +107,11 @@ public class BotBl {
                                 keyboardMarkup.setKeyboard(keyboard);
                                 sendMessage.setReplyMarkup(keyboardMarkup);
 
+                                break;
+
+                            case "/menu":
+                                mostrarMenu(sendMessage,keyboardMarkup,keyboard,chatId);
+                                contactsBL.restart();
                                 break;
 
                             case "Contacts":
