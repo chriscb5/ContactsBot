@@ -255,8 +255,8 @@ public class MensajesBL {
         }
         return cadena;
     }
-
-    public String mensajeAgregarContactos(){
+//-----------------------------------------------------------------------------------------------------------
+    private static String mensajeAgregarContactos(){
         String cadena=new String();
         switch (numero_de_pregunta)
         {
@@ -281,7 +281,7 @@ public class MensajesBL {
         }
         return cadena;
     }
-
+//--------------------------------------------------------------------------------------------------------------
 
     public static int getNumero_de_pregunta() {
         return numero_de_pregunta;
@@ -1503,10 +1503,6 @@ public class MensajesBL {
         MensajesBL.entra_a_menu_testcurse_student = entra_a_menu_testcurse_student;
     }
 
-    public static boolean isEntra_a_menu_testcurse_docent() {
-        return entra_a_menu_testcurse_docent;
-    }
-
     public static void setEntra_a_menu_testcurse_docent(boolean entra_a_menu_testcurse_docent) {
         MensajesBL.entra_a_menu_testcurse_docent = entra_a_menu_testcurse_docent;
     }
@@ -1614,7 +1610,7 @@ public class MensajesBL {
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-    public String guardarListaAgregarContactos(List<String> listaderegistros, User user) {
+    private String guardarListaAgregarContactos(List<String> listaderegistros, User user) {
         LOGGER.info("Llega al metodo con : ");
 
         for (String lag : listaderegistros) {
@@ -1652,7 +1648,7 @@ public class MensajesBL {
         }
     }
 
-    public String guardarListaAgregarPhoneNumbers(List<String> listaderegistros) {
+    private String guardarListaAgregarPhoneNumbers(List<String> listaderegistros) {
         LOGGER.info("Llega al metodo con : ");
 
 //        LOGGER.info("Tamanio = "+Integer.toString(listaderegistros.size()));
@@ -1673,7 +1669,7 @@ public class MensajesBL {
         return "¡Registro de números telefónicos completado exitosamente!";
     }
 
-    public String guardarAgregarPhoneNumber(String number, ContactEntity contactEntity) {
+    private String guardarAgregarPhoneNumber(String number, ContactEntity contactEntity) {
         PhoneNumberEntity phoneNumberEntity = new PhoneNumberEntity();
         phoneNumberEntity.setNumber(number);
         phoneNumberEntity.setContactId(contactEntity);
@@ -1683,37 +1679,37 @@ public class MensajesBL {
         return "¡Número de teléfono registrado exitosamente!";
     }
 
-    public void deleteContact(int contactId){
+    private void deleteContact(int contactId){
         ContactEntity contactEntity = contactRepository.findByContactId(contactId);
         contactEntity.setStatus(0);
         contactRepository.save(contactEntity);
     }
 
-    public void saveFirstName(int contactId, String message){
+    private void saveFirstName(int contactId, String message){
         ContactEntity contactEntity = contactRepository.findByContactId(contactId);
         contactEntity.setFirstName(message);
         contactRepository.save(contactEntity);
     }
 
-    public void saveSecondName(int contactId, String message){
+    private void saveSecondName(int contactId, String message){
         ContactEntity contactEntity = contactRepository.findByContactId(contactId);
         contactEntity.setSecondName(message);
         contactRepository.save(contactEntity);
     }
 
-    public void saveFirstSurname(int contactId, String message){
+    private void saveFirstSurname(int contactId, String message){
         ContactEntity contactEntity = contactRepository.findByContactId(contactId);
         contactEntity.setFirstSurname(message);
         contactRepository.save(contactEntity);
     }
 
-    public void saveSecondSurname(int contactId, String message){
+    private void saveSecondSurname(int contactId, String message){
         ContactEntity contactEntity = contactRepository.findByContactId(contactId);
         contactEntity.setSecondSurname(message);
         contactRepository.save(contactEntity);
     }
 
-    public String saveEmail(int contactId, String message){
+    private String saveEmail(int contactId, String message){
         if (isValidEmail(message)){
             LOGGER.info("Email válido");
             ContactEntity contactEntity = contactRepository.findByContactId(contactId);
@@ -1727,7 +1723,7 @@ public class MensajesBL {
         }
     }
 
-    public void saveBirthDate(int contactId, String message){
+    private void saveBirthDate(int contactId, String message){
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
             java.util.Date utilDate = format.parse(message);
@@ -1741,13 +1737,13 @@ public class MensajesBL {
         }
     }
 
-    public void saveImage(int contactId, String message){
+    private void saveImage(int contactId, String message){
         ContactEntity contactEntity = contactRepository.findByContactId(contactId);
         contactEntity.setImage(message);
         contactRepository.save(contactEntity);
     }
 
-    public void savePhoneNumber(int phoneNumberId, String message){
+    private void savePhoneNumber(int phoneNumberId, String message){
         PhoneNumberEntity phoneNumberEntity = phoneNumberRepository.findByPhoneId(phoneNumberId);
         phoneNumberEntity.setNumber(message);
         phoneNumberRepository.save(phoneNumberEntity);
@@ -2039,7 +2035,7 @@ public class MensajesBL {
 
 //--------------------------------------------------------------------------------------------------------------------------
 
-    public static boolean isValidEmail(String email)
+    private static boolean isValidEmail(String email)
     {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
                 "[a-zA-Z0-9_+&*-]+)*@" +
@@ -2052,7 +2048,7 @@ public class MensajesBL {
         return pat.matcher(email).matches();
     }
 
-    public static boolean verifyDatebirth(String input) {
+    private static boolean verifyDatebirth(String input) {
         LOGGER.info("Longitud de la fecha >> "+input.length());
         if (input.length() == 10){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -2070,7 +2066,7 @@ public class MensajesBL {
         return false;
     }
 
-    public static boolean validatePhoneNumber(String phone) {
+    private static boolean validatePhoneNumber(String phone) {
         Pattern pattern = Pattern.compile("\\d{8}");
         Matcher matcher = pattern.matcher(phone);
 
@@ -2083,7 +2079,7 @@ public class MensajesBL {
 
     }
 
-    public static boolean validateNumber(String num) {
+    private static boolean validateNumber(String num) {
         Pattern pattern = Pattern.compile("\\d{1}");
         Pattern pattern2 = Pattern.compile("\\d{2}");
         Matcher matcher = pattern.matcher(num);
@@ -2098,19 +2094,6 @@ public class MensajesBL {
         } else {
             return false;
         }
-    }
-
-    public boolean existsContactByIdContact(String id){
-        boolean exists = false;
-        ContactEntity contactEntity = contactRepository.findByContactId(Integer.parseInt(id));
-        if (contactEntity==null){
-            LOGGER.info("Returns NULL");
-            exists = false;
-        }else {
-            LOGGER.info(contactEntity.getFirstName());
-            exists = true;
-        }
-        return exists;
     }
 
     public void receivePhotoContact(Update update, List<PhotoSize> photoReceived, SendMessage sendMessage, SendPhoto sendPhoto){
@@ -2195,7 +2178,7 @@ public class MensajesBL {
 
     }
 
-    public void mostrarMenu(SendMessage sendMessage, long chatId) {
+    private void mostrarMenu(SendMessage sendMessage, long chatId) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove();
@@ -2269,11 +2252,11 @@ public class MensajesBL {
         sendMessage.setReplyMarkup(keyboardMarkup);
     }
 
-    public static void saveFileFromUrlWithCommonsIO(String fileName, String fileUrl) throws MalformedURLException, IOException {
+    private static void saveFileFromUrlWithCommonsIO(String fileName, String fileUrl) throws MalformedURLException, IOException {
         FileUtils.copyURLToFile(new URL(fileUrl), new File(fileName));
     }
 
-    public List<ContactEntity> getContactsThatInclude(String input, User user) {
+    private List<ContactEntity> getContactsThatInclude(String input, User user) {
         KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(Integer.toString(user.getId()));
         LOGGER.info("User ID: "+kjUserEntity.getUserid());
         List<ContactEntity> receivedContactEntities = contactRepository.findByFirstNameContainingOrSecondNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(input,input,input,input);
@@ -2294,7 +2277,7 @@ public class MensajesBL {
         return result;
     }
 
-    public List<ContactEntity> getContactsByPhoneNumber(String phone, User user) {
+    private List<ContactEntity> getContactsByPhoneNumber(String phone, User user) {
         KjUserEntity kjUserEntity = kjUserRepository.findByBotUserId(Integer.toString(user.getId()));
         LOGGER.info("User ID: "+kjUserEntity.getUserid());
         receivedPhoneNumbers = phoneNumberRepository.findByNumberContaining(phone);
