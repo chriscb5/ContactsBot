@@ -82,7 +82,7 @@ public class BotBl {
         if (update.hasMessage() && update.getMessage().hasText() && !update.getMessage().hasPhoto()){
             if(lastMenssage == null){
                 sendMessage.setChatId(chatId)
-                        .setText("DEFAULT por null");
+                        .setText("Nuevo Usuario Registrado\nPor favor, presione /start");
             }else {
 
                 if (messageInput.equals("/start") || firstMessage==false){
@@ -110,6 +110,7 @@ public class BotBl {
                                 break;
 
                             case "/menu":
+                                LOGGER.info("Entra menu principal");
                                 mostrarMenu(sendMessage,keyboardMarkup,keyboard,chatId);
                                 contactsBL.restart();
                                 break;

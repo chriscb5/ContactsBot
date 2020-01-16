@@ -1189,6 +1189,12 @@ public class ContactsBL {
         receivedPhoneNumbers = new ArrayList<>();
         id = 0;
         pId = 0;
+
+        setNumero_de_pregunta(0);
+        setEntra_a_buscar_contactos(false);
+        setEntra_a_agregar_contactos(false);
+        setEntra_a_agregar_phonenumbers(false);
+        setRegistrosllenos(false);
     }
 
 }
