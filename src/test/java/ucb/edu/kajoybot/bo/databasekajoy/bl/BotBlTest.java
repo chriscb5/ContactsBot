@@ -47,12 +47,15 @@ class BotBlTest {
         Mockito.doReturn("Prueba").when(kjChatEntity).getInMessage();
         Mockito.doReturn(Mockito.doReturn("Prueba").when(kjChatEntity).getInMessage()).when(chatRepository).findLastChatByUserId(2);
 
-        Mockito.doReturn(true).when(update).hasMessage();
-//        Mockito.doReturn(true).when(update).getMessage().hasText();
-//        Mockito.doReturn(false).when(update).getMessage().hasPhoto();
+//        Mockito.doReturn(true).when(update).hasMessage();
+//        Mockito.doReturn(true).when(update.getMessage().hasText());
+//        Mockito.doReturn(false).when(update.getMessage().hasPhoto());
+//        Mockito.doReturn(2).when(chatRepository.findLastChatByUserId(user.getId()));
 
         SendMessage sendMessage = Mockito.mock(SendMessage.class);
         SendPhoto sendPhoto = Mockito.mock(SendPhoto.class);
+
+//        sendMessage.setChatId(message.getChatId());
 
         BotBl botBl = new BotBl(kjUserRepository,chatRepository,contactsBL);
         botBl.continueChatWithUserMessage(update,prueba,sendMessage,sendPhoto);
